@@ -1,6 +1,6 @@
 # Track Plan: Foundation & Core Ticketing (Request to PNR)
 
-## Phase 1: Environment & Authentication
+## Phase 1: Environment ## Phase 1: Environment & Authentication Authentication [checkpoint: ef7c9a7]
 - [x] Task: Initialize database schema (users, roles, agents). [cecd4f9]
 - [x] Task: Implement `db_connect.php` using PDO with MariaDB. [a81df13]
 - [x] Task: Create Login Page (UI with Bootstrap 5). [c65ef37]
