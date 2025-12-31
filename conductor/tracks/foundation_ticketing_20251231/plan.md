@@ -9,7 +9,7 @@
 - [x] Task: Create Role-based Dashboards (Placeholders for Admin, Finance, Monitor). [07c85de]
 - [x] Task: Conductor - User Manual Verification 'Environment & Authentication' (Protocol in workflow.md)
 
-## Phase 2: Core Request Management
+## Phase 2: Core Request Management [checkpoint: d8422e5]
 - [x] Task: Initialize database schema for `requests` and `bookings`. [b988df7]
 - [x] Task: Create "New Request" Form (UI & Backend validation). [eb11e1c]
 - [x] Task: Implement "Request List" View (Filtering and pagination). [35349ad]
