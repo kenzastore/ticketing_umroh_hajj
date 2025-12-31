@@ -30,3 +30,27 @@ INSERT INTO roles (name, description) VALUES
 ('admin', 'Full access to all modules'),
 ('finance', 'Access to invoicing and payment modules'),
 ('monitor', 'View-only access to dashboards');
+
+CREATE TABLE IF NOT EXISTS requests (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    agent_id INT,
+    pax_count INT NOT NULL,
+    travel_date_start DATE,
+    travel_date_end DATE,
+    duration_days INT,
+    airline_preference VARCHAR(100),
+    routing_preference VARCHAR(255),
+    notes TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (agent_id) REFERENCES agents(id)
+);
+
+CREATE TABLE IF NOT EXISTS bookings (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    request_id INT,
+    pnr_code VARCHAR(20),
+    status ENUM('NEW', 'QUOTED', 'BLOCKED', 'PNR_ISSUED', 'IN_MOVEMENT', 'INVOICED', 'PAID_DEPOSIT', 'PAID_FULL', 'CONFIRMED_FP_MERAH', 'REPORTED', 'RECEIPTED', 'CHANGED', 'CANCELED') DEFAULT 'NEW',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (request_id) REFERENCES requests(id)
+);
