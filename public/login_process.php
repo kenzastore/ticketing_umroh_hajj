@@ -18,7 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($user && password_verify($password, $user['password'])) {
         $_SESSION['user_id'] = $user['id'];
         $_SESSION['username'] = $user['username'];
-        $_SESSION['role'] = $user['role_name'];
+        $_SESSION['role_name'] = $user['role_name'];
         $_SESSION['full_name'] = $user['full_name'];
 
         // Redirect based on role

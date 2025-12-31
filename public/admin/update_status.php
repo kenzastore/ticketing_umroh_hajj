@@ -9,8 +9,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $new_status = $_POST['status'];
     $new_pnr = trim($_POST['pnr_code'] ?? '');
 
-    // Automated transition if PNR is provided
-    if (!empty($new_pnr)) {
+    // Automated transition if PNR is provided, but only if we are in an early stage.
+    // This prevents downgrading status (e.g., from PAID_FULL back to PNR_ISSUED) just because PNR is present.
+    $pre_issued_states = ['NEW', 'QUOTED', 'BLOCKED'];
+    if (!empty($new_pnr) && in_array($new_status, $pre_issued_states)) {
         $new_status = 'PNR_ISSUED';
     }
 
