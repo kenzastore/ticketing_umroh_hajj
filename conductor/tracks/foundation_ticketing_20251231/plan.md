@@ -16,7 +16,7 @@
 - [x] Task: Create "Request Detail" View. [0346c3c]
 - [x] Task: Conductor - User Manual Verification 'Core Request Management' (Protocol in workflow.md)
 
-## Phase 3: Status Lifecycle & PNR
+## Phase 3: Status Lifecycle & PNR [checkpoint: be90dc3]
 - [x] Task: Implement Status Update Logic (Workflow transitions). [599da8f]
 - [x] Task: Add PNR Entry functionality (Update status to PNR_ISSUED). [599da8f]
 - [x] Task: Implement basic Audit Log for status changes. [aafa6d4]
