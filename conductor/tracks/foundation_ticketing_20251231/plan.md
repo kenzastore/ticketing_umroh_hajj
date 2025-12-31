@@ -1,13 +1,13 @@
 # Track Plan: Foundation & Core Ticketing (Request to PNR)
 
 ## Phase 1: Environment & Authentication
-- [ ] Task: Initialize database schema (users, roles, agents).
-- [ ] Task: Implement `db_connect.php` using PDO with MariaDB.
-- [ ] Task: Create Login Page (UI with Bootstrap 5).
-- [ ] Task: Implement Login Logic (Session management, password verification).
-- [ ] Task: Implement Logout and Middleware (Access control for protected pages).
-- [ ] Task: Create Role-based Dashboards (Placeholders for Admin, Finance, Monitor).
-- [ ] Task: Conductor - User Manual Verification 'Environment & Authentication' (Protocol in workflow.md)
+- [x] Task: Initialize database schema (users, roles, agents). [cecd4f9]
+- [x] Task: Implement `db_connect.php` using PDO with MariaDB. [a81df13]
+- [x] Task: Create Login Page (UI with Bootstrap 5). [c65ef37]
+- [x] Task: Implement Login Logic (Session management, password verification). [c0bc03a]
+- [x] Task: Implement Logout and Middleware (Access control for protected pages). [6b6d890]
+- [x] Task: Create Role-based Dashboards (Placeholders for Admin, Finance, Monitor). [07c85de]
+- [x] Task: Conductor - User Manual Verification 'Environment & Authentication' (Protocol in workflow.md)
 
 ## Phase 2: Core Request Management
 - [ ] Task: Initialize database schema for `requests` and `bookings`.
