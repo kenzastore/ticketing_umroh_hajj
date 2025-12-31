@@ -10,11 +10,11 @@
 - [x] Task: Conductor - User Manual Verification 'Environment & Authentication' (Protocol in workflow.md)
 
 ## Phase 2: Core Request Management
-- [ ] Task: Initialize database schema for `requests` and `bookings`.
-- [ ] Task: Create "New Request" Form (UI & Backend validation).
-- [ ] Task: Implement "Request List" View (Filtering and pagination).
-- [ ] Task: Create "Request Detail" View.
-- [ ] Task: Conductor - User Manual Verification 'Core Request Management' (Protocol in workflow.md)
+- [x] Task: Initialize database schema for `requests` and `bookings`. [b988df7]
+- [x] Task: Create "New Request" Form (UI & Backend validation). [eb11e1c]
+- [x] Task: Implement "Request List" View (Filtering and pagination). [35349ad]
+- [x] Task: Create "Request Detail" View. [0346c3c]
+- [x] Task: Conductor - User Manual Verification 'Core Request Management' (Protocol in workflow.md)
 
 ## Phase 3: Status Lifecycle & PNR
 - [ ] Task: Implement Status Update Logic (Workflow transitions).
