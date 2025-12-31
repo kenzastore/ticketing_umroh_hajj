@@ -17,8 +17,8 @@
 - [x] Task: Conductor - User Manual Verification 'Core Request Management' (Protocol in workflow.md)
 
 ## Phase 3: Status Lifecycle & PNR
-- [ ] Task: Implement Status Update Logic (Workflow transitions).
-- [ ] Task: Add PNR Entry functionality (Update status to PNR_ISSUED).
-- [ ] Task: Implement basic Audit Log for status changes.
-- [ ] Task: Final MVP Track Verification (Request -> PNR flow).
-- [ ] Task: Conductor - User Manual Verification 'Status Lifecycle & PNR' (Protocol in workflow.md)
+- [x] Task: Implement Status Update Logic (Workflow transitions). [599da8f]
+- [x] Task: Add PNR Entry functionality (Update status to PNR_ISSUED). [599da8f]
+- [x] Task: Implement basic Audit Log for status changes. [aafa6d4]
+- [x] Task: Final MVP Track Verification (Request -> PNR flow). [aafa6d4]
+- [x] Task: Conductor - User Manual Verification 'Status Lifecycle & PNR' (Protocol in workflow.md)
