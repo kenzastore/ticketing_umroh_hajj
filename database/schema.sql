@@ -54,3 +54,15 @@ CREATE TABLE IF NOT EXISTS bookings (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (request_id) REFERENCES requests(id)
 );
+
+CREATE TABLE IF NOT EXISTS audit_logs (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT,
+    action VARCHAR(100),
+    entity_type VARCHAR(50),
+    entity_id INT,
+    old_value TEXT,
+    new_value TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id)
+);
