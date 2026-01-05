@@ -1,29 +1,121 @@
-# Product Guide: Digitalisasi Ticketing Umroh & Haji
+# PROPOSAL RINGKAS (REVISI)
+Digitalisasi Proses Ticketing Umroh & Haji (Web-Based + FullView Display)
 
-## 1. Product Vision
-To build a centralized, web-based system that streamlines the end-to-end ticketing process for Umroh and Haji. The system will replace fragmented spreadsheets and manual communications with a real-time, mobile-accessible platform, ensuring data integrity, faster processing, and secure financial tracking from request to final receipt.
+**Referensi utama:** Worksheet operasional “ELANG EMAS WORKSHEET.xlsx” dengan sheet: FRONT PAGE, BOOKING REQUEST, MOVEMENT, PAYMENT REPORT, INVOICE, Payment advise, RANGKUMAN, TIME LIMIT.
 
-## 2. Target Audience
-- **Ticketing Admins:** Manage requests, flight bookings, PNR issuance, and daily movements.
-- **Finance Staff:** Validate payments, issue invoices, and manage "FP Merah" status.
-- **Field Staff / Monitors:** View live movement dashboards and access quick actions via mobile.
-- **Stakeholders (Kyai/Requesters):** Receive standardized invoices and encrypted receipts.
+---
 
-## 3. Core Features (MVP)
-- **Request Management:** Centralized handling of Group and Individual (FID) requests with scheduling and preferences.
-- **Flight & Seat Operations:** Lifecycle tracking from `NEW` -> `QUOTED` -> `BLOCKED` -> `PNR_ISSUED`.
-- **Movement Dashboard:** Real-time monitoring of daily movements with immutable change logs.
-- **Invoicing System:** Auto-generation of Tour Codes and Invoices (Internal & External templates).
-- **Payment & Validation:** "FP Merah" logic requiring payment proof and airline confirmation; automated payment reporting.
-- **Encrypted Receipts:** Secure, anti-tamper digital receipts with verification tokens/QR.
+## 1) Latar Belakang
+Proses ticketing Umroh & Haji saat ini sudah memiliki format kerja yang cukup rapi di spreadsheet, namun aktivitas harian masih bergantung pada **banyak sheet terpisah** (Booking Request, Movement, Payment Report, Invoice, Payment Advise, Time Limit, dst.) dan koordinasi eksternal melalui **WA/email**. Pada kondisi dinamis (perubahan jadwal, extra flight, cancel, revisi jumlah seat), risiko terbesar adalah **beda versi data** dan **status yang tidak sinkron** antar sheet.
 
-## 4. User Experience (UX)
-- **Mobile-First Design:** Optimized for smartphones to allow field staff to perform quick actions (uploads, updates).
-- **Desktop-Enhanced:** Detailed table views, filtering, and bulk exports for admin and finance users.
-- **FullView Display:** Support for large-screen monitor dashboards for real-time status visibility.
+---
 
-## 5. Success Metrics
-- **Data Integrity:** Zero discrepancy between operational status and finance records.
-- **Efficiency:** Significant reduction in time spent coordinating via WhatsApp/Email.
-- **Accessibility:** 100% availability of critical data on mobile devices for field staff.
-- **Security:** Complete audit trail for all status changes and financial transactions.
+## 2) Referensi Alur & Data Existing (berdasarkan Worksheet)
+Berikut pemetaan sheet yang saat ini digunakan dan fungsinya:
+
+1.  **BOOKING REQUEST**
+    Digunakan untuk input permintaan/“demand” group: *Corporate Name*, *Agent Name*, *Skyagent ID*, detail penerbangan multi-segmen (hingga 4 segmen: `FLT_DATE1..4`, `FLT_NO1..4`, `SECTOR1..4`), *Group Size*, *Duration* dan *TTL Days*.
+
+2.  **MOVEMENT (Daily/Group Movement)**
+    Digunakan untuk tracking proses inti: **PNR**, DP1/DP2, **FP**, **Tour Code**, Carrier/Flight/Sector per segmen, jadwal segmen (DEP/ARR), serta kolom **tanggal deposit ke airlines**, **tanggal deposit ke EEMW**, **fullpay**, **time limit manifest & ticketing**, hingga status **Ticketing Done** dan “Belonging To”.
+
+3.  **PAYMENT REPORT**
+    Digunakan untuk rekap pembayaran per penerbangan/segmen: *Date of Payment*, *Total Pax*, *Remarks* (mis. selling fares, deposit, fullpay), nilai *Debet*, serta informasi rekening *From/To*.
+
+4.  **INVOICE (Proforma Invoice)**
+    Memuat format *Proforma Invoice* lengkap: *REF/Tour Code*, PNR, flight information, fares per pax, total amount, serta pembagian pembayaran (contoh: Deposit-1, Deposit-2, Fullpayment) termasuk persentase.
+
+5.  **Payment advise**
+    Memuat catatan top-up/konfirmasi pembayaran ke maskapai: tanggal pembuatan top up, remarks, tanggal email ke maskapai, konfirmasi, serta ringkasan nilai (deposit/balance/top-up) dan data bank.
+
+6.  **TIME LIMIT / FRONT PAGE / RANGKUMAN**
+    Mengarah pada kebutuhan **pengingat time limit** (mis. reminder H-3) dan ringkasan per agent.
+
+**Catatan:** Struktur sheet di atas menjadi acuan langsung untuk desain modul dan database di sistem web.
+
+---
+
+## 3) Problem (Kendala Utama)
+1.  **Data tersebar & rawan beda versi**
+    Satu transaksi berjalan lintas sheet (Booking Request → Movement → Invoice → Payment Report → Payment Advise). Saat ada revisi, update harus dilakukan berulang dan rawan terlewat.
+2.  **Tracking status belum real-time & sulit diaudit**
+    Status DP/FP, time limit, ticketing done, dan perubahan segmen penerbangan masih manual; jejak perubahan (siapa mengubah apa, kapan) belum terkunci rapi.
+3.  **Validasi keuangan berisiko tidak sinkron**
+    Payment Report dan Payment Advise dapat berbeda bila tidak ada pengunci aturan sistem (DP, deposit airlines vs deposit internal, fullpay, dll).
+4.  **Akses lapangan kurang praktis**
+    Tim butuh akses cepat dari HP (saat koordinasi agent/kyai/maskapai), tetapi data tersebar di file/sheet.
+5.  **Pengingat time limit belum otomatis**
+    Worksheet sudah menandai kebutuhan reminder, namun eksekusinya masih manual.
+6.  **Keamanan dokumen belum standar**
+    Invoice/receipt/resi digital belum memiliki mekanisme token/QR + validasi akses.
+
+---
+
+## 4) Solusi yang Diusulkan
+### Sistem Web-Based + FullView Display (Mobile & Desktop Friendly)
+Membangun sistem berbasis web yang **mengadopsi struktur worksheet** menjadi modul terintegrasi, dengan tampilan **FullView** untuk monitoring (TV mode) dan tampilan **mobile-friendly** untuk operasional lapangan.
+
+### Fitur inti (MVP)
+1.  **Request Management** (mengganti BOOKING REQUEST)
+    Form input request + multi-segmen flight + pax + durasi + agent/requester. Output: Request ID / Tour Code draft.
+2.  **Movement Monitoring** (mengganti MOVEMENT)
+    Dashboard Daily/Group Movement: PNR, DP1/DP2, FP, time limit, ticketing done, serta log perubahan. FullView Display: filter per tanggal/agent/carrier/status.
+3.  **Invoice Generator** (mengganti INVOICE)
+    Generate **2 versi**: Internal & untuk Kyai/Requester. Export PDF + template standar.
+4.  **Payment Tracking** (mengganti PAYMENT REPORT + Payment advise)
+    Input pembayaran, upload bukti, mapping ke segmen/PNR/Tour Code, rekap otomatis, dan export.
+5.  **Time Limit Reminder** (mengganti TIME LIMIT)
+    Notifikasi otomatis (mis. H-3) untuk manifest & ticketing, DP/FP jatuh tempo, dll.
+6.  **Audit Log & Role Based Access**
+    Role: Admin Ticketing, Keuangan, Viewer/Monitor. Semua perubahan tercatat.
+
+---
+
+## 5) Output / Deliverables
+*   Aplikasi web (Native PHP + MariaDB) dengan role-based access.
+*   Modul: Request, Movement (FullView), Invoice (2 versi), Payment (Report + Advise), Reminder.
+*   Template dokumen: invoice PDF, payment report, payment advise, (opsional) resi digital.
+*   Audit log perubahan + export laporan (Excel/PDF).
+
+---
+
+## 6) Support yang Dibutuhkan
+### A. Data Mentah (Wajib)
+*   Worksheet existing (sudah tersedia): **ELANG EMAS WORKSHEET.xlsx** sebagai baseline.
+*   Contoh dokumen pendukung: email/WA konfirmasi maskapai, bukti bayar, template invoice/advise.
+*   Aturan bisnis: definisi DP1/DP2/FP, kondisi “ticketing done”, dan SOP time limit.
+
+### B. SDM (Wajib)
+*   1 PIC proses (owner bisnis) untuk validasi aturan.
+*   1–2 PIC operasional ticketing untuk uji skenario real.
+*   1 PIC keuangan untuk validasi pembayaran & report.
+*   1 Admin sistem (user/role).
+
+### C. Infrastruktur (Wajib)
+*   Server/hosting + database (MariaDB).
+*   Storage upload (bukti bayar/konfirmasi/PDF).
+*   Backup + manajemen akses.
+
+---
+
+## 7) Timeline Implementasi (MVP 4–6 Minggu)
+*   **Minggu 1:** Finalisasi kebutuhan (mapping kolom worksheet → DB) + desain UI/DB.
+*   **Minggu 2:** Modul Request + import/export dari/ke format worksheet.
+*   **Minggu 3:** Modul Movement + FullView Display + audit log.
+*   **Minggu 4:** Modul Invoice (2 versi) + export PDF.
+*   **Minggu 5 (opsional):** Modul Payment Report/Advise + validasi.
+*   **Minggu 6 (opsional):** Reminder time limit + training + go-live.
+
+---
+
+## 8) Risiko & Mitigasi Singkat
+*   **Data awal tidak seragam:** lakukan mapping & cleansing berdasar worksheet.
+*   **Perubahan proses mendadak:** kunci scope MVP; perubahan mayor masuk fase berikutnya.
+*   **Adopsi user:** training singkat + panduan 1 halaman + support awal.
+
+---
+
+## 9) Next Step
+1.  Tetapkan PIC operasional & PIC keuangan.
+2.  Sepakati scope MVP (modul mana dulu) dan target go-live.
+3.  Mulai mapping field worksheet ke database + prototyping UI.
