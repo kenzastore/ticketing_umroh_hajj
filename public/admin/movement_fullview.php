@@ -1,172 +1,183 @@
 <?php
 require_once __DIR__ . '/../../includes/auth.php';
-check_auth();
+check_auth(['admin', 'monitor']);
 
 $tv = isset($_GET['tv']) ? 1 : 0;
 ?>
 <!doctype html>
-<html>
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Daily Group Movement</title>
-  <!-- Using CDN as per project convention or fallback -->
+  <title>Daily Group Movement - FullView</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
-    body { background-color: #f4f6f9; }
-    body.tv * { font-size: 20px; }
-    body.tv .kpi .card-body { padding: 16px; }
-    .status-badge { font-weight: 600; font-size: 0.9em; padding: 0.4em 0.8em; border-radius: 4px; color: white;}
-    
-    .row-delayed { background: #fff3cd !important; }
-    .row-canceled { background: #f8d7da !important; }
-    .row-airborne { background: #d1ecf1 !important; }
-    .row-arrived { background: #d4edda !important; }
-    
-    .bg-scheduled { background-color: #6c757d; }
-    .bg-delayed { background-color: #ffc107; color: black !important; }
-    .bg-airborne { background-color: #17a2b8; }
-    .bg-arrived { background-color: #28a745; }
-    .bg-canceled { background-color: #dc3545; }
+    body { background-color: #f8f9fa; font-size: 0.9rem; }
+    body.tv { font-size: 1.2rem; }
+    .table-container { background: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+    .status-badge { font-size: 0.75rem; text-transform: uppercase; }
+    .sticky-header th { position: sticky; top: 0; background: #212529; color: white; z-index: 10; }
+    .table-responsive { max-height: 80vh; }
   </style>
 </head>
 <body class="<?= $tv ? 'tv' : '' ?>">
-<div class="container-fluid p-3">
 
+<div class="container-fluid py-3">
   <!-- Header -->
   <div class="d-flex justify-content-between align-items-center mb-3">
     <div>
-      <h3 class="mb-0">Daily / Group Movement</h3>
-      <small class="text-muted">Flight Monitoring (Track 3)</small>
+      <h2 class="mb-0 fw-bold">MOVEMENT DASHBOARD</h2>
+      <span class="text-muted">Digitalisasi Ticketing Umroh & Haji</span>
     </div>
-    <div>
-      <a class="btn btn-secondary me-2" href="dashboard.php">Back to Dashboard</a>
-      <a class="btn btn-outline-secondary me-2" href="?<?= http_build_query(array_merge($_GET, ['tv'=>$tv?0:1])) ?>">
-        <?= $tv ? 'Exit TV' : 'TV Mode' ?>
-      </a>
-      <button class="btn btn-primary" onclick="location.reload()">Refresh</button>
+    <div class="d-none d-md-block">
+        <a href="dashboard.php" class="btn btn-outline-secondary btn-sm">Dashboard</a>
+        <button class="btn btn-primary btn-sm" onclick="load()">Refresh Data</button>
+        <a href="?tv=<?= $tv ? 0 : 1 ?>" class="btn btn-dark btn-sm"><?= $tv ? 'Normal View' : 'Monitor Mode' ?></a>
     </div>
   </div>
 
-  <!-- KPI -->
-  <div class="row kpi g-2 mb-3">
-    <div class="col-6 col-md-3"><div class="card shadow-sm"><div class="card-body text-center">Total<br><b id="kpi_total" class="fs-4">0</b></div></div></div>
-    <div class="col-6 col-md-3"><div class="card shadow-sm"><div class="card-body text-center text-success">On-time<br><b id="kpi_ontime" class="fs-4">0</b></div></div></div>
-    <div class="col-6 col-md-3"><div class="card shadow-sm"><div class="card-body text-center text-warning">Delayed<br><b id="kpi_delayed" class="fs-4">0</b></div></div></div>
-    <div class="col-6 col-md-3"><div class="card shadow-sm"><div class="card-body text-center text-danger">Canceled<br><b id="kpi_canceled" class="fs-4">0</b></div></div></div>
+  <!-- KPI Summary -->
+  <div class="row g-3 mb-4">
+    <div class="col-md-3">
+        <div class="card border-0 shadow-sm border-start border-primary border-4">
+            <div class="card-body py-2">
+                <div class="small text-muted">TOTAL GROUPS</div>
+                <div class="h3 mb-0 fw-bold" id="kpi_total">0</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card border-0 shadow-sm border-start border-success border-4">
+            <div class="card-body py-2">
+                <div class="small text-muted">FULL PAYMENT</div>
+                <div class="h3 mb-0 fw-bold text-success" id="kpi_paid">0</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card border-0 shadow-sm border-start border-warning border-4">
+            <div class="card-body py-2">
+                <div class="small text-muted">PARTIAL PAYMENT (DP)</div>
+                <div class="h3 mb-0 fw-bold text-warning" id="kpi_partial">0</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card border-0 shadow-sm border-start border-danger border-4">
+            <div class="card-body py-2">
+                <div class="small text-muted">UNPAID</div>
+                <div class="h3 mb-0 fw-bold text-danger" id="kpi_unpaid">0</div>
+            </div>
+        </div>
+    </div>
   </div>
 
   <!-- Filters -->
-  <form class="row g-2 mb-3" method="get">
-    <input type="hidden" name="tv" value="<?= $tv ?>">
-    <div class="col-6 col-md-2"><input class="form-control" type="date" name="date" value="<?= htmlspecialchars($_GET['date'] ?? date('Y-m-d')) ?>"></div>
-    <div class="col-6 col-md-2"><input class="form-control" name="airline" placeholder="Airline (SQ)" value="<?= htmlspecialchars($_GET['airline'] ?? '') ?>"></div>
-    <div class="col-6 col-md-2"><input class="form-control" name="origin" placeholder="Origin (SIN)" value="<?= htmlspecialchars($_GET['origin'] ?? '') ?>"></div>
-    <div class="col-6 col-md-2"><input class="form-control" name="dest" placeholder="Dest (JED)" value="<?= htmlspecialchars($_GET['dest'] ?? '') ?>"></div>
-    <div class="col-6 col-md-2">
-      <select class="form-select" name="status">
-        <option value="">All Status</option>
-        <?php foreach (['SCHEDULED','DELAYED','AIRBORNE','ARRIVED','CANCELED'] as $s): ?>
-          <option value="<?= $s ?>" <?= (($_GET['status'] ?? '')===$s)?'selected':'' ?>><?= $s ?></option>
-        <?php endforeach; ?>
-      </select>
-    </div>
-    <div class="col-6 col-md-2"><input class="form-control" name="q" placeholder="Search (SQ328)" value="<?= htmlspecialchars($_GET['q'] ?? '') ?>"></div>
-    <div class="col-12 col-md-2"><button class="btn btn-success w-100">Apply</button></div>
-  </form>
-
-  <!-- Table -->
-  <div class="card shadow">
-    <div class="card-body p-0">
-      <div class="table-responsive">
-        <table class="table table-bordered table-hover align-middle mb-0">
-          <thead class="table-light">
-            <tr>
-              <th>Ref</th>
-              <th>Route</th>
-              <th>Flight</th>
-              <th>SCH Dep</th><th>EST Dep</th><th>ACT Dep</th>
-              <th>SCH Arr</th><th>EST Arr</th><th>ACT Arr</th>
-              <th>Status</th>
-              <th>Delay</th>
-              <th>Gate</th>
-              <th>Updated</th>
-            </tr>
-          </thead>
-          <tbody id="rows">
-            <tr><td colspan="13" class="text-center p-3">Loading flights...</td></tr>
-          </tbody>
-        </table>
-      </div>
+  <div class="card border-0 shadow-sm mb-4">
+    <div class="card-body py-2">
+        <form class="row g-2 align-items-center" id="filterForm">
+            <div class="col-md-2">
+                <input type="date" name="date" class="form-control form-control-sm">
+            </div>
+            <div class="col-md-3">
+                <input type="text" name="q" class="form-control form-control-sm" placeholder="Search Agent, PNR, or Tour Code...">
+            </div>
+            <div class="col-md-2">
+                <button type="button" class="btn btn-sm btn-primary w-100" onclick="load()">Apply Filter</button>
+            </div>
+        </form>
     </div>
   </div>
 
+  <!-- Main Table -->
+  <div class="table-container">
+    <div class="table-responsive">
+      <table class="table table-hover align-middle mb-0 border-top sticky-header">
+        <thead>
+          <tr>
+            <th>PNR</th>
+            <th>TOUR CODE</th>
+            <th>AGENT</th>
+            <th>CARRIER</th>
+            <th>SEGMENT (OUT/IN)</th>
+            <th>PAX</th>
+            <th>DP1</th>
+            <th>DP2</th>
+            <th>FP</th>
+            <th>DONE</th>
+            <th>STATUS</th>
+          </tr>
+        </thead>
+        <tbody id="rows">
+          <tr><td colspan="11" class="text-center py-5">Loading movement data...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
 </div>
 
 <script>
   async function load() {
+    const rows = document.getElementById('rows');
     try {
-        const params = new URLSearchParams(window.location.search);
-        const res = await fetch('/api/movement.php?' + params.toString());
+        const formData = new FormData(document.getElementById('filterForm'));
+        const params = new URLSearchParams(formData);
+        const res = await fetch('../api/movement.php?' + params.toString());
         const json = await res.json();
 
-        if (json.error) {
-             document.getElementById('rows').innerHTML = `<tr><td colspan="13" class="text-center text-danger">Error: ${json.error}</td></tr>`;
-             return;
-        }
+        if (json.error) throw new Error(json.error);
 
+        // Update KPIs
         document.getElementById('kpi_total').textContent = json.kpi.total;
-        document.getElementById('kpi_ontime').textContent = json.kpi.ontime;
-        document.getElementById('kpi_delayed').textContent = json.kpi.delayed;
-        document.getElementById('kpi_canceled').textContent = json.kpi.canceled;
+        document.getElementById('kpi_paid').textContent = json.kpi.paid;
+        document.getElementById('kpi_partial').textContent = json.kpi.partial;
+        document.getElementById('kpi_unpaid').textContent = json.kpi.unpaid;
 
-        const tbody = document.getElementById('rows');
-        tbody.innerHTML = '';
-        
+        rows.innerHTML = '';
         if (json.data.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="13" class="text-center p-3">No flights found for this date. Run the cron script to seed data!</td></tr>';
+            rows.innerHTML = '<tr><td colspan="11" class="text-center py-4 text-muted">No movements found.</td></tr>';
             return;
         }
 
-        json.data.forEach(r => {
+        json.data.forEach(m => {
           const tr = document.createElement('tr');
-          tr.className =
-            r.status === 'DELAYED' ? 'row-delayed' :
-            r.status === 'CANCELED' ? 'row-canceled' :
-            r.status === 'AIRBORNE' ? 'row-airborne' :
-            r.status === 'ARRIVED' ? 'row-arrived' : '';
-            
-          let badgeClass = 'bg-secondary';
-          if (r.status === 'SCHEDULED') badgeClass = 'bg-scheduled';
-          else if (r.status === 'DELAYED') badgeClass = 'bg-delayed';
-          else if (r.status === 'AIRBORNE') badgeClass = 'bg-airborne';
-          else if (r.status === 'ARRIVED') badgeClass = 'bg-arrived';
-          else if (r.status === 'CANCELED') badgeClass = 'bg-canceled';
+          
+          const getStatusBadge = (status) => {
+              if (status === 'PAID') return '<span class="badge bg-success status-badge">PAID</span>';
+              if (status === 'UNPAID') return '<span class="badge bg-danger status-badge">UNPAID</span>';
+              if (status) return `<span class="badge bg-warning text-dark status-badge">${status}</span>`;
+              return '<span class="text-muted">-</span>';
+          };
 
           tr.innerHTML = `
-            <td><small>${r.ref || '-'}</small></td>
-            <td>${r.origin} &rarr; ${r.dest}</td>
-            <td><b>${r.flight_ident}</b></td>
-            <td>${r.sched_dep||'-'}</td><td class="text-muted">${r.est_dep||'-'}</td><td>${r.act_dep||'-'}</td>
-            <td>${r.sched_arr||'-'}</td><td class="text-muted">${r.est_arr||'-'}</td><td>${r.act_arr||'-'}</td>
-            <td><span class="badge ${badgeClass} status-badge">${r.status}</span></td>
-            <td class="text-danger fw-bold">${r.delay_minutes ?? ''}</td>
-            <td>${(r.dep_gate||'-') + ' / ' + (r.arr_gate||'-')}</td>
-            <td><small class="text-muted">${r.updated_at||''}</small></td>
+            <td><strong class="text-primary">${m.pnr || '-'}</strong></td>
+            <td><code>${m.tour_code || '-'}</code></td>
+            <td>${m.agent_name || '-'}</td>
+            <td>${m.carrier || '-'}</td>
+            <td>
+                <div class="small">
+                    <strong>OUT:</strong> ${m.flight_no_out || '-'} (${m.sector_out || '-'})<br>
+                    <strong>IN:</strong> ${m.flight_no_in || '-'} (${m.sector_in || '-'})
+                </div>
+            </td>
+            <td class="fw-bold">${m.passenger_count || 0}</td>
+            <td>${getStatusBadge(m.dp1_status)}</td>
+            <td>${getStatusBadge(m.dp2_status)}</td>
+            <td>${getStatusBadge(m.fp_status)}</td>
+            <td>${m.ticketing_done == 1 ? '✅' : '❌'}</td>
+            <td><span class="badge bg-info text-dark">${m.live_status || 'SCHEDULED'}</span></td>
           `;
-          tbody.appendChild(tr);
+          rows.appendChild(tr);
         });
+
     } catch (e) {
-        console.error(e);
-        document.getElementById('rows').innerHTML = `<tr><td colspan="13" class="text-center text-danger">Failed to load data.</td></tr>`;
+        rows.innerHTML = `<tr><td colspan="11" class="text-center py-4 text-danger">Error: ${e.message}</td></tr>`;
     }
   }
 
   load();
-
-  // TV mode auto-refresh
-  const isTv = new URLSearchParams(location.search).get('tv') === '1';
-  if (isTv) setInterval(load, 60000);
+  if (<?= $tv ?>) setInterval(load, 30000);
 </script>
+
 </body>
 </html>

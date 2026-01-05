@@ -11,10 +11,9 @@ $success = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $data = [
         'name' => $_POST['name'] ?? '',
-        'contact_person' => $_POST['contact_person'] ?? '',
+        'skyagent_id' => $_POST['skyagent_id'] ?? '',
         'phone' => $_POST['phone'] ?? '',
-        'email' => $_POST['email'] ?? '',
-        'address' => $_POST['address'] ?? ''
+        'email' => $_POST['email'] ?? ''
     ];
 
     if (empty($data['name'])) {
@@ -57,8 +56,8 @@ require_once __DIR__ . '/../../../shared/header.php';
             </div>
             <div class="row">
                 <div class="col-md-6 mb-3">
-                    <label class="form-label">Contact Person</label>
-                    <input type="text" name="contact_person" class="form-control">
+                    <label class="form-label">Skyagent ID</label>
+                    <input type="text" name="skyagent_id" class="form-control">
                 </div>
                 <div class="col-md-6 mb-3">
                     <label class="form-label">Phone</label>
@@ -68,10 +67,6 @@ require_once __DIR__ . '/../../../shared/header.php';
             <div class="mb-3">
                 <label class="form-label">Email</label>
                 <input type="email" name="email" class="form-control">
-            </div>
-            <div class="mb-3">
-                <label class="form-label">Address</label>
-                <textarea name="address" class="form-control" rows="3"></textarea>
             </div>
             <button type="submit" class="btn btn-primary">Save Agent</button>
         </form>

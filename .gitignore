@@ -1,6 +1,6 @@
 # secrets / config
 .env
-config/config.php
+config/*.php
 config/*.local.php
 
 # vendor & cache

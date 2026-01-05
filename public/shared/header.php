@@ -67,8 +67,15 @@ if (isset($title)) {
                                 </li>
                                 <!-- Add other admin links -->
                             <?php elseif ($_SESSION['role_name'] == 'finance'): ?>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="/finance/dashboard.php">Finance Dashboard</a>
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle" href="#" id="financeDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        Finance Operations
+                                    </a>
+                                    <ul class="dropdown-menu" aria-labelledby="financeDropdown">
+                                        <li><a class="dropdown-item" href="/finance/dashboard.php">Finance Dashboard</a></li>
+                                        <li><a class="dropdown-item" href="/finance/dashboard.php#ready-for-invoice">Create Invoice</a></li>
+                                        <li><a class="dropdown-item" href="/finance/dashboard.php#all-invoices">Manage Invoices</a></li>
+                                    </ul>
                                 </li>
                                 <!-- Add other finance links -->
                             <?php elseif ($_SESSION['role_name'] == 'monitor'): ?>

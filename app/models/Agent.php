@@ -10,19 +10,18 @@ class Agent {
 
     /**
      * Creates a new agent.
-     * @param array $data Associative array containing agent data (name, contact_person, phone, email, address).
+     * @param array $data Associative array containing agent data (name, skyagent_id, phone, email).
      * @return int|false The ID of the newly created agent, or false on failure.
      */
     public static function create(array $data) {
-        $sql = "INSERT INTO agents (name, contact_person, phone, email, address) VALUES (?, ?, ?, ?, ?)";
+        $sql = "INSERT INTO agents (name, skyagent_id, phone, email) VALUES (?, ?, ?, ?)";
         try {
             $stmt = self::$pdo->prepare($sql);
             $stmt->execute([
                 $data['name'],
-                $data['contact_person'],
-                $data['phone'],
-                $data['email'],
-                $data['address']
+                $data['skyagent_id'] ?? null,
+                $data['phone'] ?? null,
+                $data['email'] ?? null
             ]);
             return self::$pdo->lastInsertId();
         } catch (PDOException $e) {
@@ -48,10 +47,10 @@ class Agent {
 
     /**
      * Reads a single agent by its ID.
-     * @param int $id The ID of the agent to retrieve.
+     * @param int|string $id The ID of the agent to retrieve.
      * @return array|false An associative array of the agent's data, or false if not found.
      */
-    public static function readById(int $id) {
+    public static function readById($id) {
         $sql = "SELECT * FROM agents WHERE id = ?";
         try {
             $stmt = self::$pdo->prepare($sql);
@@ -65,23 +64,22 @@ class Agent {
 
     /**
      * Updates an existing agent.
-     * @param int $id The ID of the agent to update.
+     * @param int|string $id The ID of the agent to update.
      * @param array $data Associative array containing the updated agent data.
      * @return bool True on success, false on failure.
      */
-    public static function update(int $id, array $data) {
-        $sql = "UPDATE agents SET name = ?, contact_person = ?, phone = ?, email = ?, address = ? WHERE id = ?";
+    public static function update($id, array $data) {
+        $sql = "UPDATE agents SET name = ?, skyagent_id = ?, phone = ?, email = ? WHERE id = ?";
         try {
             $stmt = self::$pdo->prepare($sql);
             $stmt->execute([
                 $data['name'],
-                $data['contact_person'],
-                $data['phone'],
-                $data['email'],
-                $data['address'],
+                $data['skyagent_id'] ?? null,
+                $data['phone'] ?? null,
+                $data['email'] ?? null,
                 $id
             ]);
-            return $stmt->rowCount() > 0;
+            return true;
         } catch (PDOException $e) {
             error_log("Error updating agent: " . $e->getMessage());
             return false;
@@ -90,15 +88,15 @@ class Agent {
 
     /**
      * Deletes an agent by its ID.
-     * @param int $id The ID of the agent to delete.
+     * @param int|string $id The ID of the agent to delete.
      * @return bool True on success, false on failure.
      */
-    public static function delete(int $id) {
+    public static function delete($id) {
         $sql = "DELETE FROM agents WHERE id = ?";
         try {
             $stmt = self::$pdo->prepare($sql);
             $stmt->execute([$id]);
-            return $stmt->rowCount() > 0;
+            return true;
         } catch (PDOException $e) {
             error_log("Error deleting agent: " . $e->getMessage());
             return false;

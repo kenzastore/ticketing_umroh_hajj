@@ -1,6 +1,8 @@
 <?php
 require_once __DIR__ . '/../../includes/auth.php';
 require_once __DIR__ . '/../../includes/db_connect.php';
+require_once __DIR__ . '/../../app/models/BookingRequest.php';
+
 check_auth('admin');
 
 $id = $_GET['id'] ?? null;
@@ -9,114 +11,142 @@ if (!$id) {
     exit;
 }
 
-$stmt = $pdo->prepare("
-    SELECT r.*, b.id as booking_id, b.status, b.pnr_code, a.name as agent_name
-    FROM requests r
-    JOIN bookings b ON r.id = b.request_id
-    LEFT JOIN agents a ON r.agent_id = a.id
-    WHERE r.id = ?
-");
-$stmt->execute([$id]);
-$r = $stmt->fetch();
+// Fetch the booking request using the new model
+$r = BookingRequest::readById($id);
 
 if (!$r) {
     header('Location: dashboard.php?error=not_found');
     exit;
 }
 
-$statuses = [
-    'NEW', 'QUOTED', 'BLOCKED', 'PNR_ISSUED', 'IN_MOVEMENT',
-    'INVOICED', 'PAID_DEPOSIT', 'PAID_FULL', 'CONFIRMED_FP_MERAH',
-    'REPORTED', 'RECEIPTED', 'CHANGED', 'CANCELED'
-];
-
-$title = "Request Detail #" . $r['id'];
+$title = "Booking Request Detail #" . $r['id'];
 require_once __DIR__ . '/../shared/header.php';
 ?>
 
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1>Request #<?php echo $r['id']; ?></h1>
-        <a href="dashboard.php" class="btn btn-secondary">&larr; Back to Dashboard</a>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1>Booking Request #<?php echo $r['id']; ?></h1>
+        <h5 class="text-muted">No: <?php echo htmlspecialchars($r['request_no'] ?? '-'); ?></h5>
     </div>
+    <a href="dashboard.php" class="btn btn-secondary">&larr; Back to Dashboard</a>
+</div>
 
-    <?php if (isset($_GET['success'])): ?>
-        <div class="alert alert-success">Status updated successfully!</div>
-    <?php endif; ?>
+<div class="row">
+    <!-- Main Details -->
+    <div class="col-md-8">
+        <div class="card mb-4 shadow">
+            <div class="card-header bg-primary text-white">Request Details</div>
+            <div class="card-body">
+                <div class="row mb-2">
+                    <div class="col-sm-4 text-muted">Corporate</div>
+                    <div class="col-sm-8 fw-bold"><?php echo htmlspecialchars($r['corporate_name'] ?? '-'); ?></div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-sm-4 text-muted">Agent / Requester</div>
+                    <div class="col-sm-8">
+                        <?php echo htmlspecialchars($r['agent_name'] ?? 'Individual/FID'); ?>
+                        <?php if(!empty($r['skyagent_id'])): ?>
+                            <span class="badge bg-info text-dark"><?php echo htmlspecialchars($r['skyagent_id']); ?></span>
+                        <?php endif; ?>
+                    </div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-sm-4 text-muted">Group Size / Pax</div>
+                    <div class="col-sm-8 fw-bold fs-5"><?php echo $r['group_size']; ?></div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-sm-4 text-muted">Duration</div>
+                    <div class="col-sm-8">
+                        <?php echo $r['duration_days']; ?> Days 
+                        <?php if($r['add1_days']): ?> (+1 Day: <?php echo $r['add1_days']; ?>) <?php endif; ?>
+                    </div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-sm-4 text-muted">TTL Days</div>
+                    <div class="col-sm-8"><?php echo $r['ttl_days'] ?? '-'; ?></div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-sm-4 text-muted">Pricing (Total Selling)</div>
+                    <div class="col-sm-8 text-success fw-bold">
+                        <?php echo $r['selling_fare'] ? number_format($r['selling_fare'], 2) : '-'; ?>
+                    </div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-sm-4 text-muted">Created At</div>
+                    <div class="col-sm-8"><?php echo date('d M Y H:i', strtotime($r['created_at'])); ?></div>
+                </div>
+                
+                <div class="mt-4">
+                    <h6 class="text-muted border-bottom pb-2">Flight Segments</h6>
+                    <?php if (!empty($r['legs'])): ?>
+                        <div class="table-responsive">
+                            <table class="table table-sm table-bordered">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Leg</th>
+                                        <th>Date</th>
+                                        <th>Flight No</th>
+                                        <th>Sector</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php foreach ($r['legs'] as $leg): ?>
+                                        <tr>
+                                            <td><?php echo $leg['leg_no']; ?></td>
+                                            <td><?php echo $leg['flight_date'] ? date('d M Y', strtotime($leg['flight_date'])) : '-'; ?></td>
+                                            <td><?php echo htmlspecialchars($leg['flight_no'] ?? '-'); ?></td>
+                                            <td><?php echo htmlspecialchars($leg['sector'] ?? '-'); ?></td>
+                                        </tr>
+                                    <?php endforeach; ?>
+                                </tbody>
+                            </table>
+                        </div>
+                    <?php else: ?>
+                        <p class="text-muted small">No flight segments recorded.</p>
+                    <?php endif; ?>
+                </div>
 
-    <div class="row">
-        <div class="col-md-8">
-            <div class="card mb-4 shadow">
-                <div class="card-header bg-primary text-white">Request Details</div>
-                <div class="card-body">
-                    <div class="row mb-2">
-                        <div class="col-sm-4 text-muted">Agent / Requester</div>
-                        <div class="col-sm-8 fw-bold"><?php echo htmlspecialchars($r['agent_name'] ?? 'Individual/FID'); ?></div>
-                    </div>
-                    <div class="row mb-2">
-                        <div class="col-sm-4 text-muted">Pax Count</div>
-                        <div class="col-sm-8"><?php echo $r['pax_count']; ?></div>
-                    </div>
-                    <div class="row mb-2">
-                        <div class="col-sm-4 text-muted">Travel Period</div>
-                        <div class="col-sm-8">
-                            <?php
-                            $start = $r['travel_date_start'] ? date('d M Y', strtotime($r['travel_date_start'])) : 'N/A';
-                            $end = $r['travel_date_end'] ? date('d M Y', strtotime($r['travel_date_end'])) : 'N/A';
-                            echo $start . ' - ' . $end;
-                            ?>
-                        </div>
-                    </div>
-                    <div class="row mb-2">
-                        <div class="col-sm-4 text-muted">Airline Preference</div>
-                        <div class="col-sm-8"><?php echo htmlspecialchars($r['airline_preference'] ?? '-'); ?></div>
-                    </div>
-                    <div class="row mb-2">
-                        <div class="col-sm-4 text-muted">Created At</div>
-                        <div class="col-sm-8"><?php echo date('d M Y H:i', strtotime($r['created_at'])); ?></div>
-                    </div>
-                    <div class="row mt-4">
-                        <div class="col-12">
-                            <h6 class="text-muted">Notes</h6>
-                            <div class="p-3 bg-light border rounded">
-                                <?php echo nl2br(htmlspecialchars($r['notes'] ?? 'No notes.')); ?>
-                            </div>
-                        </div>
+                <div class="mt-4">
+                    <h6 class="text-muted">Notes</h6>
+                    <div class="p-3 bg-light border rounded">
+                        <?php echo nl2br(htmlspecialchars($r['notes'] ?? 'No notes.')); ?>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
-            <div class="card mb-4 shadow">
-                <div class="card-header bg-info text-white">Booking Status & PNR</div>
-                <div class="card-body">
-                    <form action="update_status.php" method="POST">
-                        <input type="hidden" name="booking_id" value="<?php echo $r['booking_id']; ?>">
-                        <input type="hidden" name="request_id" value="<?php echo $r['id']; ?>">
+    </div>
 
-                        <div class="mb-3">
-                            <label class="form-label">Current Status</label>
-                            <select name="status" class="form-select">
-                                <?php foreach ($statuses as $status): ?>
-                                    <option value="<?php echo $status; ?>" <?php echo $r['status'] === $status ? 'selected' : ''; ?>>
-                                        <?php echo $status; ?>
-                                    </option>
-                                <?php endforeach; ?>
-                            </select>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="pnr_code" class="form-label">PNR Code</label>
-                            <input type="text" class="form-control" id="pnr_code" name="pnr_code" value="<?php echo htmlspecialchars($r['pnr_code'] ?? ''); ?>">
-                            <div class="form-text text-muted small">Entering a PNR code usually implies the booking is at least 'PNR_ISSUED'.</div>
-                        </div>
-
-                        <button type="submit" class="btn btn-primary w-100">Update Booking</button>
-                    </form>
+    <!-- Actions / Pricing Info -->
+    <div class="col-md-4">
+        <div class="card mb-4 shadow">
+            <div class="card-header bg-secondary text-white">Internal Pricing</div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <label class="form-label text-muted small">TCP</label>
+                    <div class="fw-bold"><?php echo $r['tcp'] ? number_format($r['tcp'], 2) : '-'; ?></div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label text-muted small">GP Approved Fare</label>
+                    <div class="fw-bold"><?php echo $r['gp_approved_fare'] ? number_format($r['gp_approved_fare'], 2) : '-'; ?></div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label text-muted small">Nett Fare</label>
+                    <div class="fw-bold"><?php echo $r['nett_fare'] ? number_format($r['nett_fare'], 2) : '-'; ?></div>
                 </div>
             </div>
         </div>
+        
+        <div class="card shadow">
+            <div class="card-body">
+                <h6 class="card-title">Next Actions</h6>
+                <p class="small text-muted">
+                    This request is currently a draft/quote. To proceed with operations, it should be converted to a Movement.
+                </p>
+                <button class="btn btn-success w-100 mb-2" disabled>Convert to Movement (Coming Soon)</button>
+                <button class="btn btn-outline-danger w-100" onclick="return confirm('Delete this request?')">Delete Request</button>
+            </div>
+        </div>
     </div>
+</div>
 
-<?php
-require_once __DIR__ . '/../shared/footer.php';
-?>
+<?php require_once __DIR__ . '/../shared/footer.php'; ?>

@@ -24,7 +24,7 @@ $agents = Agent::readAll();
                     <tr>
                         <th>ID</th>
                         <th>Name</th>
-                        <th>Contact Person</th>
+                        <th>Skyagent ID</th>
                         <th>Phone</th>
                         <th>Email</th>
                         <th>Actions</th>
@@ -40,7 +40,7 @@ $agents = Agent::readAll();
                             <tr>
                                 <td><?php echo $agent['id']; ?></td>
                                 <td><?php echo htmlspecialchars($agent['name']); ?></td>
-                                <td><?php echo htmlspecialchars($agent['contact_person']); ?></td>
+                                <td><?php echo htmlspecialchars($agent['skyagent_id']); ?></td>
                                 <td><?php echo htmlspecialchars($agent['phone']); ?></td>
                                 <td><?php echo htmlspecialchars($agent['email']); ?></td>
                                 <td>
