@@ -116,6 +116,15 @@ require_once __DIR__ . '/../shared/header.php';
                             <option value="Credit Card">Credit Card</option>
                         </select>
                     </div>
+                    <div class="col-md-4">
+                        <label for="payment_stage" class="form-label">Payment Stage</label>
+                        <select class="form-select" id="payment_stage" name="payment_stage">
+                            <option value="">-- Optional --</option>
+                            <option value="DP1">DP1 (First Deposit)</option>
+                            <option value="DP2">DP2 (Second Deposit)</option>
+                            <option value="Full Payment">Full Payment / Pelunasan</option>
+                        </select>
+                    </div>
                     <div class="col-md-6">
                         <label for="reference_number" class="form-label">Reference Number</label>
                         <input type="text" class="form-control" id="reference_number" name="reference_number">

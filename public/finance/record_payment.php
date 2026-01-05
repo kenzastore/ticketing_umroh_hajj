@@ -10,6 +10,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $amount_paid = $_POST['amount_paid'] ?? 0;
     $payment_date = $_POST['payment_date'] ?? null;
     $payment_method = $_POST['payment_method'] ?? null;
+    $payment_stage = $_POST['payment_stage'] ?? null;
     $reference_number = $_POST['reference_number'] ?? null;
     $notes = $_POST['notes'] ?? null;
 
@@ -23,6 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'amount_paid' => $amount_paid,
         'payment_date' => $payment_date,
         'payment_method' => $payment_method,
+        'payment_stage' => $payment_stage,
         'reference_number' => $reference_number,
         'notes' => $notes
     ];

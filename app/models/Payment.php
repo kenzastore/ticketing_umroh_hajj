@@ -11,7 +11,7 @@ class Payment {
 
     /**
      * Records a new payment for an invoice.
-     * @param array $data Associative array containing payment data (invoice_id, amount_paid, payment_date, payment_method, reference_number, notes).
+     * @param array $data Associative array containing payment data.
      * @return int|false The ID of the newly created payment, or false on failure.
      */
     public static function create(array $data) {
@@ -34,8 +34,13 @@ class Payment {
             ]);
             $paymentId = self::$pdo->lastInsertId();
 
-            // Update invoice status based on total payments
+            // Update Invoice Status
             self::updateInvoiceStatus(self::$pdo, $data['invoice_id']);
+
+            // Update Movement Status if stage is provided
+            if (!empty($data['payment_stage'])) {
+                self::updateMovementStatus(self::$pdo, $data['invoice_id'], $data['payment_stage']);
+            }
 
             self::$pdo->commit();
 
@@ -51,11 +56,6 @@ class Payment {
         }
     }
 
-    /**
-     * Reads all payments for a given invoice.
-     * @param int $invoiceId The ID of the invoice.
-     * @return array An array of payment records.
-     */
     public static function readAllByInvoice(int $invoiceId) {
         $sql = "SELECT * FROM payments WHERE invoice_id = ? ORDER BY payment_date DESC, created_at DESC";
         try {
@@ -63,54 +63,52 @@ class Payment {
             $stmt->execute([$invoiceId]);
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
-            error_log("Error reading payments for invoice: " . $e->getMessage());
+            error_log("Error reading payments: " . $e->getMessage());
             return [];
         }
     }
 
-    /**
-     * Helper to update invoice and booking status based on payments received.
-     * @param PDO $pdo
-     * @param int $invoiceId
-     * @return void
-     */
     private static function updateInvoiceStatus(PDO $pdo, int $invoiceId) {
-        // Get invoice details
-        $stmt = $pdo->prepare("SELECT booking_id, amount_total FROM invoices WHERE id = ?");
+        $stmt = $pdo->prepare("SELECT amount_total FROM invoices WHERE id = ?");
         $stmt->execute([$invoiceId]);
         $invoice = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        if (!$invoice) {
-            return;
-        }
+        if (!$invoice) return;
 
-        // Calculate total paid for this invoice
         $stmt = $pdo->prepare("SELECT SUM(amount_paid) FROM payments WHERE invoice_id = ?");
         $stmt->execute([$invoiceId]);
         $totalPaid = $stmt->fetchColumn();
 
-        $newInvoiceStatus = 'UNPAID';
-        $newBookingStatus = null;
-
+        $newStatus = 'UNPAID';
         if ($totalPaid >= $invoice['amount_total']) {
-            $newInvoiceStatus = 'PAID';
-            $newBookingStatus = 'PAID_FULL';
+            $newStatus = 'PAID';
         } elseif ($totalPaid > 0) {
-            $newInvoiceStatus = 'PARTIALLY_PAID';
-            $newBookingStatus = 'PAID_DEPOSIT';
+            $newStatus = 'PARTIALLY_PAID';
         }
 
-        // Update invoice status
         $stmt = $pdo->prepare("UPDATE invoices SET status = ? WHERE id = ?");
-        $stmt->execute([$newInvoiceStatus, $invoiceId]);
+        $stmt->execute([$newStatus, $invoiceId]);
+    }
 
-        // Update booking status if applicable
-        if ($newBookingStatus) {
-            $stmt = $pdo->prepare("UPDATE bookings SET status = ? WHERE id = ?");
-            $stmt->execute([$newBookingStatus, $invoice['booking_id']]);
+    private static function updateMovementStatus(PDO $pdo, int $invoiceId, string $stage) {
+        // Link Invoice -> PNR -> Movement
+        $stmt = $pdo->prepare("SELECT pnr FROM invoices WHERE id = ?");
+        $stmt->execute([$invoiceId]);
+        $invoice = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if (!$invoice || empty($invoice['pnr'])) return;
+
+        $column = '';
+        if ($stage === 'DP1') $column = 'dp1_status';
+        elseif ($stage === 'DP2') $column = 'dp2_status';
+        elseif ($stage === 'Full Payment') $column = 'fp_status';
+
+        if ($column) {
+            // Find movement by PNR
+            $stmt = $pdo->prepare("UPDATE movements SET $column = 'PAID' WHERE pnr = ?");
+            $stmt->execute([$invoice['pnr']]);
         }
     }
 }
 
-// Initialize the PDO instance for the Payment class
 Payment::init($pdo);

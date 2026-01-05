@@ -118,7 +118,7 @@ CREATE TABLE IF NOT EXISTS booking_request_legs (
   leg_no TINYINT UNSIGNED NOT NULL,            -- 1..4
   flight_date DATE NULL,
   flight_no VARCHAR(20) NULL,                  -- e.g. TR596
-  sector VARCHAR(20) NULL,                     -- e.g. SIN-JED or SUB-SIN
+  sector VARCHAR(50) NULL,                     -- e.g. SIN-JED or SUB-SIN
   origin_iata CHAR(3) NULL,
   dest_iata CHAR(3) NULL,
 
@@ -155,12 +155,12 @@ CREATE TABLE IF NOT EXISTS movements (
 
   -- Outbound / inbound compressed columns (from sheet)
   flight_no_out VARCHAR(20) NULL,
-  sector_out VARCHAR(20) NULL,
+  sector_out VARCHAR(50) NULL,
   dep_seg1_date DATE NULL,
   dep_seg2_date DATE NULL,
   arr_seg3_date DATE NULL,
   arr_seg4_date DATE NULL,
-  sector_in VARCHAR(20) NULL,
+  sector_in VARCHAR(50) NULL,
   flight_no_in VARCHAR(20) NULL,
 
   pattern_code VARCHAR(50) NULL,                -- PATTERN
@@ -215,7 +215,7 @@ CREATE TABLE IF NOT EXISTS flight_legs (
 
   carrier VARCHAR(20) NULL,                     -- airline code if available
   flight_no VARCHAR(20) NULL,                   -- e.g. TR596
-  sector VARCHAR(20) NULL,                      -- e.g. SUB-SIN
+  sector VARCHAR(50) NULL,                      -- e.g. SUB-SIN
   origin_iata CHAR(3) NULL,
   dest_iata CHAR(3) NULL,
 
@@ -339,7 +339,7 @@ CREATE TABLE IF NOT EXISTS invoice_flight_lines (
   line_no INT NOT NULL,
   flight_date DATE NULL,
   flight_no VARCHAR(20) NULL,
-  sector VARCHAR(20) NULL,
+  sector VARCHAR(50) NULL,
   time_range VARCHAR(30) NULL,
   PRIMARY KEY (id),
   UNIQUE KEY uq_inv_flight_line (invoice_id, line_no),
@@ -377,4 +377,22 @@ CREATE TABLE IF NOT EXISTS documents (
   PRIMARY KEY (id),
   KEY idx_docs_entity (entity_type, entity_id),
   KEY idx_docs_token (token_hash)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- -----------------------------
+-- 8) PAYMENTS (Transaction Log)
+-- -----------------------------
+CREATE TABLE IF NOT EXISTS payments (
+  id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  invoice_id BIGINT UNSIGNED NOT NULL,
+  amount_paid DECIMAL(18,2) NOT NULL,
+  payment_date DATE NOT NULL,
+  payment_method VARCHAR(50) NOT NULL,
+  reference_number VARCHAR(100) NULL,
+  notes TEXT NULL,
+  receipt_hash CHAR(64) NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (id),
+  KEY idx_payments_invoice (invoice_id),
+  CONSTRAINT fk_payments_invoice FOREIGN KEY (invoice_id) REFERENCES invoices(id) ON UPDATE CASCADE ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
