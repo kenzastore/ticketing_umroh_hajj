@@ -1,0 +1,12 @@
+{
+    "name": "ticketing/umroh-hajj",
+    "description": "Ticketing Management System for Umroh and Haji",
+    "require": {
+        "dompdf/dompdf": "^3.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "app/"
+        }
+    }
+}

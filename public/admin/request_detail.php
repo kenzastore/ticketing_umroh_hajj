@@ -143,7 +143,10 @@ require_once __DIR__ . '/../shared/header.php';
                     This request is currently a draft/quote. To proceed with operations, it should be converted to a Movement.
                 </p>
                 <button class="btn btn-success w-100 mb-2" disabled>Convert to Movement (Coming Soon)</button>
-                <button class="btn btn-outline-danger w-100" onclick="return confirm('Delete this request?')">Delete Request</button>
+                <form action="delete_request_process.php" method="POST" onsubmit="return confirm('Are you sure you want to delete this request?');">
+                    <input type="hidden" name="id" value="<?php echo $r['id']; ?>">
+                    <button type="submit" class="btn btn-outline-danger w-100">Delete Request</button>
+                </form>
             </div>
         </div>
     </div>

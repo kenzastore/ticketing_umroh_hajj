@@ -4,7 +4,7 @@ require_once __DIR__ . '/../../includes/db_connect.php';
 require_once __DIR__ . '/../../app/models/Invoice.php';
 require_once __DIR__ . '/../../app/models/Payment.php';
 
-check_auth('finance');
+check_auth(['finance', 'admin']);
 
 $invoice_id = $_GET['id'] ?? null;
 if (!$invoice_id) {
@@ -20,9 +20,9 @@ if (!$invoice) {
 
 $payments = Payment::readAllByInvoice($invoice_id);
 $total_paid = array_sum(array_column($payments, 'amount_paid'));
-$balance_due = $invoice['amount_total'] - $total_paid;
+$balance_due = ($invoice['amount_idr'] ?? 0) - $total_paid;
 
-$title = "Invoice #" . $invoice['invoice_number'];
+$title = "Invoice #" . $invoice['invoice_no'];
 require_once __DIR__ . '/../shared/header.php';
 
 ?>
@@ -34,25 +34,25 @@ require_once __DIR__ . '/../shared/header.php';
 
 <div class="card shadow mb-4">
     <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-        <h4 class="mb-0">Invoice #<?php echo htmlspecialchars($invoice['invoice_number']); ?></h4>
+        <h4 class="mb-0">Invoice #<?php echo htmlspecialchars($invoice['invoice_no']); ?></h4>
         <span class="badge bg-<?php
-            if ($invoice['status'] === 'PAID') echo 'success';
-            elseif ($invoice['status'] === 'PARTIALLY_PAID') echo 'warning';
+            if (($invoice['status'] ?? '') === 'PAID') echo 'success';
+            elseif (($invoice['status'] ?? '') === 'PARTIALLY_PAID') echo 'warning';
             else echo 'danger';
-        ?> fs-6"><?php echo $invoice['status']; ?></span>
+        ?> fs-6"><?php echo $invoice['status'] ?? 'UNPAID'; ?></span>
     </div>
     <div class="card-body">
         <div class="row">
             <div class="col-md-6">
-                <p><strong>Booking PNR:</strong> <?php echo htmlspecialchars($invoice['pnr_code']); ?></p>
-                <p><strong>Agent:</strong> <?php echo htmlspecialchars($invoice['agent_name'] ?? 'Individual/FID'); ?></p>
-                <p><strong>Pax Count:</strong> <?php echo $invoice['pax_count']; ?></p>
+                <p><strong>Booking PNR:</strong> <?php echo htmlspecialchars($invoice['pnr']); ?></p>
+                <p><strong>Corporate / Agent:</strong> <?php echo htmlspecialchars($invoice['corporate_name'] ?? 'Individual/FID'); ?></p>
+                <p><strong>Pax Count:</strong> <?php echo $invoice['total_pax']; ?></p>
             </div>
             <div class="col-md-6 text-end">
-                <p><strong>Total Amount:</strong> Rp <?php echo number_format($invoice['amount_total'], 2, ',', '.'); ?></p>
+                <p><strong>Total Amount:</strong> Rp <?php echo number_format($invoice['amount_idr'], 2, ',', '.'); ?></p>
                 <p><strong>Paid:</strong> Rp <?php echo number_format($total_paid, 2, ',', '.'); ?></p>
                 <p><strong>Balance Due:</strong> Rp <?php echo number_format($balance_due, 2, ',', '.'); ?></p>
-                <p><strong>Due Date:</strong> <?php echo $invoice['due_date']; ?></p>
+                <p><strong>Due Date:</strong> <?php echo $invoice['invoice_date']; ?></p>
             </div>
         </div>
         <hr>

@@ -18,6 +18,12 @@ require_once __DIR__ . '/../shared/header.php';
     <a href="dashboard.php" class="btn btn-secondary">&larr; Back to Dashboard</a>
 </div>
 
+<?php if (isset($_GET['error'])): ?>
+    <div class="alert alert-danger">
+        <?php echo htmlspecialchars($_GET['error']); ?>
+    </div>
+<?php endif; ?>
+
 <form action="new_request_process.php" method="POST">
     <div class="row">
         <!-- Basic Info -->
@@ -72,17 +78,18 @@ require_once __DIR__ . '/../shared/header.php';
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label for="selling_fare" class="form-label">Selling Fare (Total)</label>
-                            <input type="number" step="0.01" class="form-control" id="selling_fare" name="selling_fare">
+                            <input type="number" step="0.01" class="form-control" id="selling_fare" name="selling_fare" placeholder="e.g. 15000000">
+                            <div class="form-text small">Total price for the whole group</div>
                         </div>
                         <div class="col-md-6 mb-3">
                             <label for="nett_fare" class="form-label">Nett Fare</label>
-                            <input type="number" step="0.01" class="form-control" id="nett_fare" name="nett_fare">
+                            <input type="number" step="0.01" class="form-control" id="nett_fare" name="nett_fare" placeholder="Base cost">
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-md-4 mb-3">
-                            <label for="duration_days" class="form-label">Duration (Days)</label>
-                            <input type="number" class="form-control" id="duration_days" name="duration_days">
+                            <label for="duration_days" class="form-label">Duration</label>
+                            <input type="number" class="form-control" id="duration_days" name="duration_days" placeholder="Days">
                         </div>
                         <div class="col-md-4 mb-3">
                             <label for="add1_days" class="form-label">Add 1</label>
@@ -90,7 +97,7 @@ require_once __DIR__ . '/../shared/header.php';
                         </div>
                         <div class="col-md-4 mb-3">
                             <label for="ttl_days" class="form-label">TTL Days</label>
-                            <input type="number" class="form-control" id="ttl_days" name="ttl_days">
+                            <input type="number" class="form-control" id="ttl_days" name="ttl_days" placeholder="Total">
                         </div>
                     </div>
                     <div class="mb-3">
@@ -117,10 +124,12 @@ require_once __DIR__ . '/../shared/header.php';
                         <div class="mb-2">
                             <label class="form-label small">Flight No</label>
                             <input type="text" name="legs[<?php echo $i; ?>][flight_no]" class="form-control form-control-sm" placeholder="e.g. TR596">
+                            <div class="form-text mt-0 small-xs" style="font-size: 0.7rem;">Airline code + Number</div>
                         </div>
                         <div class="mb-2">
                             <label class="form-label small">Sector</label>
-                            <input type="text" name="legs[<?php echo $i; ?>][sector]" class="form-control form-control-sm" placeholder="e.g. SUB-SIN">
+                            <input type="text" name="legs[<?php echo $i; ?>][sector]" class="form-control form-control-sm" placeholder="e.g. SUB-SIN" maxlength="50">
+                            <div class="form-text mt-0 small-xs" style="font-size: 0.7rem;">Format: DEP-ARR (max 50 chars)</div>
                         </div>
                         <input type="hidden" name="legs[<?php echo $i; ?>][leg_no]" value="<?php echo $i; ?>">
                     </div>

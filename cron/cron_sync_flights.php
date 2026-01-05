@@ -9,7 +9,8 @@ require_once __DIR__ . '/../includes/db_connect.php';
 echo "[getcwd()]".date('Y-m-d H:i:s')."] Starting Flight Sync...\n";
 
 // 1) Auto-seed dummy flights if empty (For MVP testing)
-ensureDummyData($pdo);
+$forceSeed = isset($argv) && in_array('--force', $argv);
+ensureDummyData($pdo, $forceSeed);
 
 // 2) Prevent concurrent runs (MariaDB GET_LOCK)
 $lockName = 'cron_sync_flights_lock';
@@ -26,7 +27,6 @@ try {
         WHERE (next_poll_at IS NULL OR next_poll_at <= UTC_TIMESTAMP())
           AND is_final = 0
         ORDER BY next_poll_at ASC
-        LIMIT 50
     ");
     $stmt->execute();
     $legs = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -152,54 +152,76 @@ function fetchFlightStatus(array $api, array $leg): ?array {
 
 function generateMockData($leg) {
     // Determine status based on current time vs scheduled dep
-    $now = time();
-    $dep = strtotime($leg['dep_date'] . ' 10:00:00'); // Assume 10 AM departure
-    
-    // Simulate progression
-    $diff = $now - $dep;
-    
-    $status = 'SCHEDULED';
-    $act_dep = null;
-    $est_dep = date('Y-m-d H:i:s', $dep);
-    
-    if ($diff > -3600 && $diff < 0) { // 1 hour before
-        $status = 'SCHEDULED'; 
-    } elseif ($diff >= 0 && $diff < 18000) { // 0 to 5 hours duration
-        $status = 'AIRBORNE';
-        $act_dep = date('Y-m-d H:i:s', $dep + 120); // 2 mins late
-    } elseif ($diff >= 18000) {
-        $status = 'ARRIVED';
-        $act_dep = date('Y-m-d H:i:s', $dep + 120);
-    }
+    $now_ts = time();
+    $dep_ts = strtotime($leg['dep_date'] . ' 10:00:00'); // Assume 10 AM departure
 
-    // Randomly delay 1 flight
+    $status = 'SCHEDULED'; // Initialize to SCHEDULED, then override if conditions met
+    $act_dep = null;
+    $est_dep = date('Y-m-d H:i:s', $dep_ts);
+    $delay_minutes = 0;
+
+    // Flights far in the past (more than 24 hours ago)
+    if ($dep_ts < ($now_ts - (24 * 3600))) {
+        $status = 'ARRIVED';
+        $act_dep = date('Y-m-d H:i:s', $dep_ts + rand(3600*4, 3600*6)); // Arrived 4-6 hours after departure
+        $est_dep = $act_dep; // Estimated also set to actual for past flights
+    }
+    // Flights around the current day (within ~24 hours of scheduled departure)
+    elseif (abs($dep_ts - $now_ts) <= (24 * 3600)) {
+        $diff_from_dep = $now_ts - $dep_ts; // Difference from scheduled departure to now
+
+        if ($diff_from_dep < -3600) { // More than 1 hour before scheduled departure
+            $status = 'SCHEDULED';
+        } elseif ($diff_from_dep >= -3600 && $diff_from_dep < 0) { // Within 1 hour before scheduled departure
+            $status = 'SCHEDULED';
+            // Optionally, simulate slight delays close to departure
+            if (rand(0, 100) < 20) { // 20% chance of small delay
+                $delay_minutes = rand(10, 30);
+                $est_dep = date('Y-m-d H:i:s', $dep_ts + ($delay_minutes * 60));
+                $status = 'DELAYED';
+            }
+        } elseif ($diff_from_dep >= 0 && $diff_from_dep < 18000) { // Departed, now airborne (0 to 5 hours duration)
+            $status = 'AIRBORNE';
+            $act_dep = date('Y-m-d H:i:s', $dep_ts + rand(0, $delay_minutes * 60 + 120)); // Act dep slightly after sched or est
+            if ($delay_minutes > 0) $est_dep = date('Y-m-d H:i:s', $dep_ts + ($delay_minutes * 60));
+        } elseif ($diff_from_dep >= 18000) { // Arrived (after 5 hours flight duration)
+            $status = 'ARRIVED';
+            $act_dep = date('Y-m-d H:i:s', $dep_ts + 18000 + rand(0, 600)); // Arrived ~5 hours after dep, with slight variation
+            if ($delay_minutes > 0) $est_dep = date('Y-m-d H:i:s', $dep_ts + ($delay_minutes * 60));
+        }
+    }
+    // Else (far future), status remains SCHEDULED from initialization.
+
+    // Randomly delay 1 specific flight (XX999) and ensure it keeps its status
     if ($leg['flight_number'] == '999') {
         $status = 'DELAYED';
-        $est_dep = date('Y-m-d H:i:s', $dep + 7200); // 2 hours delay
+        $est_dep = date('Y-m-d H:i:s', $dep_ts + 7200); // 2 hours delay
+        $delay_minutes = 120;
     }
+
 
     return [
         'provider_status' => $status,
         'status_normalized' => $status,
-        'sched_dep_utc' => date('Y-m-d H:i:s', $dep),
-        'sched_arr_utc' => date('Y-m-d H:i:s', $dep + 18000), // +5 hours
+        'sched_dep_utc' => date('Y-m-d H:i:s', $dep_ts),
+        'sched_arr_utc' => date('Y-m-d H:i:s', $dep_ts + 18000), // +5 hours (example flight duration)
         'est_dep_utc'   => $est_dep,
         'est_arr_utc'   => date('Y-m-d H:i:s', strtotime($est_dep) + 18000),
         'act_dep_utc'   => $act_dep,
-        'act_arr_utc'   => $status === 'ARRIVED' ? date('Y-m-d H:i:s', strtotime($est_dep) + 18000) : null,
+        'act_arr_utc'   => ($status === 'ARRIVED' && $act_dep) ? date('Y-m-d H:i:s', strtotime($est_dep) + 18000) : null,
         'dep_terminal' => 'T3',
         'dep_gate'     => 'A' . rand(1, 20),
         'arr_terminal' => 'Hajj',
         'arr_gate'     => 'B' . rand(1, 10),
         'aircraft_type' => 'B777-300ER',
-        'delay_minutes' => ($status === 'DELAYED') ? 120 : 0,
-        'is_canceled' => 0,
-        'is_diverted' => 0,
-        'raw_json' => json_encode(['mock' => true]),
+        'delay_minutes' => $delay_minutes,
+        'is_canceled' => 0, // Mock will not set canceled for now
+        'is_diverted' => 0, // Mock will not set diverted for now
+        'raw_json' => json_encode(['mock' => true, 'status_calc_diff' => $diff_from_dep ?? 'N/A']),
         'raw_hash' => md5(uniqid()),
         'poll_interval_min' => 60,
     ];
-}
+} // <--- Missing closing brace added here
 
 function insertSnapshot(PDO $pdo, int $legId, array $d): int {
     $stmt = $pdo->prepare(
@@ -288,22 +310,43 @@ function computeNextPollAtUTC(array &$d): ?string {
     return $now->modify('+' . $d['poll_interval_min'] . ' minutes')->format('Y-m-d H:i:s');
 }
 
-function ensureDummyData(PDO $pdo) {
-    $check = $pdo->query("SELECT COUNT(*) FROM flight_legs")->fetchColumn();
-    if ($check == 0) {
-        echo "Seeding dummy flight legs...\n";
-        $today = date('Y-m-d');
-        $flights = [
-            ['SQ', '328', 'SQ328', 'SIN', 'JED', $today],
-            ['SV', '819', 'SV819', 'CGK', 'JED', $today],
-            ['GA', '980', 'GA980', 'CGK', 'JED', $today],
-            ['TK', '56',  'TK56',  'IST', 'CGK', $today],
-            ['XX', '999', 'XX999', 'CGK', 'JED', $today], // Will be DELAYED
-        ];
-
-        $stmt = $pdo->prepare("INSERT INTO flight_legs (airline_iata, flight_number, flight_ident, origin_iata, dest_iata, dep_date, next_poll_at) VALUES (?, ?, ?, ?, ?, ?, UTC_TIMESTAMP())");
-        foreach($flights as $f) {
-            $stmt->execute($f);
+function ensureDummyData(PDO $pdo, bool $force = false) {
+    // Check if data exists
+    if (!$force) {
+        $stmt = $pdo->query("SELECT COUNT(*) FROM flight_legs");
+        if ($stmt->fetchColumn() > 0) {
+            // echo "Data already exists. Skipping seed (use --force to re-seed).\n";
+            return;
         }
     }
+
+    // Aggressively clear and re-seed for testing
+    echo "Clearing and re-seeding dummy flight legs for +/- 6 Months...\n";
+    $pdo->exec("SET FOREIGN_KEY_CHECKS = 0;");
+    $pdo->exec("TRUNCATE TABLE flight_legs;");
+    $pdo->exec("TRUNCATE TABLE flight_status_snapshots;");
+    $pdo->exec("TRUNCATE TABLE flight_status_events;");
+    $pdo->exec("SET FOREIGN_KEY_CHECKS = 1;");
+
+    $start_date = strtotime('-6 months');
+    $end_date = strtotime('+6 months');
+    $allFlights = [];
+
+    for ($i = $start_date; $i <= $end_date; $i = strtotime('+1 day', $i)) {
+        $dep_date = date('Y-m-d', $i);
+        $flights = [
+            ['SQ', '328', 'SQ328', 'SIN', 'JED', $dep_date],
+            ['SV', '819', 'SV819', 'CGK', 'JED', $dep_date],
+            ['GA', '980', 'GA980', 'CGK', 'JED', $dep_date],
+            ['TK', '56',  'TK56',  'IST', 'CGK', $dep_date],
+            ['XX', '999', 'XX999', 'CGK', 'JED', $dep_date], // Will be DELAYED
+        ];
+        $allFlights = array_merge($allFlights, $flights);
+    }
+
+    $stmt = $pdo->prepare("INSERT INTO flight_legs (airline_iata, flight_number, flight_ident, origin_iata, dest_iata, dep_date, next_poll_at) VALUES (?, ?, ?, ?, ?, ?, UTC_TIMESTAMP())");
+    foreach($allFlights as $f) {
+        $stmt->execute($f);
+    }
+    echo "Seeded " . count($allFlights) . " dummy flight legs.\n";
 }

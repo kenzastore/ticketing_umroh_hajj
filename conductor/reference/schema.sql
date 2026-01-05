@@ -1,55 +1,12 @@
 -- =========================================================
--- Ticketing Umroh/Haji - Consolidated Schema (MariaDB)
+-- Ticketing Umroh/Haji - Worksheet-based Schema (MariaDB)
 -- =========================================================
 SET NAMES utf8mb4;
 SET time_zone = "+00:00";
 
 -- -----------------------------
--- 1) SYSTEM / AUTHENTICATION (Retained from existing)
+-- Master tables
 -- -----------------------------
-CREATE TABLE IF NOT EXISTS roles (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(50) NOT NULL UNIQUE,
-    description TEXT,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
-CREATE TABLE IF NOT EXISTS users (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    username VARCHAR(50) NOT NULL UNIQUE,
-    password VARCHAR(255) NOT NULL,
-    role_id INT,
-    full_name VARCHAR(100),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (role_id) REFERENCES roles(id)
-);
-
-CREATE TABLE IF NOT EXISTS audit_logs (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    user_id INT,
-    action VARCHAR(100),
-    entity_type VARCHAR(50),
-    entity_id INT,
-    old_value TEXT,
-    new_value TEXT,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES users(id)
-);
-
--- Seed roles (if not exists)
-INSERT IGNORE INTO roles (name, description) VALUES 
-('admin', 'Full access to all modules'),
-('finance', 'Access to invoicing and payment modules'),
-('monitor', 'View-only access to dashboards');
-
-
--- -----------------------------
--- 2) MASTER DATA (Updated to match Worksheet)
--- -----------------------------
--- Drop old agents table if it exists and differs significantly, or rely on CREATE IF NOT EXISTS if clean.
--- Since this is a re-alignment, we prioritize the new structure.
-DROP TABLE IF EXISTS agents;
-
 CREATE TABLE IF NOT EXISTS agents (
   id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
   name VARCHAR(150) NOT NULL,
@@ -72,12 +29,9 @@ CREATE TABLE IF NOT EXISTS corporates (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
--- -----------------------------
--- 3) BOOKING REQUEST (Replaces 'requests')
--- -----------------------------
-DROP TABLE IF EXISTS requests; 
--- We drop 'requests' to avoid confusion, assuming migration isn't needed for this exercise.
-
+-- =========================================================
+-- 1) BOOKING REQUEST (flat header mirror + normalized legs)
+-- =========================================================
 CREATE TABLE IF NOT EXISTS booking_requests (
   id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
   request_no INT NULL,                         -- Worksheet: NO
@@ -118,7 +72,7 @@ CREATE TABLE IF NOT EXISTS booking_request_legs (
   leg_no TINYINT UNSIGNED NOT NULL,            -- 1..4
   flight_date DATE NULL,
   flight_no VARCHAR(20) NULL,                  -- e.g. TR596
-  sector VARCHAR(50) NULL,                     -- e.g. SIN-JED or SUB-SIN
+  sector VARCHAR(20) NULL,                     -- e.g. SIN-JED or SUB-SIN
   origin_iata CHAR(3) NULL,
   dest_iata CHAR(3) NULL,
 
@@ -132,11 +86,9 @@ CREATE TABLE IF NOT EXISTS booking_request_legs (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
--- -----------------------------
--- 4) MOVEMENT (Replaces 'bookings')
--- -----------------------------
-DROP TABLE IF EXISTS bookings;
-
+-- =========================================================
+-- 2) MOVEMENT (flat mirror table + normalized legs)
+-- =========================================================
 CREATE TABLE IF NOT EXISTS movements (
   id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
 
@@ -155,12 +107,12 @@ CREATE TABLE IF NOT EXISTS movements (
 
   -- Outbound / inbound compressed columns (from sheet)
   flight_no_out VARCHAR(20) NULL,
-  sector_out VARCHAR(50) NULL,
+  sector_out VARCHAR(20) NULL,
   dep_seg1_date DATE NULL,
   dep_seg2_date DATE NULL,
   arr_seg3_date DATE NULL,
   arr_seg4_date DATE NULL,
-  sector_in VARCHAR(50) NULL,
+  sector_in VARCHAR(20) NULL,
   flight_no_in VARCHAR(20) NULL,
 
   pattern_code VARCHAR(50) NULL,                -- PATTERN
@@ -205,7 +157,7 @@ CREATE TABLE IF NOT EXISTS movements (
     ON UPDATE CASCADE ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- Normalized flight legs for dashboard + status tracking
+-- Normalized flight legs for dashboard + status tracking (recommended)
 CREATE TABLE IF NOT EXISTS flight_legs (
   id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
   movement_id BIGINT UNSIGNED NOT NULL,
@@ -215,7 +167,7 @@ CREATE TABLE IF NOT EXISTS flight_legs (
 
   carrier VARCHAR(20) NULL,                     -- airline code if available
   flight_no VARCHAR(20) NULL,                   -- e.g. TR596
-  sector VARCHAR(50) NULL,                      -- e.g. SUB-SIN
+  sector VARCHAR(20) NULL,                      -- e.g. SUB-SIN
   origin_iata CHAR(3) NULL,
   dest_iata CHAR(3) NULL,
 
@@ -272,9 +224,9 @@ CREATE TABLE IF NOT EXISTS flight_status_events (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
--- -----------------------------
--- 5) PAYMENT REPORT (Worksheet Mirror)
--- -----------------------------
+-- =========================================================
+-- 3) PAYMENT REPORT (worksheet mirror)
+-- =========================================================
 CREATE TABLE IF NOT EXISTS payment_report_lines (
   id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
   line_no INT NULL,                             -- NO
@@ -302,9 +254,9 @@ CREATE TABLE IF NOT EXISTS payment_report_lines (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
--- -----------------------------
--- 6) INVOICE (Generated)
--- -----------------------------
+-- =========================================================
+-- 4) INVOICE (store generated invoice header + lines)
+-- =========================================================
 CREATE TABLE IF NOT EXISTS invoices (
   id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
   invoice_no VARCHAR(50) NULL,
@@ -322,7 +274,6 @@ CREATE TABLE IF NOT EXISTS invoices (
   total_pax INT NULL,
   fare_per_pax DECIMAL(18,2) NULL,
   amount_idr DECIMAL(18,2) NULL,
-  status ENUM('UNPAID', 'PARTIALLY_PAID', 'PAID') DEFAULT 'UNPAID',
 
   pdf_path VARCHAR(255) NULL,
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -340,7 +291,7 @@ CREATE TABLE IF NOT EXISTS invoice_flight_lines (
   line_no INT NOT NULL,
   flight_date DATE NULL,
   flight_no VARCHAR(20) NULL,
-  sector VARCHAR(50) NULL,
+  sector VARCHAR(20) NULL,
   time_range VARCHAR(30) NULL,
   PRIMARY KEY (id),
   UNIQUE KEY uq_inv_flight_line (invoice_id, line_no),
@@ -364,9 +315,9 @@ CREATE TABLE IF NOT EXISTS invoice_fare_lines (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
--- -----------------------------
--- 7) DOCUMENTS & ATTACHMENTS
--- -----------------------------
+-- =========================================================
+-- 5) Documents (resi / payment advise / attachments)
+-- =========================================================
 CREATE TABLE IF NOT EXISTS documents (
   id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
   entity_type VARCHAR(40) NOT NULL,             -- 'movement','invoice','payment_report'
@@ -378,37 +329,4 @@ CREATE TABLE IF NOT EXISTS documents (
   PRIMARY KEY (id),
   KEY idx_docs_entity (entity_type, entity_id),
   KEY idx_docs_token (token_hash)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
--- -----------------------------
--- 8) PAYMENTS (Transaction Log)
--- -----------------------------
-CREATE TABLE IF NOT EXISTS payments (
-  id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-  invoice_id BIGINT UNSIGNED NOT NULL,
-  amount_paid DECIMAL(18,2) NOT NULL,
-  payment_date DATE NOT NULL,
-  payment_method VARCHAR(50) NOT NULL,
-  reference_number VARCHAR(100) NULL,
-  notes TEXT NULL,
-  receipt_hash CHAR(64) NULL,
-  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (id),
-  KEY idx_payments_invoice (invoice_id),
-  CONSTRAINT fk_payments_invoice FOREIGN KEY (invoice_id) REFERENCES invoices(id) ON UPDATE CASCADE ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
--- -----------------------------
--- 9) NOTIFICATIONS (Alerts)
--- -----------------------------
-CREATE TABLE IF NOT EXISTS notifications (
-  id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-  entity_type VARCHAR(50) NULL,
-  entity_id BIGINT UNSIGNED NULL,
-  message TEXT NOT NULL,
-  alert_type ENUM('DEADLINE', 'PAYMENT', 'SYSTEM') DEFAULT 'SYSTEM',
-  is_read TINYINT(1) DEFAULT 0,
-  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (id),
-  KEY idx_notif_status (is_read)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

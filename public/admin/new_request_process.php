@@ -44,9 +44,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $legs = [];
     if (!empty($_POST['legs'])) {
-        foreach ($_POST['legs'] as $leg) {
+        foreach ($_POST['legs'] as $index => $leg) {
             // Only add if at least one field is filled
             if (!empty($leg['flight_date']) || !empty($leg['flight_no']) || !empty($leg['sector'])) {
+                // Validate Sector Length
+                if (!empty($leg['sector']) && strlen($leg['sector']) > 50) {
+                    $errorMsg = "Sector in Leg " . ($index + 1) . " is too long (max 50 characters).";
+                    header('Location: new_request.php?error=' . urlencode($errorMsg));
+                    exit;
+                }
                 $legs[] = $leg;
             }
         }
@@ -57,6 +63,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($requestId) {
         header('Location: dashboard.php?success=request_created');
     } else {
-        die("Error creating booking request. Check error logs.");
+        header('Location: new_request.php?error=' . urlencode('Database error: Failed to save booking request.'));
     }
 }

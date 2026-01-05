@@ -69,7 +69,7 @@ class Payment {
     }
 
     private static function updateInvoiceStatus(PDO $pdo, int $invoiceId) {
-        $stmt = $pdo->prepare("SELECT amount_total FROM invoices WHERE id = ?");
+        $stmt = $pdo->prepare("SELECT amount_idr FROM invoices WHERE id = ?");
         $stmt->execute([$invoiceId]);
         $invoice = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -80,7 +80,7 @@ class Payment {
         $totalPaid = $stmt->fetchColumn();
 
         $newStatus = 'UNPAID';
-        if ($totalPaid >= $invoice['amount_total']) {
+        if ($totalPaid >= $invoice['amount_idr']) {
             $newStatus = 'PAID';
         } elseif ($totalPaid > 0) {
             $newStatus = 'PARTIALLY_PAID';
