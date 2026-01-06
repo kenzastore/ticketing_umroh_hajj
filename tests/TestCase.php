@@ -11,19 +11,22 @@ abstract class TestCase extends BaseTestCase
     public static function setUpBeforeClass(): void
     {
         if (!self::$pdo) {
-            // Force re-include to get the variable in local scope
-            ob_start();
-            $pdo = null;
-            require __DIR__ . '/../includes/db_connect.php';
-            ob_end_clean();
-            
-            if (isset($pdo)) {
-                self::$pdo = $pdo;
-            } else {
-                global $pdo;
-                self::$pdo = $pdo;
-            }
+            global $pdo;
+            self::$pdo = $pdo;
         }
+    }
+
+    protected function createTestUser($username = 'testuser')
+    {
+        $stmt = self::$pdo->prepare("INSERT IGNORE INTO roles (name) VALUES ('admin')");
+        $stmt->execute();
+        
+        $stmt = self::$pdo->query("SELECT id FROM roles WHERE name = 'admin' LIMIT 1");
+        $roleId = $stmt->fetchColumn();
+
+        $stmt = self::$pdo->prepare("INSERT INTO users (username, password, role_id, full_name) VALUES (?, ?, ?, ?)");
+        $stmt->execute([$username, 'password', $roleId, 'Test User']);
+        return self::$pdo->lastInsertId();
     }
 
     protected function setUp(): void

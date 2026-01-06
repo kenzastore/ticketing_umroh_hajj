@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/../../includes/db_connect.php';
+require_once __DIR__ . '/AuditLog.php';
 
 class Corporate {
     private static $pdo;
@@ -11,18 +12,31 @@ class Corporate {
     /**
      * Creates a new corporate.
      * @param array $data Associative array containing corporate data (name, address).
+     * @param int|null $userId ID of the user performing the action.
      * @return int|false The ID of the newly created corporate, or false on failure.
      */
-    public static function create(array $data) {
+    public static function create(array $data, $userId = null) {
         $sql = "INSERT INTO corporates (name, address) VALUES (?, ?)";
         try {
-            $stmt = self::$pdo->prepare($sql);
+            $db = self::$pdo;
+            $inTransaction = $db->inTransaction();
+            if (!$inTransaction) $db->beginTransaction();
+
+            $stmt = $db->prepare($sql);
             $stmt->execute([
                 $data['name'],
                 $data['address'] ?? null
             ]);
-            return self::$pdo->lastInsertId();
+            $corporateId = $db->lastInsertId();
+
+            // Audit Log
+            $newCorp = self::readById($corporateId);
+            AuditLog::log($userId, 'CREATE', 'corporate', $corporateId, null, json_encode($newCorp));
+
+            if (!$inTransaction) $db->commit();
+            return $corporateId;
         } catch (PDOException $e) {
+            if (self::$pdo->inTransaction()) self::$pdo->rollBack();
             error_log("Error creating corporate: " . $e->getMessage());
             return false;
         }
@@ -64,19 +78,34 @@ class Corporate {
      * Updates an existing corporate.
      * @param int|string $id The ID of the corporate to update.
      * @param array $data Associative array containing the updated corporate data.
+     * @param int|null $userId ID of the user performing the action.
      * @return bool True on success, false on failure.
      */
-    public static function update($id, array $data) {
+    public static function update($id, array $data, $userId = null) {
+        $oldCorp = self::readById($id);
+        if (!$oldCorp) return false;
+
         $sql = "UPDATE corporates SET name = ?, address = ? WHERE id = ?";
         try {
-            $stmt = self::$pdo->prepare($sql);
+            $db = self::$pdo;
+            $inTransaction = $db->inTransaction();
+            if (!$inTransaction) $db->beginTransaction();
+
+            $stmt = $db->prepare($sql);
             $stmt->execute([
                 $data['name'],
                 $data['address'] ?? null,
                 $id
             ]);
+
+            // Audit Log
+            $newCorp = self::readById($id);
+            AuditLog::log($userId, 'UPDATE', 'corporate', $id, json_encode($oldCorp), json_encode($newCorp));
+
+            if (!$inTransaction) $db->commit();
             return true;
         } catch (PDOException $e) {
+            if (self::$pdo->inTransaction()) self::$pdo->rollBack();
             error_log("Error updating corporate: " . $e->getMessage());
             return false;
         }
@@ -85,15 +114,29 @@ class Corporate {
     /**
      * Deletes a corporate by its ID.
      * @param int|string $id The ID of the corporate to delete.
+     * @param int|null $userId ID of the user performing the action.
      * @return bool True on success, false on failure.
      */
-    public static function delete($id) {
+    public static function delete($id, $userId = null) {
+        $oldCorp = self::readById($id);
+        if (!$oldCorp) return false;
+
         $sql = "DELETE FROM corporates WHERE id = ?";
         try {
-            $stmt = self::$pdo->prepare($sql);
+            $db = self::$pdo;
+            $inTransaction = $db->inTransaction();
+            if (!$inTransaction) $db->beginTransaction();
+
+            $stmt = $db->prepare($sql);
             $stmt->execute([$id]);
+
+            // Audit Log
+            AuditLog::log($userId, 'DELETE', 'corporate', $id, json_encode($oldCorp), null);
+
+            if (!$inTransaction) $db->commit();
             return true;
         } catch (PDOException $e) {
+            if (self::$pdo->inTransaction()) self::$pdo->rollBack();
             error_log("Error deleting corporate: " . $e->getMessage());
             return false;
         }
@@ -101,4 +144,5 @@ class Corporate {
 }
 
 // Initialize the PDO instance for the Corporate class
+global $pdo;
 Corporate::init($pdo);

@@ -10,7 +10,10 @@
     "autoload": {
         "psr-4": {
             "App\\": "app/"
-        }
+        },
+        "classmap": [
+            "app/models/"
+        ]
     },
     "autoload-dev": {
         "psr-4": {

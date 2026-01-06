@@ -41,4 +41,5 @@ class AuditLog {
 }
 
 // Initialize
+global $pdo;
 AuditLog::init($pdo);
