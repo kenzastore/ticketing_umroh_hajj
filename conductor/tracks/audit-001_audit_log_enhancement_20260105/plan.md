@@ -22,11 +22,11 @@ This plan details the steps to implement mandatory audit logging across core mod
 - [x] Task: Verify tests pass and ensure full JSON snapshots are captured. [431eca8]
 - [x] Task: Conductor - User Manual Verification 'Workflow Audit' (Protocol in workflow.md) [431eca8]
 
-## Phase 4: Audit Logging - Financial (Invoice)
-- [ ] Task: Write failing unit tests for `Invoice.php` verifying `AuditLog` triggers.
-- [ ] Task: Implement `AuditLog::log` in `Invoice::create` and status updates.
-- [ ] Task: Verify tests pass and ensure snapshots include related lines if necessary.
-- [ ] Task: Conductor - User Manual Verification 'Financial Audit' (Protocol in workflow.md)
+## Phase 4: Audit Logging - Financial (Invoice) [checkpoint: 60d5032]
+- [x] Task: Write failing unit tests for `Invoice.php` verifying `AuditLog` triggers. [60d5032]
+- [x] Task: Implement `AuditLog::log` in `Invoice::create` and status updates. [60d5032]
+- [x] Task: Verify tests pass and ensure snapshots include related lines if necessary. [60d5032]
+- [x] Task: Conductor - User Manual Verification 'Financial Audit' (Protocol in workflow.md) [60d5032]
 
 ## Phase 5: Final Quality Gate & Documentation
 - [ ] Task: Run full test suite and verify >80% code coverage for the 5 core models.
