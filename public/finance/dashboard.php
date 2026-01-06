@@ -108,7 +108,20 @@ $invoices = Invoice::readAll();
                                 </td>
                                 <td class="text-end">Rp <?php echo number_format($inv['amount_idr'], 2); ?></td>
                                 <td>
-                                    <a href="invoice_detail.php?id=<?php echo $inv['id']; ?>" class="btn btn-sm btn-info text-white">View</a>
+                                    <div class="btn-group btn-group-sm">
+                                        <a href="invoice_detail.php?id=<?php echo $inv['id']; ?>" class="btn btn-info text-white">View Inv</a>
+                                        <?php if ($inv['pnr']): ?>
+                                            <!-- We need movement_id to link to payment_report.php -->
+                                            <?php 
+                                                $stmt_m = $pdo->prepare("SELECT id FROM movements WHERE pnr = ? LIMIT 1");
+                                                $stmt_m->execute([$inv['pnr']]);
+                                                $m_id = $stmt_m->fetchColumn();
+                                                if ($m_id):
+                                            ?>
+                                                <a href="payment_report.php?movement_id=<?php echo $m_id; ?>" class="btn btn-primary">Report</a>
+                                            <?php endif; ?>
+                                        <?php endif; ?>
+                                    </div>
                                 </td>
                             </tr>
                         <?php endforeach; ?>
