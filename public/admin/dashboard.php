@@ -1,71 +1,119 @@
 <?php
 require_once __DIR__ . '/../../includes/auth.php';
 require_once __DIR__ . '/../../includes/db_connect.php';
-require_once __DIR__ . '/../../app/models/BookingRequest.php';
 
 check_auth('admin');
 
-$title = "Admin Dashboard - Booking Requests";
-
-// Fetch all booking requests
-$requests = BookingRequest::readAll();
-
+$title = "Dashboard";
 require_once __DIR__ . '/../shared/header.php';
 ?>
 
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h1>Booking Requests</h1>
-    <a href="new_request.php" class="btn btn-primary">Create New Request</a>
+<div class="row mb-4">
+    <div class="col-12">
+        <h1 class="h3 mb-4 text-gray-800">Dashboard</h1>
+    </div>
 </div>
 
-<?php if (isset($_GET['success']) && $_GET['success'] === 'request_created'): ?>
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
-        Booking request created successfully!
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-<?php endif; ?>
-
-<div class="card shadow-sm">
-    <div class="card-body">
-        <div class="table-responsive">
-            <table class="table table-striped table-hover">
-                <thead class="table-dark">
-                    <tr>
-                        <th>ID</th>
-                        <th>Request No</th>
-                        <th>Corporate</th>
-                        <th>Agent</th>
-                        <th>Pax</th>
-                        <th>Selling Fare</th>
-                        <th>Created At</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php if (empty($requests)): ?>
-                        <tr>
-                            <td colspan="8" class="text-center text-muted py-4">No booking requests found.</td>
-                        </tr>
-                    <?php else: ?>
-                        <?php foreach ($requests as $r): ?>
-                            <tr>
-                                <td><?php echo $r['id']; ?></td>
-                                <td><?php echo htmlspecialchars($r['request_no'] ?? '-'); ?></td>
-                                <td><?php echo htmlspecialchars($r['corporate_name'] ?? '-'); ?></td>
-                                <td><?php echo htmlspecialchars($r['agent_name'] ?? 'Individual/FID'); ?></td>
-                                <td><?php echo $r['group_size']; ?></td>
-                                <td><?php echo number_format($r['selling_fare'], 2); ?></td>
-                                <td><?php echo date('d M Y H:i', strtotime($r['created_at'])); ?></td>
-                                <td>
-                                    <a href="request_detail.php?id=<?php echo $r['id']; ?>" class="btn btn-sm btn-info text-white">View Detail</a>
-                                </td>
-                            </tr>
-                        <?php endforeach; ?>
-                    <?php endif; ?>
-                </tbody>
-            </table>
+<!-- Time Limit Widget -->
+<div class="row mb-5" id="time-limit-section">
+    <div class="col-12">
+        <div class="card border-danger shadow h-100 py-2 border-start border-5">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs fw-bold text-danger text-uppercase mb-1">Time Limit (Reminders)</div>
+                        <div class="h5 mb-0 fw-bold text-gray-800">
+                             <span class="text-muted small">No urgent deadlines (Placeholder)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
+
+<!-- Menu Grid -->
+<div class="row g-4">
+    <!-- Booking Request -->
+    <div class="col-md-4 col-sm-6">
+        <a href="booking_requests.php" class="text-decoration-none">
+            <div class="card shadow-sm h-100 text-center p-4 hover-scale border-primary border-top border-4">
+                <div class="card-body">
+                    <h3 class="card-title text-primary">Booking Request</h3>
+                    <p class="card-text text-muted">Manage new and existing requests</p>
+                </div>
+            </div>
+        </a>
+    </div>
+
+    <!-- Movement -->
+    <div class="col-md-4 col-sm-6">
+        <a href="movement_fullview.php" class="text-decoration-none">
+            <div class="card shadow-sm h-100 text-center p-4 hover-scale border-success border-top border-4">
+                <div class="card-body">
+                    <h3 class="card-title text-success">Movement</h3>
+                    <p class="card-text text-muted">Monitor flight movements</p>
+                </div>
+            </div>
+        </a>
+    </div>
+
+    <!-- Payment Report -->
+    <div class="col-md-4 col-sm-6">
+        <a href="../finance/dashboard.php" class="text-decoration-none">
+            <div class="card shadow-sm h-100 text-center p-4 hover-scale border-info border-top border-4">
+                <div class="card-body">
+                    <h3 class="card-title text-info">Payment Report</h3>
+                    <p class="card-text text-muted">View financial reports</p>
+                </div>
+            </div>
+        </a>
+    </div>
+
+    <!-- Invoice -->
+    <div class="col-md-4 col-sm-6">
+        <a href="../finance/create_invoice.php" class="text-decoration-none">
+            <div class="card shadow-sm h-100 text-center p-4 hover-scale border-warning border-top border-4">
+                <div class="card-body">
+                    <h3 class="card-title text-warning">Invoice</h3>
+                    <p class="card-text text-muted">Generate and manage invoices</p>
+                </div>
+            </div>
+        </a>
+    </div>
+
+    <!-- Rangkuman -->
+    <div class="col-md-4 col-sm-6">
+        <a href="#" class="text-decoration-none">
+            <div class="card shadow-sm h-100 text-center p-4 hover-scale border-secondary border-top border-4">
+                <div class="card-body">
+                    <h3 class="card-title text-secondary">Rangkuman</h3>
+                    <p class="card-text text-muted">Summary & Statistics</p>
+                </div>
+            </div>
+        </a>
+    </div>
+
+    <!-- Payment Advise -->
+    <div class="col-md-4 col-sm-6">
+        <a href="#" class="text-decoration-none">
+            <div class="card shadow-sm h-100 text-center p-4 hover-scale border-dark border-top border-4">
+                <div class="card-body">
+                    <h3 class="card-title text-dark">Payment Advise</h3>
+                    <p class="card-text text-muted">Manage payment advises</p>
+                </div>
+            </div>
+        </a>
+    </div>
+</div>
+
+<style>
+    .hover-scale {
+        transition: transform 0.2s;
+    }
+    .hover-scale:hover {
+        transform: scale(1.05);
+    }
+</style>
 
 <?php require_once __DIR__ . '/../shared/footer.php'; ?>
