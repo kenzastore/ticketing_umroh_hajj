@@ -145,6 +145,53 @@ class Agent {
             return false;
         }
     }
+
+    /**
+     * Get summary metrics for each agent.
+     */
+    public static function getAgentSummary() {
+        $sql = "
+            SELECT 
+                m.agent_name,
+                COUNT(m.id) as total_pnrs,
+                SUM(m.passenger_count) as total_pax,
+                SUM(m.total_selling) as total_revenue,
+                (SELECT SUM(amount_paid) FROM payments p 
+                 JOIN invoices i ON p.invoice_id = i.id 
+                 WHERE i.pnr = m.pnr OR i.tour_code = m.tour_code) as total_paid
+            FROM movements m
+            GROUP BY m.agent_name
+            ORDER BY total_revenue DESC
+        ";
+        // Note: The total_paid subquery above is a bit simplified. 
+        // A better way would be grouping payments by agent if movements/invoices are consistently linked.
+        
+        // Revised query for more accurate aggregation
+        $sql = "
+            SELECT 
+                COALESCE(m.agent_name, 'Unknown') as agent_name,
+                COUNT(DISTINCT m.id) as total_pnrs,
+                SUM(m.passenger_count) as total_pax,
+                SUM(COALESCE(m.total_selling, 0)) as total_revenue,
+                SUM(
+                    (SELECT COALESCE(SUM(p.amount_paid), 0) 
+                     FROM payments p 
+                     JOIN invoices i ON p.invoice_id = i.id 
+                     WHERE i.pnr = m.pnr AND m.pnr IS NOT NULL AND m.pnr != '')
+                ) as total_paid
+            FROM movements m
+            GROUP BY m.agent_name
+            ORDER BY total_revenue DESC
+        ";
+
+        try {
+            $stmt = self::$pdo->query($sql);
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            error_log("Error getting agent summary: " . $e->getMessage());
+            return [];
+        }
+    }
 }
 
 // Initialize the PDO instance for the Agent class

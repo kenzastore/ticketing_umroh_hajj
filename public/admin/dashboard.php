@@ -115,7 +115,7 @@ require_once __DIR__ . '/../shared/header.php';
 
     <!-- Rangkuman -->
     <div class="col-md-4 col-sm-6">
-        <a href="#" class="text-decoration-none">
+        <a href="agent_summary.php" class="text-decoration-none">
             <div class="card shadow-sm h-100 text-center p-4 hover-scale border-secondary border-top border-4">
                 <div class="card-body">
                     <div class="mb-3">
