@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/../../includes/db_connect.php';
+require_once __DIR__ . '/AuditLog.php';
 
 class Movement {
     private static $pdo;
@@ -51,9 +52,13 @@ class Movement {
      * Updates movement status fields (DP1, DP2, FP).
      * @param int|string $id
      * @param array $data
+     * @param int|null $userId ID of the user performing the action.
      * @return bool
      */
-    public static function updateStatus($id, array $data) {
+    public static function updateStatus($id, array $data, $userId = null) {
+        $oldMovement = self::readById($id);
+        if (!$oldMovement) return false;
+
         $fields = [];
         $params = [];
         
@@ -68,9 +73,21 @@ class Movement {
         $sql = "UPDATE movements SET " . implode(', ', $fields) . " WHERE id = ?";
         
         try {
-            $stmt = self::$pdo->prepare($sql);
-            return $stmt->execute($params);
+            $db = self::$pdo;
+            $inTransaction = $db->inTransaction();
+            if (!$inTransaction) $db->beginTransaction();
+
+            $stmt = $db->prepare($sql);
+            $result = $stmt->execute($params);
+
+            // Audit Log
+            $newMovement = self::readById($id);
+            AuditLog::log($userId, 'UPDATE', 'movement', $id, json_encode($oldMovement), json_encode($newMovement));
+
+            if (!$inTransaction) $db->commit();
+            return $result;
         } catch (PDOException $e) {
+            if (self::$pdo->inTransaction()) self::$pdo->rollBack();
             error_log("Error updating movement status: " . $e->getMessage());
             return false;
         }
@@ -78,4 +95,5 @@ class Movement {
 }
 
 // Initialize the PDO instance
+global $pdo;
 Movement::init($pdo);

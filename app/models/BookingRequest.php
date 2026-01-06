@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/../../includes/db_connect.php';
+require_once __DIR__ . '/AuditLog.php';
 
 class BookingRequest {
     private static $pdo;
@@ -12,11 +13,14 @@ class BookingRequest {
      * Creates a new booking request with its flight legs.
      * @param array $header Data for booking_requests table.
      * @param array $legs Array of leg data for booking_request_legs table.
+     * @param int|null $userId ID of the user performing the action.
      * @return int|false The ID of the newly created booking request, or false on failure.
      */
-    public static function create(array $header, array $legs) {
+    public static function create(array $header, array $legs, $userId = null) {
         try {
-            self::$pdo->beginTransaction();
+            $db = self::$pdo;
+            $inTransaction = $db->inTransaction();
+            if (!$inTransaction) $db->beginTransaction();
 
             $sqlHeader = "INSERT INTO booking_requests (
                 request_no, corporate_id, corporate_name, agent_id, agent_name, skyagent_id, 
@@ -24,7 +28,7 @@ class BookingRequest {
                 duration_days, add1_days, ttl_days, notes
             ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
             
-            $stmtHeader = self::$pdo->prepare($sqlHeader);
+            $stmtHeader = $db->prepare($sqlHeader);
             $stmtHeader->execute([
                 $header['request_no'] ?? null,
                 $header['corporate_id'] ?? null,
@@ -43,13 +47,13 @@ class BookingRequest {
                 $header['notes'] ?? null
             ]);
             
-            $requestId = self::$pdo->lastInsertId();
+            $requestId = $db->lastInsertId();
 
             $sqlLeg = "INSERT INTO booking_request_legs (
                 booking_request_id, leg_no, flight_date, flight_no, sector, origin_iata, dest_iata
             ) VALUES (?, ?, ?, ?, ?, ?, ?)";
             
-            $stmtLeg = self::$pdo->prepare($sqlLeg);
+            $stmtLeg = $db->prepare($sqlLeg);
             foreach ($legs as $index => $leg) {
                 $stmtLeg->execute([
                     $requestId,
@@ -62,10 +66,14 @@ class BookingRequest {
                 ]);
             }
 
-            self::$pdo->commit();
+            // Audit Log
+            $newRequest = self::readById($requestId);
+            AuditLog::log($userId, 'CREATE', 'booking_request', $requestId, null, json_encode($newRequest));
+
+            if (!$inTransaction) $db->commit();
             return $requestId;
         } catch (PDOException $e) {
-            self::$pdo->rollBack();
+            if (self::$pdo->inTransaction()) self::$pdo->rollBack();
             error_log("Error creating booking request: " . $e->getMessage());
             return false;
         }
@@ -113,14 +121,29 @@ class BookingRequest {
     /**
      * Deletes a booking request and its legs.
      * @param int|string $id
+     * @param int|null $userId ID of the user performing the action.
      * @return bool
      */
-    public static function delete($id) {
+    public static function delete($id, $userId = null) {
+        $oldRequest = self::readById($id);
+        if (!$oldRequest) return false;
+
         try {
+            $db = self::$pdo;
+            $inTransaction = $db->inTransaction();
+            if (!$inTransaction) $db->beginTransaction();
+
+            // Audit Log
+            AuditLog::log($userId, 'DELETE', 'booking_request', $id, json_encode($oldRequest), null);
+
             // Foreign key with ON DELETE CASCADE will handle legs
-            $stmt = self::$pdo->prepare("DELETE FROM booking_requests WHERE id = ?");
-            return $stmt->execute([$id]);
+            $stmt = $db->prepare("DELETE FROM booking_requests WHERE id = ?");
+            $result = $stmt->execute([$id]);
+
+            if (!$inTransaction) $db->commit();
+            return $result;
         } catch (PDOException $e) {
+            if (self::$pdo->inTransaction()) self::$pdo->rollBack();
             error_log("Error deleting booking request: " . $e->getMessage());
             return false;
         }
@@ -128,4 +151,5 @@ class BookingRequest {
 }
 
 // Initialize the PDO instance
+global $pdo;
 BookingRequest::init($pdo);
