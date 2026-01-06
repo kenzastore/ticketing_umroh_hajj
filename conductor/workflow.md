@@ -146,6 +146,7 @@ Before marking any task complete, verify:
 - [ ] No linting or static analysis errors (using the project's configured tools)
 - [ ] Works correctly on mobile (if applicable)
 - [ ] Documentation updated if needed
+- [ ] Contract compliance verified against `invoice_template_contract.md`.
 - [ ] No security vulnerabilities introduced
 
 ## Development Commands

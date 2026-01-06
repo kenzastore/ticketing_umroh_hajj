@@ -11,6 +11,7 @@
 
 ## 3. Frontend
 - **Framework:** Bootstrap 5 (for responsive layouts and admin components)
+- **Icons:** FontAwesome 6 (via CDN)
 - **Interactivity:** Vanilla JavaScript (or minimal jQuery if required for legacy compatibility)
 - **Design:** Mobile-first responsive grid system.
 

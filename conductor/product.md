@@ -61,7 +61,7 @@ Membangun sistem berbasis web yang **mengadopsi struktur worksheet** menjadi mod
 2.  **Movement Monitoring** (mengganti MOVEMENT)
     Dashboard Daily/Group Movement: PNR, DP1/DP2, FP, time limit, ticketing done, serta log perubahan. FullView Display: filter per tanggal/agent/carrier/status.
 3.  **Invoice Generator** (mengganti INVOICE)
-    Generate **2 versi**: Internal & untuk Kyai/Requester. Export PDF + template standar.
+    Generate **2 versi**: Internal & untuk Kyai/Requester. Export PDF + template standar. **NOTE:** Invoice template is strictly aligned with `invoice_template_contract.md` for layout, fields, and styling.
 4.  **Payment Tracking** (mengganti PAYMENT REPORT + Payment advise)
     Input pembayaran, upload bukti, mapping ke segmen/PNR/Tour Code, rekap otomatis, dan export.
 5.  **Time Limit Reminder** (mengganti TIME LIMIT)
@@ -73,9 +73,9 @@ Membangun sistem berbasis web yang **mengadopsi struktur worksheet** menjadi mod
 
 ## 5) Output / Deliverables
 *   Aplikasi web (Native PHP + MariaDB) dengan role-based access.
-*   Modul: Request, Movement (FullView), Invoice (2 versi), Payment (Report + Advise), Reminder.
-*   Template dokumen: invoice PDF, payment report, payment advise, (opsional) resi digital.
-*   Audit log perubahan + export laporan (Excel/PDF).
+• Modul: Request, Movement (FullView), Invoice (2 versi), Payment (Report + Advise), Reminder.
+• Template dokumen: invoice PDF (compliant with `invoice_template_contract.md`), payment report, payment advise, (opsional) resi digital.
+• Audit log perubahan + export laporan (Excel/PDF).
 
 ---
 

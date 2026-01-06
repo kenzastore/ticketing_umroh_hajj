@@ -1,0 +1,7 @@
+{
+  "track_id": "finance-002_payment_advise_implementation_20260106",
+  "name": "Payment Advise Implementation",
+  "description": "Implement the Payment Advise module based on the PAYMENT_ADVISE.pdf reference, including airline top-up and bank transfer tracking.",
+  "created_date": "2026-01-06",
+  "status": "todo"
+}
