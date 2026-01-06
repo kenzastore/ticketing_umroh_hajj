@@ -8,12 +8,12 @@ This plan details the steps to implement mandatory audit logging across core mod
 - [x] Task: Create a base test class or trait for database isolation (transactional rollbacks). [09e891b]
 - [x] Task: Conductor - User Manual Verification 'Testing Infrastructure' (Protocol in workflow.md) [09e891b]
 
-## Phase 2: Audit Logging - Master Data (Agent & Corporate)
-- [ ] Task: Write failing unit tests for `Agent.php` and `Corporate.php` verifying `AuditLog` triggers.
-- [ ] Task: Implement `AuditLog::log` in `Agent::create`, `Agent::update`, and `Agent::delete`.
-- [ ] Task: Implement `AuditLog::log` in `Corporate::create`, `Corporate::update`, and `Corporate::delete`.
-- [ ] Task: Verify tests pass and check JSON snapshots in the `audit_logs` table.
-- [ ] Task: Conductor - User Manual Verification 'Master Data Audit' (Protocol in workflow.md)
+## Phase 2: Audit Logging - Master Data (Agent & Corporate) [checkpoint: 36f6b94]
+- [x] Task: Write failing unit tests for `Agent.php` and `Corporate.php` verifying `AuditLog` triggers. [36f6b94]
+- [x] Task: Implement `AuditLog::log` in `Agent::create`, `Agent::update`, and `Agent::delete`. [36f6b94]
+- [x] Task: Implement `AuditLog::log` in `Corporate::create`, `Corporate::update`, and `Corporate::delete`. [36f6b94]
+- [x] Task: Verify tests pass and check JSON snapshots in the `audit_logs` table. [36f6b94]
+- [x] Task: Conductor - User Manual Verification 'Master Data Audit' (Protocol in workflow.md) [36f6b94]
 
 ## Phase 3: Audit Logging - Core Workflow (BookingRequest & Movement)
 - [ ] Task: Write failing unit tests for `BookingRequest.php` and `Movement.php` verifying `AuditLog` triggers.
