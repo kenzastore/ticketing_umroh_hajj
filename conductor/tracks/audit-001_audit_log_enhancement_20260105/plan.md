@@ -28,7 +28,7 @@ This plan details the steps to implement mandatory audit logging across core mod
 - [x] Task: Verify tests pass and ensure snapshots include related lines if necessary. [60d5032]
 - [x] Task: Conductor - User Manual Verification 'Financial Audit' (Protocol in workflow.md) [60d5032]
 
-## Phase 5: Final Quality Gate & Documentation
-- [ ] Task: Run full test suite and verify >80% code coverage for the 5 core models.
-- [ ] Task: Update `conductor/tech-stack.md` to include PHPUnit as the testing framework.
-- [ ] Task: Conductor - User Manual Verification 'Final Quality Gate' (Protocol in workflow.md)
+## Phase 5: Final Quality Gate & Documentation [checkpoint: b151ddd]
+- [x] Task: Run full test suite and verify >80% code coverage for the 5 core models. [b151ddd]
+- [x] Task: Update `conductor/tech-stack.md` to include PHPUnit as the testing framework. [b151ddd]
+- [x] Task: Conductor - User Manual Verification 'Final Quality Gate' (Protocol in workflow.md) [b151ddd]
