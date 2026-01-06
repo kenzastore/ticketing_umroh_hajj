@@ -130,7 +130,7 @@ require_once __DIR__ . '/../shared/header.php';
 
     <!-- Payment Advise -->
     <div class="col-md-4 col-sm-6">
-        <a href="#" class="text-decoration-none">
+        <a href="../finance/payment_advise_list.php" class="text-decoration-none">
             <div class="card shadow-sm h-100 text-center p-4 hover-scale border-dark border-top border-4">
                 <div class="card-body">
                     <div class="mb-3">

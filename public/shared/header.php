@@ -66,6 +66,9 @@ if (isset($title)) {
                                 <li class="nav-item">
                                     <a class="nav-link" href="/finance/dashboard.php">Finance</a>
                                 </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="/finance/payment_advise_list.php">Payment Advise</a>
+                                </li>
                                 <li class="nav-item dropdown">
                                     <a class="nav-link dropdown-toggle" href="#" id="masterDropdown" data-bs-toggle="dropdown">
                                         Masters
