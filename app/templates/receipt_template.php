@@ -25,15 +25,21 @@
         
         <div class="details">
             <table>
-                <tr><td width="40%">Date:</td><td><?= $payment['payment_date'] ?></td></tr>
+                <tr><td width="40%">Date:</td><td><?= date('d M Y', strtotime($payment['payment_date'])) ?></td></tr>
                 <tr><td>Invoice No:</td><td><?= htmlspecialchars($invoice['invoice_no']) ?></td></tr>
+                <tr><td>PNR:</td><td><strong><?= htmlspecialchars($invoice['pnr']) ?></strong></td></tr>
                 <tr><td>Received From:</td><td><?= htmlspecialchars($invoice['corporate_name'] ?: 'N/A') ?></td></tr>
                 <tr><td>Payment Method:</td><td><?= htmlspecialchars($payment['payment_method']) ?></td></tr>
                 <tr><td>Reference:</td><td><?= htmlspecialchars($payment['reference_number'] ?: '-') ?></td></tr>
             </table>
         </div>
 
-        <div class="qr-placeholder">VERIFICATION QR</div>
+        <?php if(isset($qrUrl)): ?>
+            <img src="<?= $qrUrl ?>" alt="Verification QR" style="width: 120px; height: 120px; margin: 10px auto; display: block;">
+        <?php else: ?>
+            <div class="qr-placeholder">VERIFICATION QR</div>
+        <?php endif; ?>
+        
         <div class="token">TOKEN: <?= $payment['receipt_hash'] ?></div>
         
         <div style="margin-top: 30px; font-size: 12px; color: #777;">

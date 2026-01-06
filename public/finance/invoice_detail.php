@@ -69,6 +69,7 @@ require_once __DIR__ . '/../shared/header.php';
                             <th>Method</th>
                             <th>Reference</th>
                             <th>Notes</th>
+                            <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -79,6 +80,11 @@ require_once __DIR__ . '/../shared/header.php';
                                 <td><?php echo htmlspecialchars($payment['payment_method']); ?></td>
                                 <td><?php echo htmlspecialchars($payment['reference_number']); ?></td>
                                 <td><?php echo htmlspecialchars($payment['notes']); ?></td>
+                                <td>
+                                    <a href="print_receipt.php?id=<?php echo $payment['id']; ?>" class="btn btn-sm btn-outline-success" target="_blank">
+                                        <i class="fas fa-file-invoice-dollar"></i> Receipt
+                                    </a>
+                                </td>
                             </tr>
                         <?php endforeach; ?>
                     </tbody>
