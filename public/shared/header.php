@@ -37,6 +37,8 @@ if (isset($title)) {
     <title><?php echo htmlspecialchars($pageTitle); ?></title>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <!-- Custom CSS -->
     <link rel="stylesheet" href="/assets/css/style.css"> 
 </head>
@@ -56,6 +58,12 @@ if (isset($title)) {
                                     <a class="nav-link" href="/admin/dashboard.php">Dashboard</a>
                                 </li>
                                 <li class="nav-item">
+                                    <a class="nav-link" href="/admin/booking_requests.php">Requests</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="/admin/movement_fullview.php">Movements</a>
+                                </li>
+                                <li class="nav-item">
                                     <a class="nav-link" href="/finance/dashboard.php">Finance</a>
                                 </li>
                                 <li class="nav-item dropdown">
@@ -67,9 +75,6 @@ if (isset($title)) {
                                         <li><a class="dropdown-item" href="/admin/masters/corporates/index.php">Corporates</a></li>
                                         <li><a class="dropdown-item" href="/admin/masters/users/index.php">Users</a></li>
                                     </ul>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="/admin/movement_fullview.php" target="_blank">Flight Monitor</a>
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link" href="/admin/new_request.php">New Request</a>
@@ -86,7 +91,7 @@ if (isset($title)) {
                             <!-- Notifications -->
                             <li class="nav-item me-3">
                                 <a href="/admin/notifications.php" class="nav-link position-relative">
-                                    🔔
+                                    <i class="fas fa-bell"></i>
                                     <?php if ($unreadCount > 0): ?>
                                         <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.6rem;">
                                             <?= $unreadCount ?>

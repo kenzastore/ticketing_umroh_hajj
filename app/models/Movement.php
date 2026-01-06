@@ -92,6 +92,28 @@ class Movement {
             return false;
         }
     }
+
+    /**
+     * Get movements with ticketing deadline within the next $days days.
+     * Only includes those where ticketing_done is 0 (not done).
+     * @param int $days
+     * @return array
+     */
+    public static function getUpcomingDeadlines($days = 3) {
+        $sql = "SELECT * FROM movements 
+                WHERE ticketing_deadline IS NOT NULL 
+                AND ticketing_deadline BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL ? DAY)
+                AND ticketing_done = 0
+                ORDER BY ticketing_deadline ASC";
+        try {
+            $stmt = self::$pdo->prepare($sql);
+            $stmt->execute([$days]);
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            error_log("Error getting deadlines: " . $e->getMessage());
+            return [];
+        }
+    }
 }
 
 // Initialize the PDO instance
