@@ -29,3 +29,8 @@
 ## 6. Utilities
 - **QR Code:** (Optional library like `phpqrcode` for receipts)
 - **Exports:** Native CSV/Excel headers or `PhpSpreadsheet`
+
+## 7. Testing
+- **Framework:** PHPUnit (9.x)
+- **Methodology:** Test-Driven Development (TDD)
+- **Isolation:** Database transactional rollbacks per test case.
