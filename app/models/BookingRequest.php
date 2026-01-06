@@ -80,14 +80,41 @@ class BookingRequest {
     }
 
     /**
-     * Reads all booking requests.
+     * Reads all booking requests with their flight legs.
      * @return array
      */
     public static function readAll() {
         $sql = "SELECT * FROM booking_requests ORDER BY created_at DESC";
         try {
             $stmt = self::$pdo->query($sql);
-            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $requests = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            if (empty($requests)) {
+                return [];
+            }
+
+            // Get IDs to fetch legs
+            $ids = array_column($requests, 'id');
+            $placeholders = str_repeat('?,', count($ids) - 1) . '?';
+            
+            $sqlLegs = "SELECT * FROM booking_request_legs WHERE booking_request_id IN ($placeholders) ORDER BY leg_no ASC";
+            $stmtLegs = self::$pdo->prepare($sqlLegs);
+            $stmtLegs->execute($ids);
+            $allLegs = $stmtLegs->fetchAll(PDO::FETCH_ASSOC);
+
+            // Group legs by request_id
+            $legsByRequest = [];
+            foreach ($allLegs as $leg) {
+                $legsByRequest[$leg['booking_request_id']][] = $leg;
+            }
+
+            // Attach legs to requests
+            foreach ($requests as &$req) {
+                $req['legs'] = $legsByRequest[$req['id']] ?? [];
+            }
+            unset($req); // Break reference
+
+            return $requests;
         } catch (PDOException $e) {
             error_log("Error reading booking requests: " . $e->getMessage());
             return [];
