@@ -11,13 +11,20 @@ $tv = isset($_GET['tv']) ? 1 : 0;
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Daily Group Movement - FullView</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <style>
-    body { background-color: #f8f9fa; font-size: 0.9rem; }
-    body.tv { font-size: 1.2rem; }
+    body { background-color: #f8f9fa; font-size: 0.8rem; }
+    body.tv { font-size: 1rem; }
     .table-container { background: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
-    .status-badge { font-size: 0.75rem; text-transform: uppercase; }
-    .sticky-header th { position: sticky; top: 0; background: #212529; color: white; z-index: 10; }
-    .table-responsive { max-height: 80vh; }
+    .status-badge { font-size: 0.7rem; text-transform: uppercase; }
+    thead th { position: sticky; top: 0; background: #212529; color: white; z-index: 10; white-space: nowrap; vertical-align: middle; text-align: center; }
+    .table-responsive { max-height: 70vh; }
+    .bg-orange { background-color: #fd7e14 !important; color: white; }
+    .bg-brown { background-color: #795548 !important; color: white; }
+    .bg-yellow-light { background-color: #fff9c4 !important; }
+    .text-xs { font-size: 0.65rem; }
+    .table-sm td, .table-sm th { padding: 0.25rem 0.4rem; }
+    .hover-scale:hover { background-color: #f1f3f5; }
   </style>
 </head>
 <body class="<?= $tv ? 'tv' : '' ?>">
@@ -27,7 +34,7 @@ $tv = isset($_GET['tv']) ? 1 : 0;
   <div class="d-flex justify-content-between align-items-center mb-3">
     <div>
       <h2 class="mb-0 fw-bold">MOVEMENT DASHBOARD</h2>
-      <span class="text-muted">Digitalisasi Ticketing Umroh & Haji</span>
+      <span class="text-muted small">Digitalisasi Ticketing Umroh & Haji</span>
     </div>
     <div class="d-none d-md-block">
         <a href="dashboard.php" class="btn btn-outline-secondary btn-sm">Dashboard</a>
@@ -37,43 +44,43 @@ $tv = isset($_GET['tv']) ? 1 : 0;
   </div>
 
   <!-- KPI Summary -->
-  <div class="row g-3 mb-4">
+  <div class="row g-2 mb-3">
     <div class="col-md-3">
         <div class="card border-0 shadow-sm border-start border-primary border-4">
             <div class="card-body py-2">
-                <div class="small text-muted">TOTAL GROUPS</div>
-                <div class="h3 mb-0 fw-bold" id="kpi_total">0</div>
+                <div class="text-xs text-muted">TOTAL GROUPS</div>
+                <div class="h4 mb-0 fw-bold" id="kpi_total">0</div>
             </div>
         </div>
     </div>
     <div class="col-md-3">
         <div class="card border-0 shadow-sm border-start border-success border-4">
             <div class="card-body py-2">
-                <div class="small text-muted">FULL PAYMENT</div>
-                <div class="h3 mb-0 fw-bold text-success" id="kpi_paid">0</div>
+                <div class="text-xs text-muted">FULL PAYMENT</div>
+                <div class="h4 mb-0 fw-bold text-success" id="kpi_paid">0</div>
             </div>
         </div>
     </div>
     <div class="col-md-3">
         <div class="card border-0 shadow-sm border-start border-warning border-4">
             <div class="card-body py-2">
-                <div class="small text-muted">PARTIAL PAYMENT (DP)</div>
-                <div class="h3 mb-0 fw-bold text-warning" id="kpi_partial">0</div>
+                <div class="text-xs text-muted">PARTIAL PAYMENT (DP)</div>
+                <div class="h4 mb-0 fw-bold text-warning" id="kpi_partial">0</div>
             </div>
         </div>
     </div>
     <div class="col-md-3">
         <div class="card border-0 shadow-sm border-start border-danger border-4">
             <div class="card-body py-2">
-                <div class="small text-muted">UNPAID</div>
-                <div class="h3 mb-0 fw-bold text-danger" id="kpi_unpaid">0</div>
+                <div class="text-xs text-muted">UNPAID</div>
+                <div class="h4 mb-0 fw-bold text-danger" id="kpi_unpaid">0</div>
             </div>
         </div>
     </div>
   </div>
 
   <!-- Filters -->
-  <div class="card border-0 shadow-sm mb-4">
+  <div class="card border-0 shadow-sm mb-3">
     <div class="card-body py-2">
         <form class="row g-2 align-items-center" id="filterForm">
             <div class="col-md-2">
@@ -89,27 +96,113 @@ $tv = isset($_GET['tv']) ? 1 : 0;
     </div>
   </div>
 
-  <!-- Main Table -->
-  <div class="table-container">
+  <!-- Umrah Section -->
+  <h5 class="fw-bold text-primary mb-2"><i class="fas fa-kaaba me-2"></i>UMRAH MOVEMENT</h5>
+  <div class="table-container mb-4">
     <div class="table-responsive">
-      <table class="table table-hover align-middle mb-0 border-top sticky-header">
-        <thead>
-          <tr>
-            <th>PNR</th>
-            <th>TOUR CODE</th>
-            <th>AGENT</th>
-            <th>CARRIER</th>
-            <th>SEGMENT (OUT/IN)</th>
-            <th>PAX</th>
-            <th>DP1</th>
-            <th>DP2</th>
-            <th>FP</th>
-            <th>DONE</th>
-            <th>STATUS</th>
+      <table class="table table-bordered table-sm hover-scale align-middle mb-0">
+        <thead class="bg-dark text-white">
+          <tr class="text-xs">
+            <th rowspan="2">NO</th>
+            <th rowspan="2">Travel Agent</th>
+            <th rowspan="2">Creation</th>
+            <th rowspan="2">PNR</th>
+            <th colspan="3" class="bg-orange">PAYMENT STATUS</th>
+            <th rowspan="2">TOUR CODE</th>
+            <th rowspan="2">CARR</th>
+            <th rowspan="2">FLT NO</th>
+            <th rowspan="2">SECTOR</th>
+            <th colspan="4" class="bg-primary">SCHEDULE (OUT/IN)</th>
+            <th rowspan="2">PTRN</th>
+            <th rowspan="2">PAX</th>
+            <th colspan="4" class="bg-success">PRICING (IDR)</th>
+            <th colspan="3" class="bg-info">1ST DEPOSIT</th>
+            <th colspan="3" class="bg-info">2ND DEPOSIT</th>
+            <th colspan="2" class="bg-info">FULLPAY</th>
+            <th rowspan="2">TIME LIMIT</th>
+            <th rowspan="2">DONE</th>
+            <th rowspan="2">TTL</th>
+          </tr>
+          <tr class="text-xs">
+            <th class="bg-orange">DP1</th>
+            <th class="bg-orange">DP2</th>
+            <th class="bg-orange">FP</th>
+            <th class="bg-primary">DEP1</th>
+            <th class="bg-primary">DEP2</th>
+            <th class="bg-primary">ARR3</th>
+            <th class="bg-primary">ARR4</th>
+            <th class="bg-success">APPR</th>
+            <th class="bg-success">SELL</th>
+            <th class="bg-success">NETT</th>
+            <th class="bg-success">TOTAL</th>
+            <th class="bg-info">AMT</th>
+            <th class="bg-info">AIRL</th>
+            <th class="bg-info">EEMW</th>
+            <th class="bg-info">AMT</th>
+            <th class="bg-info">AIRL</th>
+            <th class="bg-info">EEMW</th>
+            <th class="bg-info">AIRL</th>
+            <th class="bg-info">EEMW</th>
           </tr>
         </thead>
-        <tbody id="rows">
-          <tr><td colspan="11" class="text-center py-5">Loading movement data...</td></tr>
+        <tbody id="rows_umrah">
+          <tr><td colspan="35" class="text-center py-5">Loading...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Hajji Section -->
+  <h5 class="fw-bold text-danger mb-2"><i class="fas fa-mosque me-2"></i>HAJJI MOVEMENT</h5>
+  <div class="table-container">
+    <div class="table-responsive">
+      <table class="table table-bordered table-sm hover-scale align-middle mb-0">
+        <thead class="bg-dark text-white">
+          <tr class="text-xs">
+            <th rowspan="2">NO</th>
+            <th rowspan="2">Travel Agent</th>
+            <th rowspan="2">Creation</th>
+            <th rowspan="2">PNR</th>
+            <th colspan="3" class="bg-orange">PAYMENT STATUS</th>
+            <th rowspan="2">TOUR CODE</th>
+            <th rowspan="2">CARR</th>
+            <th rowspan="2">FLT NO</th>
+            <th rowspan="2">SECTOR</th>
+            <th colspan="4" class="bg-primary">SCHEDULE (OUT/IN)</th>
+            <th rowspan="2">PTRN</th>
+            <th rowspan="2">PAX</th>
+            <th colspan="4" class="bg-success">PRICING (IDR)</th>
+            <th colspan="3" class="bg-info">1ST DEPOSIT</th>
+            <th colspan="3" class="bg-info">2ND DEPOSIT</th>
+            <th colspan="2" class="bg-info">FULLPAY</th>
+            <th rowspan="2">TIME LIMIT</th>
+            <th rowspan="2">DONE</th>
+            <th rowspan="2">TTL</th>
+          </tr>
+          <tr class="text-xs">
+            <th class="bg-orange">DP1</th>
+            <th class="bg-orange">DP2</th>
+            <th class="bg-orange">FP</th>
+            <th class="bg-primary">DEP1</th>
+            <th class="bg-primary">DEP2</th>
+            <th class="bg-primary">ARR3</th>
+            <th class="bg-primary">ARR4</th>
+            <th class="bg-success">APPR</th>
+            <th class="bg-success">SELL</th>
+            <th class="bg-success">NETT</th>
+            <th class="bg-success">TOTAL</th>
+            <th class="bg-info">AMT</th>
+            <th class="bg-info">AIRL</th>
+            <th class="bg-info">EEMW</th>
+            <th class="bg-info">AMT</th>
+            <th class="bg-info">AIRL</th>
+            <th class="bg-info">EEMW</th>
+            <th class="bg-info">AIRL</th>
+            <th class="bg-info">EEMW</th>
+          </tr>
+        </thead>
+        <tbody id="rows_hajji">
+          <tr><td colspan="35" class="text-center py-5">Loading...</td></tr>
         </tbody>
       </table>
     </div>
@@ -117,8 +210,76 @@ $tv = isset($_GET['tv']) ? 1 : 0;
 </div>
 
 <script>
+  function formatCurr(val) {
+      if (!val) return '-';
+      return new Intl.NumberFormat('id-ID').format(val);
+  }
+
+  function formatDate(val) {
+      if (!val) return '-';
+      const d = new Date(val);
+      return d.toLocaleDateString('en-GB', { day:'2-digit', month:'short' });
+  }
+
+  function renderTable(containerId, data) {
+    const rows = document.getElementById(containerId);
+    rows.innerHTML = '';
+    if (data.length === 0) {
+        rows.innerHTML = `<tr><td colspan="35" class="text-center py-4 text-muted small">No data found.</td></tr>`;
+        return;
+    }
+
+    data.forEach((m, index) => {
+      const tr = document.createElement('tr');
+      tr.className = 'text-center';
+      
+      const getStatusColor = (status) => {
+          if (status === 'PAID') return 'bg-success text-white';
+          if (status === 'UNPAID') return 'bg-danger text-white';
+          if (status && status.includes('DONE')) return 'bg-success text-white';
+          if (status && status !== 'NIL' && status !== 'XXXXXX') return 'bg-warning text-dark';
+          return '';
+      };
+
+      tr.innerHTML = `
+        <td class="bg-light">${index + 1}</td>
+        <td class="text-start" style="min-width:120px">${m.agent_name || '-'}</td>
+        <td>${formatDate(m.created_date)}</td>
+        <td class="fw-bold text-primary">${m.pnr || '-'}</td>
+        <td class="${getStatusColor(m.dp1_status)}">${m.dp1_status || '-'}</td>
+        <td class="${getStatusColor(m.dp2_status)}">${m.dp2_status || '-'}</td>
+        <td class="${getStatusColor(m.fp_status)}">${m.fp_status || '-'}</td>
+        <td class="text-start small"><code>${m.tour_code || '-'}</code></td>
+        <td>${m.carrier || '-'}</td>
+        <td>${m.flight_no_out || '-'}</td>
+        <td>${m.sector_out || '-'}</td>
+        <td>${formatDate(m.dep_seg1_date)}</td>
+        <td>${formatDate(m.dep_seg2_date)}</td>
+        <td>${formatDate(m.arr_seg3_date)}</td>
+        <td>${formatDate(m.arr_seg4_date)}</td>
+        <td>${m.pattern_code || '-'}</td>
+        <td class="fw-bold">${m.passenger_count || 0}</td>
+        <td>${formatCurr(m.approved_fare)}</td>
+        <td>${formatCurr(m.selling_fare)}</td>
+        <td>${formatCurr(m.nett_selling)}</td>
+        <td>${formatCurr(m.total_selling)}</td>
+        <td>${formatCurr(m.deposit1_airlines_amount)}</td>
+        <td>${formatDate(m.deposit1_airlines_date)}</td>
+        <td>${formatDate(m.deposit1_eemw_date)}</td>
+        <td>${formatCurr(m.deposit2_airlines_amount)}</td>
+        <td>${formatDate(m.deposit2_airlines_date)}</td>
+        <td>${formatDate(m.deposit2_eemw_date)}</td>
+        <td>${formatDate(m.fullpay_airlines_date)}</td>
+        <td>${formatDate(m.fullpay_eemw_date)}</td>
+        <td class="bg-yellow-light">${formatDate(m.ticketing_deadline)}</td>
+        <td>${m.ticketing_done == 1 ? '<i class="fas fa-check-circle text-success"></i>' : '<i class="fas fa-times-circle text-muted"></i>'}</td>
+        <td>${m.ttl_days || '-'}</td>
+      `;
+      rows.appendChild(tr);
+    });
+  }
+
   async function load() {
-    const rows = document.getElementById('rows');
     try {
         const formData = new FormData(document.getElementById('filterForm'));
         const params = new URLSearchParams(formData);
@@ -133,45 +294,12 @@ $tv = isset($_GET['tv']) ? 1 : 0;
         document.getElementById('kpi_partial').textContent = json.kpi.partial;
         document.getElementById('kpi_unpaid').textContent = json.kpi.unpaid;
 
-        rows.innerHTML = '';
-        if (json.data.length === 0) {
-            rows.innerHTML = '<tr><td colspan="11" class="text-center py-4 text-muted">No movements found.</td></tr>';
-            return;
-        }
-
-        json.data.forEach(m => {
-          const tr = document.createElement('tr');
-          
-          const getStatusBadge = (status) => {
-              if (status === 'PAID') return '<span class="badge bg-success status-badge">PAID</span>';
-              if (status === 'UNPAID') return '<span class="badge bg-danger status-badge">UNPAID</span>';
-              if (status) return `<span class="badge bg-warning text-dark status-badge">${status}</span>`;
-              return '<span class="text-muted">-</span>';
-          };
-
-          tr.innerHTML = `
-            <td><strong class="text-primary">${m.pnr || '-'}</strong></td>
-            <td><code>${m.tour_code || '-'}</code></td>
-            <td>${m.agent_name || '-'}</td>
-            <td>${m.carrier || '-'}</td>
-            <td>
-                <div class="small">
-                    <strong>OUT:</strong> ${m.flight_no_out || '-'} (${m.sector_out || '-'})<br>
-                    <strong>IN:</strong> ${m.flight_no_in || '-'} (${m.sector_in || '-'})
-                </div>
-            </td>
-            <td class="fw-bold">${m.passenger_count || 0}</td>
-            <td>${getStatusBadge(m.dp1_status)}</td>
-            <td>${getStatusBadge(m.dp2_status)}</td>
-            <td>${getStatusBadge(m.fp_status)}</td>
-            <td>${m.ticketing_done == 1 ? '✅' : '❌'}</td>
-            <td><span class="badge bg-info text-dark">${m.live_status || 'SCHEDULED'}</span></td>
-          `;
-          rows.appendChild(tr);
-        });
+        renderTable('rows_umrah', json.data.umrah);
+        renderTable('rows_hajji', json.data.hajji);
 
     } catch (e) {
-        rows.innerHTML = `<tr><td colspan="11" class="text-center py-4 text-danger">Error: ${e.message}</td></tr>`;
+        console.error(e);
+        document.getElementById('rows_umrah').innerHTML = `<tr><td colspan="35" class="text-center py-4 text-danger">Error: ${e.message}</td></tr>`;
     }
   }
 

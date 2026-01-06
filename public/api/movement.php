@@ -48,7 +48,9 @@ try {
     $stmt->execute($params);
     $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    // Calculate KPIs (simplified for now based on DP/FP status)
+    // Group by category and calculate KPIs
+    $umrah = [];
+    $hajji = [];
     $kpi = [
         'total' => count($rows),
         'paid' => 0,
@@ -57,6 +59,12 @@ try {
     ];
 
     foreach ($rows as $row) {
+        if ($row['category'] === 'HAJJI') {
+            $hajji[] = $row;
+        } else {
+            $umrah[] = $row;
+        }
+
         if ($row['fp_status'] === 'PAID') $kpi['paid']++;
         elseif ($row['dp1_status'] === 'PAID' || $row['dp2_status'] === 'PAID') $kpi['partial']++;
         else $kpi['unpaid']++;
@@ -65,7 +73,10 @@ try {
     header('Content-Type: application/json');
     echo json_encode([
         'kpi' => $kpi,
-        'data' => $rows
+        'data' => [
+            'umrah' => $umrah,
+            'hajji' => $hajji
+        ]
     ]);
     exit;
 
