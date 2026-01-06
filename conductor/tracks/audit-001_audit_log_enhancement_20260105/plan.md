@@ -15,12 +15,12 @@ This plan details the steps to implement mandatory audit logging across core mod
 - [x] Task: Verify tests pass and check JSON snapshots in the `audit_logs` table. [36f6b94]
 - [x] Task: Conductor - User Manual Verification 'Master Data Audit' (Protocol in workflow.md) [36f6b94]
 
-## Phase 3: Audit Logging - Core Workflow (BookingRequest & Movement)
-- [ ] Task: Write failing unit tests for `BookingRequest.php` and `Movement.php` verifying `AuditLog` triggers.
-- [ ] Task: Implement `AuditLog::log` in `BookingRequest` (Create/Update/Delete).
-- [ ] Task: Implement `AuditLog::log` in `Movement` (Create/Update/Delete/Status Change).
-- [ ] Task: Verify tests pass and ensure full JSON snapshots are captured.
-- [ ] Task: Conductor - User Manual Verification 'Workflow Audit' (Protocol in workflow.md)
+## Phase 3: Audit Logging - Core Workflow (BookingRequest & Movement) [checkpoint: 431eca8]
+- [x] Task: Write failing unit tests for `BookingRequest.php` and `Movement.php` verifying `AuditLog` triggers. [431eca8]
+- [x] Task: Implement `AuditLog::log` in `BookingRequest` (Create/Update/Delete). [431eca8]
+- [x] Task: Implement `AuditLog::log` in `Movement` (Create/Update/Delete/Status Change). [431eca8]
+- [x] Task: Verify tests pass and ensure full JSON snapshots are captured. [431eca8]
+- [x] Task: Conductor - User Manual Verification 'Workflow Audit' (Protocol in workflow.md) [431eca8]
 
 ## Phase 4: Audit Logging - Financial (Invoice)
 - [ ] Task: Write failing unit tests for `Invoice.php` verifying `AuditLog` triggers.
