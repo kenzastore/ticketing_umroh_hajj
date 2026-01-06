@@ -16,3 +16,4 @@ storage/logs/
 Thumbs.db
 .vscode/
 .idea/
+.phpunit.cache/
