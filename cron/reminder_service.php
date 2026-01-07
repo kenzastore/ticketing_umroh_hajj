@@ -4,70 +4,123 @@ require_once __DIR__ . '/../app/models/Notification.php';
 
 echo "Running Reminder Service...\n";
 
+if (isset($pdo)) {
+    Notification::init($pdo);
+}
+
 try {
-    // 1. Check Ticketing Deadlines (Alert 3 days before)
-    $sql = "SELECT id, pnr, tour_code, ticketing_deadline FROM movements 
+    // Helper to process deadlines
+    function checkDeadline($pdo, $sql, $msgTemplate, $alertType, $checkPrefix) {
+        $stmt = $pdo->query($sql);
+        $groups = $stmt->fetchAll();
+        
+        foreach ($groups as $group) {
+            $date = $group['deadline_date'];
+            $pnr = $group['pnr'] ?? 'N/A';
+            $tourCode = $group['tour_code'] ?? 'N/A';
+            
+            $msg = sprintf($msgTemplate, $pnr, $tourCode, $date);
+            
+            // Use model method to check for duplicates
+            if (!Notification::existsUnread('movement', $group['id'], $checkPrefix)) {
+                Notification::create([
+                    'entity_type' => 'movement',
+                    'entity_id' => $group['id'],
+                    'message' => $msg,
+                    'alert_type' => $alertType
+                ]);
+                echo "Created notification: $msg\n";
+            }
+        }
+    }
+
+    // 1. Ticketing Deadlines (H-3)
+    $sqlTicketing = "SELECT id, pnr, tour_code, ticketing_deadline as deadline_date 
+            FROM movements 
             WHERE ticketing_deadline IS NOT NULL 
             AND ticketing_done = 0
             AND ticketing_deadline <= DATE_ADD(CURDATE(), INTERVAL 3 DAY)";
     
-    $stmt = $pdo->query($sql);
-    $deadlineGroups = $stmt->fetchAll();
+    checkDeadline($pdo, $sqlTicketing, 
+        "URGENT: Ticketing deadline for PNR %s (%s) is on %s.", 
+        'DEADLINE', 
+        'URGENT: Ticketing deadline'
+    );
 
-    foreach ($deadlineGroups as $group) {
-        $msg = "URGENT: Ticketing deadline for PNR {$group['pnr']} ({$group['tour_code']}) is on {$group['ticketing_deadline']}.";
-        
-        // Check if notification already exists to avoid spam
-        $check = $pdo->prepare("SELECT id FROM notifications WHERE entity_id = ? AND entity_type = 'movement' AND message LIKE ? AND is_read = 0");
-        $check->execute([$group['id'], 'URGENT: Ticketing deadline%']);
-        
-        if (!$check->fetch()) {
-            Notification::create([
-                'entity_type' => 'movement',
-                'entity_id' => $group['id'],
-                'message' => $msg,
-                'alert_type' => 'DEADLINE'
-            ]);
-            echo "Created notification for PNR {$group['pnr']}\n";
-        }
-    }
-
-    // 2. Check Deposit Airline Dates (Alert 2 days before)
-    // DP1
-    $sqlDP1 = "SELECT id, pnr, tour_code, deposit1_airlines_date FROM movements 
+    // 2. Deposit 1 (H-3)
+    // Airline
+    $sqlDP1Air = "SELECT id, pnr, tour_code, deposit1_airlines_date as deadline_date 
+               FROM movements 
                WHERE deposit1_airlines_date IS NOT NULL 
                AND dp1_status != 'PAID'
-               AND deposit1_airlines_date <= DATE_ADD(CURDATE(), INTERVAL 2 DAY)";
-    $stmtDP1 = $pdo->query($sqlDP1);
-    foreach ($stmtDP1->fetchAll() as $group) {
-        $msg = "PAYMENT: DP1 Airline for PNR {$group['pnr']} is due on {$group['deposit1_airlines_date']}.";
-        
-        $check = $pdo->prepare("SELECT id FROM notifications WHERE entity_id = ? AND entity_type = 'movement' AND message LIKE ? AND is_read = 0");
-        $check->execute([$group['id'], 'PAYMENT: DP1 Airline%']);
-        
-        if (!$check->fetch()) {
-            Notification::create(['entity_type' => 'movement', 'entity_id' => $group['id'], 'message' => $msg, 'alert_type' => 'PAYMENT']);
-            echo "Created DP1 notification for PNR {$group['pnr']}\n";
-        }
-    }
+               AND deposit1_airlines_date <= DATE_ADD(CURDATE(), INTERVAL 3 DAY)";
+    checkDeadline($pdo, $sqlDP1Air, 
+        "PAYMENT: DP1 Airline for PNR %s is due on %s.", 
+        'PAYMENT',
+        'PAYMENT: DP1 Airline'
+    );
 
-    // DP2
-    $sqlDP2 = "SELECT id, pnr, tour_code, deposit2_airlines_date FROM movements 
+    // EEMW
+    $sqlDP1Eemw = "SELECT id, pnr, tour_code, deposit1_eemw_date as deadline_date 
+               FROM movements 
+               WHERE deposit1_eemw_date IS NOT NULL 
+               AND dp1_status != 'PAID'
+               AND deposit1_eemw_date <= DATE_ADD(CURDATE(), INTERVAL 3 DAY)";
+    checkDeadline($pdo, $sqlDP1Eemw, 
+        "PAYMENT: DP1 EEMW for PNR %s is due on %s.", 
+        'PAYMENT',
+        'PAYMENT: DP1 EEMW'
+    );
+
+    // 3. Deposit 2 (H-3)
+    // Airline
+    $sqlDP2Air = "SELECT id, pnr, tour_code, deposit2_airlines_date as deadline_date 
+               FROM movements 
                WHERE deposit2_airlines_date IS NOT NULL 
                AND dp2_status != 'PAID'
-               AND deposit2_airlines_date <= DATE_ADD(CURDATE(), INTERVAL 2 DAY)";
-    $stmtDP2 = $pdo->query($sqlDP2);
-    foreach ($stmtDP2->fetchAll() as $group) {
-        $msg = "PAYMENT: DP2 Airline for PNR {$group['pnr']} is due on {$group['deposit2_airlines_date']}.";
-        
-        $check = $pdo->prepare("SELECT id FROM notifications WHERE entity_id = ? AND entity_type = 'movement' AND message LIKE ? AND is_read = 0");
-        $check->execute([$group['id'], 'PAYMENT: DP2 Airline%']);
-        
-        if (!$check->fetch()) {
-            Notification::create(['entity_type' => 'movement', 'entity_id' => $group['id'], 'message' => $msg, 'alert_type' => 'PAYMENT']);
-            echo "Created DP2 notification for PNR {$group['pnr']}\n";
-        }
-    }
+               AND deposit2_airlines_date <= DATE_ADD(CURDATE(), INTERVAL 3 DAY)";
+    checkDeadline($pdo, $sqlDP2Air, 
+        "PAYMENT: DP2 Airline for PNR %s is due on %s.", 
+        'PAYMENT',
+        'PAYMENT: DP2 Airline'
+    );
+
+    // EEMW
+    $sqlDP2Eemw = "SELECT id, pnr, tour_code, deposit2_eemw_date as deadline_date 
+               FROM movements 
+               WHERE deposit2_eemw_date IS NOT NULL 
+               AND dp2_status != 'PAID'
+               AND deposit2_eemw_date <= DATE_ADD(CURDATE(), INTERVAL 3 DAY)";
+    checkDeadline($pdo, $sqlDP2Eemw, 
+        "PAYMENT: DP2 EEMW for PNR %s is due on %s.", 
+        'PAYMENT',
+        'PAYMENT: DP2 EEMW'
+    );
+
+    // 4. Full Payment (H-3)
+    // Airline
+    $sqlFPAir = "SELECT id, pnr, tour_code, fullpay_airlines_date as deadline_date 
+               FROM movements 
+               WHERE fullpay_airlines_date IS NOT NULL 
+               AND fp_status != 'PAID'
+               AND fullpay_airlines_date <= DATE_ADD(CURDATE(), INTERVAL 3 DAY)";
+    checkDeadline($pdo, $sqlFPAir, 
+        "PAYMENT: Full Payment Airline for PNR %s is due on %s.", 
+        'PAYMENT',
+        'PAYMENT: Full Payment Airline'
+    );
+
+    // EEMW
+    $sqlFPEemw = "SELECT id, pnr, tour_code, fullpay_eemw_date as deadline_date 
+               FROM movements 
+               WHERE fullpay_eemw_date IS NOT NULL 
+               AND fp_status != 'PAID'
+               AND fullpay_eemw_date <= DATE_ADD(CURDATE(), INTERVAL 3 DAY)";
+    checkDeadline($pdo, $sqlFPEemw, 
+        "PAYMENT: Full Payment EEMW for PNR %s is due on %s.", 
+        'PAYMENT',
+        'PAYMENT: Full Payment EEMW'
+    );
 
     echo "Reminder Service finished.\n";
 

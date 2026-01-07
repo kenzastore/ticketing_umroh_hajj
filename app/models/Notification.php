@@ -52,6 +52,29 @@ class Notification {
             return false;
         }
     }
+
+    public static function existsUnread($entityType, $entityId, $messagePrefix = '') {
+        $sql = "SELECT id FROM notifications 
+                WHERE entity_type = ? 
+                AND entity_id = ? 
+                AND is_read = 0";
+        $params = [$entityType, $entityId];
+
+        if (!empty($messagePrefix)) {
+            $sql .= " AND message LIKE ?";
+            $params[] = $messagePrefix . '%';
+        }
+
+        try {
+            $stmt = self::$pdo->prepare($sql);
+            $stmt->execute($params);
+            return (bool) $stmt->fetch();
+        } catch (PDOException $e) {
+            return false;
+        }
+    }
 }
 
-Notification::init($pdo);
+if (isset($pdo)) {
+    Notification::init($pdo);
+}
