@@ -43,6 +43,15 @@ class Notification {
             return false;
         }
     }
+
+    public static function markAllAsRead() {
+        $sql = "UPDATE notifications SET is_read = 1 WHERE is_read = 0";
+        try {
+            return self::$pdo->exec($sql);
+        } catch (PDOException $e) {
+            return false;
+        }
+    }
 }
 
 Notification::init($pdo);

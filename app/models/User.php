@@ -32,17 +32,34 @@ class User {
     }
 
     /**
-     * Reads all users from the database.
+     * Reads all users from the database with pagination support.
+     * @param int|null $limit
+     * @param int $offset
      * @return array An array of user records.
      */
-    public static function readAll() {
+    public static function readAll($limit = null, $offset = 0) {
         $sql = "SELECT u.*, r.name as role_name FROM users u JOIN roles r ON u.role_id = r.id ORDER BY u.username ASC";
+        if ($limit !== null) {
+            $sql .= " LIMIT " . (int)$limit . " OFFSET " . (int)$offset;
+        }
         try {
             $stmt = self::$pdo->query($sql);
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
             error_log("Error reading all users: " . $e->getMessage());
             return [];
+        }
+    }
+
+    /**
+     * Counts total users.
+     * @return int
+     */
+    public static function countAll() {
+        try {
+            return (int)self::$pdo->query("SELECT COUNT(*) FROM users")->fetchColumn();
+        } catch (PDOException $e) {
+            return 0;
         }
     }
 

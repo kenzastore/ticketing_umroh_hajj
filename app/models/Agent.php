@@ -45,11 +45,14 @@ class Agent {
     }
 
     /**
-     * Reads all agents from the database.
+     * Reads all agents from the database with pagination.
      * @return array An array of agent records.
      */
-    public static function readAll() {
+    public static function readAll($limit = null, $offset = 0) {
         $sql = "SELECT * FROM agents ORDER BY name ASC";
+        if ($limit !== null) {
+            $sql .= " LIMIT " . (int)$limit . " OFFSET " . (int)$offset;
+        }
         try {
             $stmt = self::$pdo->query($sql);
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -57,6 +60,13 @@ class Agent {
             error_log("Error reading all agents: " . $e->getMessage());
             return [];
         }
+    }
+
+    /**
+     * Counts total agents.
+     */
+    public static function countAll() {
+        return (int)self::$pdo->query("SELECT COUNT(*) FROM agents")->fetchColumn();
     }
 
     /**

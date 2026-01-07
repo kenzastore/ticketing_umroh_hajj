@@ -33,11 +33,32 @@ $invoice = [
 $protocol = isset($_SERVER['HTTPS']) && $_SERVER['SERVER_PORT'] == 443 ? "https" : "http";
 $host = $_SERVER['HTTP_HOST'];
 $verifyUrl = "$protocol://$host/verify_receipt.php?token=" . $payment['receipt_hash'];
-$qrUrl = "https://chart.googleapis.com/chart?chs=150x150&cht=qr&chl=" . urlencode($verifyUrl) . "&choe=UTF-8";
+$qrApiUrl = "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=" . urlencode($verifyUrl);
+
+// Fetch QR code and encode as Base64 to avoid Dompdf remote fetch issues
+$qrCodeData = false;
+if (function_exists('curl_version')) {
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $qrApiUrl);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // Avoid SSL issues in some environments
+    curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+    $qrCodeData = curl_exec($ch);
+    curl_close($ch);
+}
+
+if (!$qrCodeData) {
+    $qrCodeData = @file_get_contents($qrApiUrl);
+}
+
+$qrUrl = '';
+if ($qrCodeData) {
+    $qrUrl = 'data:image/png;base64,' . base64_encode($qrCodeData);
+}
 
 // Setup Dompdf
 $options = new Options();
-$options->set('isRemoteEnabled', true); // For Google Charts QR
+$options->set('isRemoteEnabled', true);
 $dompdf = new Dompdf($options);
 
 // Load Template

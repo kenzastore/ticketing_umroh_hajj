@@ -58,29 +58,31 @@ if (isset($title)) {
                                     <a class="nav-link" href="/admin/dashboard.php">Dashboard</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" href="/admin/booking_requests.php">Requests</a>
+                                    <a class="nav-link" href="/admin/booking_requests.php">1. Requests</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" href="/admin/movement_fullview.php">Movements</a>
+                                    <a class="nav-link" href="/admin/movement_fullview.php">2. Movements</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" href="/finance/dashboard.php">Finance</a>
+                                    <a class="nav-link" href="/finance/dashboard.php">3. Finance</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" href="/finance/payment_advise_list.php">Payment Advise</a>
+                                    <a class="nav-link" href="/finance/payment_advise_list.php">4. Payment Advise</a>
                                 </li>
-                                <li class="nav-item dropdown">
-                                    <a class="nav-link dropdown-toggle" href="#" id="masterDropdown" data-bs-toggle="dropdown">
+                                <li class="nav-item">
+                                    <a class="nav-link" href="/admin/agent_summary.php">5. Summary</a>
+                                </li>
+                                <li class="nav-item dropdown border-start ms-2 ps-2">
+                                    <a class="nav-link dropdown-toggle text-info" href="#" id="masterDropdown" data-bs-toggle="dropdown">
                                         Masters
                                     </a>
                                     <ul class="dropdown-menu">
-                                        <li><a class="dropdown-item" href="/admin/masters/agents/index.php">Agents</a></li>
+                                        <li><a class="dropdown-item" href="/admin/masters/agents/index.php">Travel Agents</a></li>
                                         <li><a class="dropdown-item" href="/admin/masters/corporates/index.php">Corporates</a></li>
-                                        <li><a class="dropdown-item" href="/admin/masters/users/index.php">Users</a></li>
+                                        <li><a class="dropdown-item" href="/admin/masters/users/index.php">System Users</a></li>
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li><a class="dropdown-item" href="/admin/new_request.php">Quick New Request</a></li>
                                     </ul>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="/admin/new_request.php">New Request</a>
                                 </li>
                             <?php elseif ($_SESSION['role_name'] == 'finance'): ?>
                                 <li class="nav-item">

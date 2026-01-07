@@ -28,7 +28,14 @@ require_once __DIR__ . '/../shared/header.php';
         <h1>Booking Request #<?php echo $r['id']; ?></h1>
         <h5 class="text-muted">No: <?php echo htmlspecialchars($r['request_no'] ?? '-'); ?></h5>
     </div>
-    <a href="dashboard.php" class="btn btn-secondary">&larr; Back to Dashboard</a>
+    <div>
+        <?php if (!$r['is_converted']): ?>
+            <a href="edit_request.php?id=<?php echo $r['id']; ?>" class="btn btn-warning text-white">Edit Request</a>
+        <?php else: ?>
+            <button class="btn btn-secondary" disabled>Edit Request</button>
+        <?php endif; ?>
+        <a href="dashboard.php" class="btn btn-secondary">&larr; Back to Dashboard</a>
+    </div>
 </div>
 
 <div class="row">
@@ -139,14 +146,21 @@ require_once __DIR__ . '/../shared/header.php';
         <div class="card shadow">
             <div class="card-body">
                 <h6 class="card-title">Next Actions</h6>
-                <p class="small text-muted">
-                    This request is currently a draft/quote. To proceed with operations, it should be converted to a Movement.
-                </p>
-                <button class="btn btn-success w-100 mb-2" disabled>Convert to Movement (Coming Soon)</button>
-                <form action="delete_request_process.php" method="POST" onsubmit="return confirm('Are you sure you want to delete this request?');">
-                    <input type="hidden" name="id" value="<?php echo $r['id']; ?>">
-                    <button type="submit" class="btn btn-outline-danger w-100">Delete Request</button>
-                </form>
+                <?php if (!$r['is_converted']): ?>
+                    <p class="small text-muted">
+                        This request is currently a draft/quote. To proceed with operations, it should be converted to a Movement.
+                    </p>
+                    <a href="convert_request.php?id=<?php echo $r['id']; ?>" class="btn btn-success w-100 mb-2">Convert to Movement</a>
+                    <form action="delete_request_process.php" method="POST" onsubmit="return confirm('Are you sure you want to delete this request?');">
+                        <input type="hidden" name="id" value="<?php echo $r['id']; ?>">
+                        <button type="submit" class="btn btn-outline-danger w-100">Delete Request</button>
+                    </form>
+                <?php else: ?>
+                    <div class="alert alert-success small mb-0">
+                        <i class="fas fa-check-circle me-1"></i> This request has been converted to a Movement and is now locked.
+                    </div>
+                    <button class="btn btn-secondary w-100 mt-2" disabled>Converted</button>
+                <?php endif; ?>
             </div>
         </div>
     </div>

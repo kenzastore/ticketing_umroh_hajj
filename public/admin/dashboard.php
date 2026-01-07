@@ -53,7 +53,7 @@ require_once __DIR__ . '/../shared/header.php';
 
 <!-- Menu Grid -->
 <div class="row g-4">
-    <!-- Booking Request -->
+    <!-- 1. Booking Request -->
     <div class="col-md-4 col-sm-6">
         <a href="booking_requests.php" class="text-decoration-none">
             <div class="card shadow-sm h-100 text-center p-4 hover-scale border-primary border-top border-4">
@@ -61,14 +61,14 @@ require_once __DIR__ . '/../shared/header.php';
                     <div class="mb-3">
                         <i class="fas fa-file-contract fa-3x text-primary"></i>
                     </div>
-                    <h3 class="card-title text-primary">Booking Request</h3>
+                    <h3 class="card-title text-primary">1. Booking Request</h3>
                     <p class="card-text text-muted">Manage new and existing requests</p>
                 </div>
             </div>
         </a>
     </div>
 
-    <!-- Movement -->
+    <!-- 2. Movement -->
     <div class="col-md-4 col-sm-6">
         <a href="movement_fullview.php" class="text-decoration-none">
             <div class="card shadow-sm h-100 text-center p-4 hover-scale border-success border-top border-4">
@@ -76,29 +76,14 @@ require_once __DIR__ . '/../shared/header.php';
                     <div class="mb-3">
                         <i class="fas fa-plane fa-3x text-success"></i>
                     </div>
-                    <h3 class="card-title text-success">Movement</h3>
+                    <h3 class="card-title text-success">2. Movement</h3>
                     <p class="card-text text-muted">Monitor flight movements</p>
                 </div>
             </div>
         </a>
     </div>
 
-    <!-- Payment Report -->
-    <div class="col-md-4 col-sm-6">
-        <a href="../finance/dashboard.php" class="text-decoration-none">
-            <div class="card shadow-sm h-100 text-center p-4 hover-scale border-info border-top border-4">
-                <div class="card-body">
-                    <div class="mb-3">
-                        <i class="fas fa-chart-line fa-3x text-info"></i>
-                    </div>
-                    <h3 class="card-title text-info">Payment Report</h3>
-                    <p class="card-text text-muted">View financial reports</p>
-                </div>
-            </div>
-        </a>
-    </div>
-
-    <!-- Invoice -->
+    <!-- 3. Invoice -->
     <div class="col-md-4 col-sm-6">
         <a href="../finance/create_invoice.php" class="text-decoration-none">
             <div class="card shadow-sm h-100 text-center p-4 hover-scale border-warning border-top border-4">
@@ -106,29 +91,29 @@ require_once __DIR__ . '/../shared/header.php';
                     <div class="mb-3">
                         <i class="fas fa-file-invoice fa-3x text-warning"></i>
                     </div>
-                    <h3 class="card-title text-warning">Invoice</h3>
+                    <h3 class="card-title text-warning">3. Invoice</h3>
                     <p class="card-text text-muted">Generate and manage invoices</p>
                 </div>
             </div>
         </a>
     </div>
 
-    <!-- Rangkuman -->
+    <!-- 4. Payment Report -->
     <div class="col-md-4 col-sm-6">
-        <a href="agent_summary.php" class="text-decoration-none">
-            <div class="card shadow-sm h-100 text-center p-4 hover-scale border-secondary border-top border-4">
+        <a href="../finance/dashboard.php" class="text-decoration-none">
+            <div class="card shadow-sm h-100 text-center p-4 hover-scale border-info border-top border-4">
                 <div class="card-body">
                     <div class="mb-3">
-                        <i class="fas fa-clipboard-list fa-3x text-secondary"></i>
+                        <i class="fas fa-chart-line fa-3x text-info"></i>
                     </div>
-                    <h3 class="card-title text-secondary">Rangkuman</h3>
-                    <p class="card-text text-muted">Summary & Statistics</p>
+                    <h3 class="card-title text-info">4. Payment Report</h3>
+                    <p class="card-text text-muted">View financial reports</p>
                 </div>
             </div>
         </a>
     </div>
 
-    <!-- Payment Advise -->
+    <!-- 5. Payment Advise -->
     <div class="col-md-4 col-sm-6">
         <a href="../finance/payment_advise_list.php" class="text-decoration-none">
             <div class="card shadow-sm h-100 text-center p-4 hover-scale border-dark border-top border-4">
@@ -136,8 +121,23 @@ require_once __DIR__ . '/../shared/header.php';
                     <div class="mb-3">
                         <i class="fas fa-money-check-alt fa-3x text-dark"></i>
                     </div>
-                    <h3 class="card-title text-dark">Payment Advise</h3>
+                    <h3 class="card-title text-dark">5. Payment Advise</h3>
                     <p class="card-text text-muted">Manage payment advises</p>
+                </div>
+            </div>
+        </a>
+    </div>
+
+    <!-- 6. Rangkuman -->
+    <div class="col-md-4 col-sm-6">
+        <a href="agent_summary.php" class="text-decoration-none">
+            <div class="card shadow-sm h-100 text-center p-4 hover-scale border-secondary border-top border-4">
+                <div class="card-body">
+                    <div class="mb-3">
+                        <i class="fas fa-clipboard-list fa-3x text-secondary"></i>
+                    </div>
+                    <h3 class="card-title text-secondary">6. Summary</h3>
+                    <p class="card-text text-muted">Summary & Statistics</p>
                 </div>
             </div>
         </a>

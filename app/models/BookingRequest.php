@@ -80,13 +80,99 @@ class BookingRequest {
     }
 
     /**
-     * Reads all booking requests with their flight legs.
+     * Updates an existing booking request and its legs.
+     * @param int|string $id
+     * @param array $header
+     * @param array $legs
+     * @param int|null $userId
+     * @return bool
+     */
+    public static function update($id, array $header, array $legs = [], $userId = null) {
+        $oldRequest = self::readById($id);
+        if (!$oldRequest) return false;
+
+        try {
+            $db = self::$pdo;
+            $inTransaction = $db->inTransaction();
+            if (!$inTransaction) $db->beginTransaction();
+
+            $fields = [];
+            $params = [];
+            foreach ($header as $key => $value) {
+                $fields[] = "$key = ?";
+                $params[] = $value;
+            }
+            $params[] = $id;
+
+            if (!empty($fields)) {
+                $sqlHeader = "UPDATE booking_requests SET " . implode(', ', $fields) . " WHERE id = ?";
+                $stmtHeader = $db->prepare($sqlHeader);
+                $stmtHeader->execute($params);
+            }
+
+            // Update Legs: Simple approach - delete and recreate
+            if (!empty($legs)) {
+                $db->prepare("DELETE FROM booking_request_legs WHERE booking_request_id = ?")->execute([$id]);
+                $sqlLeg = "INSERT INTO booking_request_legs (
+                    booking_request_id, leg_no, flight_date, flight_no, sector, origin_iata, dest_iata
+                ) VALUES (?, ?, ?, ?, ?, ?, ?)";
+                $stmtLeg = $db->prepare($sqlLeg);
+                foreach ($legs as $index => $leg) {
+                    $stmtLeg->execute([
+                        $id,
+                        $leg['leg_no'] ?? ($index + 1),
+                        $leg['flight_date'] ?? null,
+                        $leg['flight_no'] ?? null,
+                        $leg['sector'] ?? null,
+                        $leg['origin_iata'] ?? null,
+                        $leg['dest_iata'] ?? null
+                    ]);
+                }
+            }
+
+            // Audit Log
+            $newRequest = self::readById($id);
+            AuditLog::log($userId, 'UPDATE', 'booking_request', $id, json_encode($oldRequest), json_encode($newRequest));
+
+            if (!$inTransaction) $db->commit();
+            return true;
+        } catch (PDOException $e) {
+            if (self::$pdo->inTransaction()) self::$pdo->rollBack();
+            error_log("Error updating booking request: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Reads booking requests with pagination and date filter support.
+     * @param int|null $limit
+     * @param int $offset
+     * @param string|null $startDate
+     * @param string|null $endDate
      * @return array
      */
-    public static function readAll() {
-        $sql = "SELECT * FROM booking_requests ORDER BY created_at DESC";
+    public static function readAll($limit = null, $offset = 0, $startDate = null, $endDate = null) {
+        $sql = "SELECT * FROM booking_requests WHERE 1=1";
+        $params = [];
+
+        if ($startDate) {
+            $sql .= " AND DATE(created_at) >= ?";
+            $params[] = $startDate;
+        }
+        if ($endDate) {
+            $sql .= " AND DATE(created_at) <= ?";
+            $params[] = $endDate;
+        }
+
+        $sql .= " ORDER BY created_at DESC";
+        
+        if ($limit !== null) {
+            $sql .= " LIMIT " . (int)$limit . " OFFSET " . (int)$offset;
+        }
+
         try {
-            $stmt = self::$pdo->query($sql);
+            $stmt = self::$pdo->prepare($sql);
+            $stmt->execute($params);
             $requests = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
             if (empty($requests)) {
@@ -112,12 +198,38 @@ class BookingRequest {
             foreach ($requests as &$req) {
                 $req['legs'] = $legsByRequest[$req['id']] ?? [];
             }
-            unset($req); // Break reference
+            unset($req);
 
             return $requests;
         } catch (PDOException $e) {
             error_log("Error reading booking requests: " . $e->getMessage());
             return [];
+        }
+    }
+
+    /**
+     * Counts total booking requests with date filter.
+     * @return int
+     */
+    public static function countAll($startDate = null, $endDate = null) {
+        $sql = "SELECT COUNT(*) FROM booking_requests WHERE 1=1";
+        $params = [];
+
+        if ($startDate) {
+            $sql .= " AND DATE(created_at) >= ?";
+            $params[] = $startDate;
+        }
+        if ($endDate) {
+            $sql .= " AND DATE(created_at) <= ?";
+            $params[] = $endDate;
+        }
+
+        try {
+            $stmt = self::$pdo->prepare($sql);
+            $stmt->execute($params);
+            return (int)$stmt->fetchColumn();
+        } catch (PDOException $e) {
+            return 0;
         }
     }
 

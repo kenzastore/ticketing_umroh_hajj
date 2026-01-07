@@ -113,15 +113,15 @@ require_once __DIR__ . '/../shared/header.php';
                 <div class="card-body">
                     <div class="mb-3">
                         <label class="form-label small">Total Pax</label>
-                        <input type="number" name="total_pax" class="form-control" value="<?= $movement['passenger_count'] ?>">
+                        <input type="number" name="total_pax" id="total_pax" class="form-control" value="<?= $movement['passenger_count'] ?>">
                     </div>
                     <div class="mb-3">
                         <label class="form-label small">Fare Per Pax</label>
-                        <input type="number" step="0.01" name="fare_per_pax" class="form-control">
+                        <input type="number" step="0.01" name="fare_per_pax" id="fare_per_pax" class="form-control">
                     </div>
                     <div class="mb-3">
                         <label class="form-label small text-primary fw-bold">Total Amount IDR</label>
-                        <input type="number" step="0.01" name="amount_idr" class="form-control form-control-lg border-primary">
+                        <input type="number" step="0.01" name="amount_idr" id="amount_idr" class="form-control form-control-lg border-primary">
                     </div>
                     <div class="alert alert-info py-2 small">
                         <strong>PNR:</strong> <?= $movement['pnr'] ?><br>
@@ -196,9 +196,54 @@ require_once __DIR__ . '/../shared/header.php';
         </div>
     </div>
 
-    <div class="text-end mb-5">
-        <button type="submit" class="btn btn-lg btn-success">Save & Generate Invoice</button>
-    </div>
-</form>
+        <div class="text-end mb-5">
 
-<?php require_once __DIR__ . '/../shared/footer.php'; ?>
+            <button type="submit" class="btn btn-lg btn-success">Save & Generate Invoice</button>
+
+        </div>
+
+    </form>
+
+    
+
+    <script>
+
+    document.addEventListener('DOMContentLoaded', function() {
+
+        const totalPaxInput = document.getElementById('total_pax');
+
+        const farePerPaxInput = document.getElementById('fare_per_pax');
+
+        const amountIdrInput = document.getElementById('amount_idr');
+
+    
+
+        function calculateHeaderTotal() {
+
+            const pax = parseFloat(totalPaxInput.value) || 0;
+
+            const fare = parseFloat(farePerPaxInput.value) || 0;
+
+            amountIdrInput.value = (pax * fare);
+
+        }
+
+    
+
+        if (totalPaxInput && farePerPaxInput && amountIdrInput) {
+
+            totalPaxInput.addEventListener('input', calculateHeaderTotal);
+
+            farePerPaxInput.addEventListener('input', calculateHeaderTotal);
+
+        }
+
+    });
+
+    </script>
+
+    
+
+    <?php require_once __DIR__ . '/../shared/footer.php'; ?>
+
+    

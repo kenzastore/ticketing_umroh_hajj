@@ -30,6 +30,12 @@ require_once __DIR__ . '/../shared/header.php';
 <div class="mb-3">
     <a href="dashboard.php" class="btn btn-secondary">&larr; Back to Finance Dashboard</a>
     <a href="print_invoice.php?id=<?php echo $invoice['id']; ?>" class="btn btn-success ms-2" target="_blank">Print Invoice</a>
+    <?php if ($invoice['status'] !== 'PAID' && $invoice['status'] !== 'VOIDED'): ?>
+        <form action="void_invoice_process.php" method="POST" class="d-inline ms-2" onsubmit="return confirm('Are you sure you want to VOID this invoice? This action is permanent.');">
+            <input type="hidden" name="id" value="<?php echo $invoice['id']; ?>">
+            <button type="submit" class="btn btn-outline-danger">Void Invoice</button>
+        </form>
+    <?php endif; ?>
 </div>
 
 <div class="card shadow mb-4">

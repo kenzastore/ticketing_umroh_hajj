@@ -43,17 +43,34 @@ class Corporate {
     }
 
     /**
-     * Reads all corporates from the database.
+     * Reads all corporates from the database with pagination support.
+     * @param int|null $limit
+     * @param int $offset
      * @return array An array of corporate records.
      */
-    public static function readAll() {
+    public static function readAll($limit = null, $offset = 0) {
         $sql = "SELECT * FROM corporates ORDER BY name ASC";
+        if ($limit !== null) {
+            $sql .= " LIMIT " . (int)$limit . " OFFSET " . (int)$offset;
+        }
         try {
             $stmt = self::$pdo->query($sql);
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
             error_log("Error reading all corporates: " . $e->getMessage());
             return [];
+        }
+    }
+
+    /**
+     * Counts total corporates.
+     * @return int
+     */
+    public static function countAll() {
+        try {
+            return (int)self::$pdo->query("SELECT COUNT(*) FROM corporates")->fetchColumn();
+        } catch (PDOException $e) {
+            return 0;
         }
     }
 

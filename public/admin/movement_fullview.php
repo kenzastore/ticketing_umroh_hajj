@@ -39,13 +39,20 @@ $tv = isset($_GET['tv']) ? 1 : 0;
     <div class="d-none d-md-block">
         <a href="dashboard.php" class="btn btn-outline-secondary btn-sm">Dashboard</a>
         <button class="btn btn-primary btn-sm" onclick="load()">Refresh Data</button>
-        <a href="?tv=<?= $tv ? 0 : 1 ?>" class="btn btn-dark btn-sm"><?= $tv ? 'Normal View' : 'Monitor Mode' ?></a>
+        <?php 
+            $params = $_GET; 
+            if (isset($params['tv'])) unset($params['tv']); 
+            else $params['tv'] = 1;
+            $newQuery = http_build_query($params);
+        ?>
+        <a href="?<?= $newQuery ?>" class="btn btn-dark btn-sm me-2"><?= $tv ? 'Normal View' : 'Monitor Mode' ?></a>
+        <a href="../logout.php" class="btn btn-outline-danger btn-sm"><i class="fas fa-sign-out-alt me-1"></i>Logout</a>
     </div>
   </div>
 
   <!-- KPI Summary -->
   <div class="row g-2 mb-3">
-    <div class="col-md-3">
+    <div class="col">
         <div class="card border-0 shadow-sm border-start border-primary border-4">
             <div class="card-body py-2">
                 <div class="text-xs text-muted">TOTAL GROUPS</div>
@@ -53,7 +60,7 @@ $tv = isset($_GET['tv']) ? 1 : 0;
             </div>
         </div>
     </div>
-    <div class="col-md-3">
+    <div class="col">
         <div class="card border-0 shadow-sm border-start border-success border-4">
             <div class="card-body py-2">
                 <div class="text-xs text-muted">FULL PAYMENT</div>
@@ -61,7 +68,7 @@ $tv = isset($_GET['tv']) ? 1 : 0;
             </div>
         </div>
     </div>
-    <div class="col-md-3">
+    <div class="col">
         <div class="card border-0 shadow-sm border-start border-warning border-4">
             <div class="card-body py-2">
                 <div class="text-xs text-muted">PARTIAL PAYMENT (DP)</div>
@@ -69,11 +76,19 @@ $tv = isset($_GET['tv']) ? 1 : 0;
             </div>
         </div>
     </div>
-    <div class="col-md-3">
+    <div class="col">
         <div class="card border-0 shadow-sm border-start border-danger border-4">
             <div class="card-body py-2">
                 <div class="text-xs text-muted">UNPAID</div>
                 <div class="h4 mb-0 fw-bold text-danger" id="kpi_unpaid">0</div>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card border-0 shadow-sm border-start border-info border-4">
+            <div class="card-body py-2">
+                <div class="text-xs text-muted">TICKETING DONE</div>
+                <div class="h4 mb-0 fw-bold text-info" id="kpi_done">0</div>
             </div>
         </div>
     </div>
@@ -82,25 +97,63 @@ $tv = isset($_GET['tv']) ? 1 : 0;
   <!-- Filters -->
   <div class="card border-0 shadow-sm mb-3">
     <div class="card-body py-2">
-        <form class="row g-2 align-items-center" id="filterForm">
+        <form class="row g-2 align-items-center" id="filterForm" onsubmit="event.preventDefault(); resetPagesAndLoad();">
+            <input type="hidden" name="page_umrah" id="page_umrah" value="1">
+            <input type="hidden" name="page_hajji" id="page_hajji" value="1">
             <div class="col-md-2">
-                <input type="date" name="date" class="form-control form-control-sm">
+                <div class="input-group input-group-sm">
+                    <span class="input-group-text bg-light">Start</span>
+                    <input type="date" name="start_date" class="form-control" value="<?php echo date('Y-m-01'); ?>">
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="input-group input-group-sm">
+                    <span class="input-group-text bg-light">End</span>
+                    <input type="date" name="end_date" class="form-control" value="<?php echo date('Y-m-t'); ?>">
+                </div>
+            </div>
+            <div class="col-md-2">
+                <select name="category_filter" id="category_filter" class="form-select form-select-sm" onchange="resetPagesAndLoad()">
+                    <option value="BOTH">Show Both</option>
+                    <option value="UMRAH">Umrah Only</option>
+                    <option value="HAJJI">Hajji Only</option>
+                </select>
             </div>
             <div class="col-md-3">
                 <input type="text" name="q" class="form-control form-control-sm" placeholder="Search Agent, PNR, or Tour Code...">
             </div>
             <div class="col-md-2">
-                <button type="button" class="btn btn-sm btn-primary w-100" onclick="load()">Apply Filter</button>
+                <div class="input-group input-group-sm">
+                    <span class="input-group-text bg-light">Show</span>
+                    <select name="limit" class="form-select" onchange="resetPagesAndLoad()">
+                        <option value="10">10 lines</option>
+                        <option value="15">15 lines</option>
+                        <option value="20">20 lines</option>
+                        <option value="25">25 lines</option>
+                        <option value="40">40 lines</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-3 d-flex gap-1">
+                <button type="submit" class="btn btn-sm btn-primary w-100">
+                    <i class="fas fa-filter me-1"></i>Apply
+                </button>
+                <button type="button" class="btn btn-sm btn-outline-secondary w-100" onclick="clearFilters()">
+                    <i class="fas fa-eraser me-1"></i>Clear
+                </button>
             </div>
         </form>
     </div>
   </div>
 
   <!-- Umrah Section -->
-  <h5 class="fw-bold text-primary mb-2"><i class="fas fa-kaaba me-2"></i>UMRAH MOVEMENT</h5>
-  <div class="table-container mb-4">
-    <div class="table-responsive">
-      <table class="table table-bordered table-sm hover-scale align-middle mb-0">
+  <h5 class="fw-bold text-primary mb-2" id="header_umrah"><i class="fas fa-kaaba me-2"></i>UMRAH MOVEMENT</h5>
+  <div class="table-container mb-4 px-2 py-1" id="section_umrah">
+    <div id="top-scroll-umrah" style="overflow-x: auto; overflow-y: hidden; height: 15px; display: none;">
+        <div style="height: 1px;"></div>
+    </div>
+    <div class="table-responsive" id="resp-umrah">
+      <table id="table_umrah" class="table table-bordered table-sm hover-scale align-middle mb-0">
         <thead class="bg-dark text-white">
           <tr class="text-xs">
             <th rowspan="2">NO</th>
@@ -113,6 +166,8 @@ $tv = isset($_GET['tv']) ? 1 : 0;
             <th rowspan="2">FLT NO</th>
             <th rowspan="2">SECTOR</th>
             <th colspan="4" class="bg-primary">SCHEDULE (OUT/IN)</th>
+            <th rowspan="2">SECTOR</th>
+            <th rowspan="2">FLT NO</th>
             <th rowspan="2">PTRN</th>
             <th rowspan="2">PAX</th>
             <th colspan="4" class="bg-success">PRICING (IDR)</th>
@@ -120,8 +175,14 @@ $tv = isset($_GET['tv']) ? 1 : 0;
             <th colspan="3" class="bg-info">2ND DEPOSIT</th>
             <th colspan="2" class="bg-info">FULLPAY</th>
             <th rowspan="2">TIME LIMIT</th>
+            <th rowspan="2" class="bg-yellow-light">BAL NETT</th>
+            <th rowspan="2" class="bg-yellow-light">BAL SELL</th>
             <th rowspan="2">DONE</th>
+            <th rowspan="2">BELONG TO</th>
+            <th rowspan="2">DUR</th>
+            <th rowspan="2">ADD-1</th>
             <th rowspan="2">TTL</th>
+            <th rowspan="2" class="bg-dark">ACTIONS</th>
           </tr>
           <tr class="text-xs">
             <th class="bg-orange">DP1</th>
@@ -150,13 +211,18 @@ $tv = isset($_GET['tv']) ? 1 : 0;
         </tbody>
       </table>
     </div>
+    <!-- Umrah Pagination -->
+    <div id="pagination_umrah" class="mt-2"></div>
   </div>
 
   <!-- Hajji Section -->
-  <h5 class="fw-bold text-danger mb-2"><i class="fas fa-mosque me-2"></i>HAJJI MOVEMENT</h5>
-  <div class="table-container">
-    <div class="table-responsive">
-      <table class="table table-bordered table-sm hover-scale align-middle mb-0">
+  <h5 class="fw-bold text-danger mb-2" id="header_hajji"><i class="fas fa-mosque me-2"></i>HAJJI MOVEMENT</h5>
+  <div class="table-container px-2 py-1" id="section_hajji">
+    <div id="top-scroll-hajji" style="overflow-x: auto; overflow-y: hidden; height: 15px; display: none;">
+        <div style="height: 1px;"></div>
+    </div>
+    <div class="table-responsive" id="resp-hajji">
+      <table id="table_hajji" class="table table-bordered table-sm hover-scale align-middle mb-0">
         <thead class="bg-dark text-white">
           <tr class="text-xs">
             <th rowspan="2">NO</th>
@@ -169,6 +235,8 @@ $tv = isset($_GET['tv']) ? 1 : 0;
             <th rowspan="2">FLT NO</th>
             <th rowspan="2">SECTOR</th>
             <th colspan="4" class="bg-primary">SCHEDULE (OUT/IN)</th>
+            <th rowspan="2">SECTOR</th>
+            <th rowspan="2">FLT NO</th>
             <th rowspan="2">PTRN</th>
             <th rowspan="2">PAX</th>
             <th colspan="4" class="bg-success">PRICING (IDR)</th>
@@ -176,8 +244,14 @@ $tv = isset($_GET['tv']) ? 1 : 0;
             <th colspan="3" class="bg-info">2ND DEPOSIT</th>
             <th colspan="2" class="bg-info">FULLPAY</th>
             <th rowspan="2">TIME LIMIT</th>
+            <th rowspan="2" class="bg-yellow-light">BAL NETT</th>
+            <th rowspan="2" class="bg-yellow-light">BAL SELL</th>
             <th rowspan="2">DONE</th>
+            <th rowspan="2">BELONG TO</th>
+            <th rowspan="2">DUR</th>
+            <th rowspan="2">ADD-1</th>
             <th rowspan="2">TTL</th>
+            <th rowspan="2" class="bg-dark">ACTIONS</th>
           </tr>
           <tr class="text-xs">
             <th class="bg-orange">DP1</th>
@@ -206,7 +280,11 @@ $tv = isset($_GET['tv']) ? 1 : 0;
         </tbody>
       </table>
     </div>
+    <!-- Hajji Pagination -->
+    <div id="pagination_hajji" class="mt-2"></div>
   </div>
+
+  <!-- Remove old Pagination container -->
 </div>
 
 <script>
@@ -222,6 +300,7 @@ $tv = isset($_GET['tv']) ? 1 : 0;
   }
 
   function renderTable(containerId, data) {
+    console.log("Rendering table " + containerId + " with data:", data);
     const rows = document.getElementById(containerId);
     rows.innerHTML = '';
     if (data.length === 0) {
@@ -231,7 +310,7 @@ $tv = isset($_GET['tv']) ? 1 : 0;
 
     data.forEach((m, index) => {
       const tr = document.createElement('tr');
-      tr.className = 'text-center';
+      tr.className = 'text-center' + (m.ticketing_done == 1 ? ' table-success' : '');
       
       const getStatusColor = (status) => {
           if (status === 'PAID') return 'bg-success text-white';
@@ -257,6 +336,8 @@ $tv = isset($_GET['tv']) ? 1 : 0;
         <td>${formatDate(m.dep_seg2_date)}</td>
         <td>${formatDate(m.arr_seg3_date)}</td>
         <td>${formatDate(m.arr_seg4_date)}</td>
+        <td>${m.sector_in || '-'}</td>
+        <td>${m.flight_no_in || '-'}</td>
         <td>${m.pattern_code || '-'}</td>
         <td class="fw-bold">${m.passenger_count || 0}</td>
         <td>${formatCurr(m.approved_fare)}</td>
@@ -272,17 +353,106 @@ $tv = isset($_GET['tv']) ? 1 : 0;
         <td>${formatDate(m.fullpay_airlines_date)}</td>
         <td>${formatDate(m.fullpay_eemw_date)}</td>
         <td class="bg-yellow-light">${formatDate(m.ticketing_deadline)}</td>
+        <td class="bg-yellow-light">${formatCurr(m.nett_balance_amount)}</td>
+        <td class="bg-yellow-light">${formatCurr(m.sell_balance_amount)}</td>
         <td>${m.ticketing_done == 1 ? '<i class="fas fa-check-circle text-success"></i>' : '<i class="fas fa-times-circle text-muted"></i>'}</td>
+        <td>${m.belonging_to || '-'}</td>
+        <td>${m.duration_days || '-'}</td>
+        <td>${m.add1_days || '-'}</td>
         <td>${m.ttl_days || '-'}</td>
+        <td>
+            <a href="edit_movement.php?id=${m.id}" class="btn btn-xs btn-outline-primary shadow-sm" style="font-size: 0.65rem;">
+                <i class="fas fa-edit"></i> Edit
+            </a>
+        </td>
       `;
       rows.appendChild(tr);
     });
+  }
+
+  function renderPagination(pg, type) {
+      const containerId = type === 'UMRAH' ? 'pagination_umrah' : 'pagination_hajji';
+      const container = document.getElementById(containerId);
+      if (!pg || pg.totalPages <= 1) {
+          container.innerHTML = '';
+          return;
+      }
+
+      let html = `<nav><ul class="pagination pagination-sm justify-content-center">`;
+      
+      // Prev
+      html += `<li class="page-item ${pg.currentPage <= 1 ? 'disabled' : ''}">
+                <a class="page-link" href="#" onclick="changePage(${pg.currentPage - 1}, '${type}')">Previous</a>
+              </li>`;
+
+      for (let i = 1; i <= pg.totalPages; i++) {
+          html += `<li class="page-item ${i === pg.currentPage ? 'active' : ''}">
+                    <a class="page-link" href="#" onclick="changePage(${i}, '${type}')">${i}</a>
+                  </li>`;
+      }
+
+      // Next
+      html += `<li class="page-item ${pg.currentPage >= pg.totalPages ? 'disabled' : ''}">
+                <a class="page-link" href="#" onclick="changePage(${pg.currentPage + 1}, '${type}')">Next</a>
+              </li>`;
+
+      html += `</ul></nav>`;
+      html += `<div class="text-center text-muted small">Showing ${pg.totalItems} total groups</div>`;
+      container.innerHTML = html;
+  }
+
+  function changePage(page, type) {
+      if (type === 'UMRAH') {
+          document.getElementById('page_umrah').value = page;
+      } else {
+          document.getElementById('page_hajji').value = page;
+      }
+      load();
+  }
+
+  function resetPagesAndLoad() {
+      document.getElementById('page_umrah').value = 1;
+      document.getElementById('page_hajji').value = 1;
+      load();
+  }
+
+  function clearFilters() {
+      document.getElementById('filterForm').reset();
+      resetPagesAndLoad();
+  }
+
+  function setupDoubleScroll(topId, respId, tableId) {
+      const top = document.getElementById(topId);
+      const resp = document.getElementById(respId);
+      const table = document.getElementById(tableId);
+      const spacer = top.querySelector('div');
+
+      if (!table || !resp || !top) return;
+
+      const sync = () => {
+          if (table.offsetWidth > resp.offsetWidth) {
+              top.style.display = 'block';
+              spacer.style.width = table.offsetWidth + 'px';
+              top.scrollLeft = resp.scrollLeft;
+          } else {
+              top.style.display = 'none';
+          }
+      };
+
+      top.onscroll = () => { resp.scrollLeft = top.scrollLeft; };
+      resp.onscroll = () => { top.scrollLeft = resp.scrollLeft; };
+
+      sync();
+      // Use a small timeout to ensure DOM is fully rendered
+      setTimeout(sync, 100);
+      window.addEventListener('resize', sync);
   }
 
   async function load() {
     try {
         const formData = new FormData(document.getElementById('filterForm'));
         const params = new URLSearchParams(formData);
+        params.append('_', new Date().getTime()); // Cache buster
         const res = await fetch('../api/movement.php?' + params.toString());
         const json = await res.json();
 
@@ -293,9 +463,33 @@ $tv = isset($_GET['tv']) ? 1 : 0;
         document.getElementById('kpi_paid').textContent = json.kpi.paid;
         document.getElementById('kpi_partial').textContent = json.kpi.partial;
         document.getElementById('kpi_unpaid').textContent = json.kpi.unpaid;
+        document.getElementById('kpi_done').textContent = json.kpi.done;
 
-        renderTable('rows_umrah', json.data.umrah);
-        renderTable('rows_hajji', json.data.hajji);
+        const cat = document.getElementById('category_filter').value;
+
+        // Umrah visibility
+        if (cat === 'BOTH' || cat === 'UMRAH') {
+            document.getElementById('header_umrah').style.display = 'block';
+            document.getElementById('section_umrah').style.display = 'block';
+            renderTable('rows_umrah', json.umrah.data);
+            renderPagination(json.umrah.pagination, 'UMRAH');
+            setupDoubleScroll('top-scroll-umrah', 'resp-umrah', 'table_umrah');
+        } else {
+            document.getElementById('header_umrah').style.display = 'none';
+            document.getElementById('section_umrah').style.display = 'none';
+        }
+
+        // Hajji visibility
+        if (cat === 'BOTH' || cat === 'HAJJI') {
+            document.getElementById('header_hajji').style.display = 'block';
+            document.getElementById('section_hajji').style.display = 'block';
+            renderTable('rows_hajji', json.hajji.data);
+            renderPagination(json.hajji.pagination, 'HAJJI');
+            setupDoubleScroll('top-scroll-hajji', 'resp-hajji', 'table_hajji');
+        } else {
+            document.getElementById('header_hajji').style.display = 'none';
+            document.getElementById('section_hajji').style.display = 'none';
+        }
 
     } catch (e) {
         console.error(e);

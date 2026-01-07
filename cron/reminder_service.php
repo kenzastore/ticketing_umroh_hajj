@@ -41,7 +41,32 @@ try {
     $stmtDP1 = $pdo->query($sqlDP1);
     foreach ($stmtDP1->fetchAll() as $group) {
         $msg = "PAYMENT: DP1 Airline for PNR {$group['pnr']} is due on {$group['deposit1_airlines_date']}.";
-        Notification::create(['entity_type' => 'movement', 'entity_id' => $group['id'], 'message' => $msg, 'alert_type' => 'PAYMENT']);
+        
+        $check = $pdo->prepare("SELECT id FROM notifications WHERE entity_id = ? AND entity_type = 'movement' AND message LIKE ? AND is_read = 0");
+        $check->execute([$group['id'], 'PAYMENT: DP1 Airline%']);
+        
+        if (!$check->fetch()) {
+            Notification::create(['entity_type' => 'movement', 'entity_id' => $group['id'], 'message' => $msg, 'alert_type' => 'PAYMENT']);
+            echo "Created DP1 notification for PNR {$group['pnr']}\n";
+        }
+    }
+
+    // DP2
+    $sqlDP2 = "SELECT id, pnr, tour_code, deposit2_airlines_date FROM movements 
+               WHERE deposit2_airlines_date IS NOT NULL 
+               AND dp2_status != 'PAID'
+               AND deposit2_airlines_date <= DATE_ADD(CURDATE(), INTERVAL 2 DAY)";
+    $stmtDP2 = $pdo->query($sqlDP2);
+    foreach ($stmtDP2->fetchAll() as $group) {
+        $msg = "PAYMENT: DP2 Airline for PNR {$group['pnr']} is due on {$group['deposit2_airlines_date']}.";
+        
+        $check = $pdo->prepare("SELECT id FROM notifications WHERE entity_id = ? AND entity_type = 'movement' AND message LIKE ? AND is_read = 0");
+        $check->execute([$group['id'], 'PAYMENT: DP2 Airline%']);
+        
+        if (!$check->fetch()) {
+            Notification::create(['entity_type' => 'movement', 'entity_id' => $group['id'], 'message' => $msg, 'alert_type' => 'PAYMENT']);
+            echo "Created DP2 notification for PNR {$group['pnr']}\n";
+        }
     }
 
     echo "Reminder Service finished.\n";

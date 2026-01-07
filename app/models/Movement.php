@@ -33,12 +33,13 @@ class Movement {
     }
 
     /**
-     * Creates a new movement.
+     * Creates a new movement with optional flight legs.
      * @param array $data
+     * @param array $legs
      * @param int|null $userId
      * @return int|false
      */
-    public static function create(array $data, $userId = null) {
+    public static function create(array $data, array $legs = [], $userId = null) {
         $fields = array_keys($data);
         if (empty($fields)) return false;
 
@@ -54,6 +55,30 @@ class Movement {
             $stmt = $db->prepare($sql);
             $stmt->execute(array_values($data));
             $id = $db->lastInsertId();
+
+            // Insert Flight Legs if provided
+            if (!empty($legs)) {
+                $sqlLeg = "INSERT INTO flight_legs (
+                    movement_id, leg_no, direction, carrier, flight_no, sector, 
+                    origin_iata, dest_iata, scheduled_departure, scheduled_arrival, time_range
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                $stmtLeg = $db->prepare($sqlLeg);
+                foreach ($legs as $index => $leg) {
+                    $stmtLeg->execute([
+                        $id,
+                        $leg['leg_no'] ?? ($index + 1),
+                        $leg['direction'] ?? 'OUT',
+                        $leg['carrier'] ?? $data['carrier'] ?? null,
+                        $leg['flight_no'] ?? null,
+                        $leg['sector'] ?? null,
+                        $leg['origin_iata'] ?? null,
+                        $leg['dest_iata'] ?? null,
+                        $leg['flight_date'] ?? $leg['scheduled_departure'] ?? null, // handle both formats
+                        $leg['scheduled_arrival'] ?? null,
+                        $leg['time_range'] ?? null
+                    ]);
+                }
+            }
 
             // Audit Log
             $newMovement = self::readById($id);
