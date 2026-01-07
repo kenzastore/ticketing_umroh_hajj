@@ -24,6 +24,41 @@ class Notification {
         }
     }
 
+    public static function getAll($filters = []) {
+        $sql = "SELECT * FROM notifications WHERE 1=1";
+        $params = [];
+
+        if (isset($filters['status'])) {
+            if ($filters['status'] === 'unread') {
+                $sql .= " AND is_read = 0";
+            } elseif ($filters['status'] === 'read') {
+                $sql .= " AND is_read = 1";
+            }
+        }
+
+        if (isset($filters['type']) && $filters['type'] !== 'all' && !empty($filters['type'])) {
+            $sql .= " AND alert_type = ?";
+            $params[] = $filters['type'];
+        }
+
+        $sql .= " ORDER BY created_at DESC";
+
+        if (isset($filters['limit'])) {
+            $sql .= " LIMIT " . (int)$filters['limit'];
+            if (isset($filters['offset'])) {
+                $sql .= " OFFSET " . (int)$filters['offset'];
+            }
+        }
+
+        try {
+            $stmt = self::$pdo->prepare($sql);
+            $stmt->execute($params);
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            return [];
+        }
+    }
+
     public static function getUnread() {
         $sql = "SELECT * FROM notifications WHERE is_read = 0 ORDER BY created_at DESC";
         try {

@@ -58,4 +58,33 @@ class NotificationModelTest extends TestCase {
         $exists = Notification::existsUnread('order', 101, 'Order');
         $this->assertTrue($exists);
     }
+
+    public function testGetAll() {
+        // Expect query with filtering
+        $this->pdo->expects($this->once())
+            ->method('prepare')
+            ->with($this->stringContains('SELECT * FROM notifications'))
+            ->willReturn($this->stmt);
+        
+        $this->stmt->expects($this->once())
+            ->method('execute')
+            ->willReturn(true);
+            
+        $this->stmt->expects($this->once())
+            ->method('fetchAll')
+            ->willReturn([]);
+
+        $results = Notification::getAll(['status' => 'unread']);
+        $this->assertIsArray($results);
+    }
+
+    public function testMarkAllAsRead() {
+        $this->pdo->expects($this->once())
+            ->method('exec')
+            ->with($this->stringContains('UPDATE notifications SET is_read = 1'))
+            ->willReturn(1);
+
+        $result = Notification::markAllAsRead();
+        $this->assertEquals(1, $result);
+    }
 }
