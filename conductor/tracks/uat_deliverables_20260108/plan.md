@@ -11,7 +11,7 @@
 - [x] Task: Develop Test Scenarios for "Request to Movement Conversion". <!-- 63f84aa -->
 - [x] Task: Develop Test Scenarios for "Movement Dashboard & FullView" (Filtering, Data Accuracy, Status Updates). <!-- 32a7c59 -->
 - [x] Task: Develop Test Scenarios for "Time Limit Reminders" (H-3 Notification logic). <!-- e09b84e -->
-- [ ] Task: Conductor - User Manual Verification 'Operational Workflow Scenarios' (Protocol in workflow.md)
+- [~] Task: Conductor - User Manual Verification 'Operational Workflow Scenarios' (Protocol in workflow.md)
 
 ## Phase 3: Financial Workflow & Security Scenarios
 - [ ] Task: Develop Test Scenarios for "Invoice Generation" (Internal vs. External, Data Integrity).
