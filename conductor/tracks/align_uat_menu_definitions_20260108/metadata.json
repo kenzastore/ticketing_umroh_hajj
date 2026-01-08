@@ -1,0 +1,8 @@
+{
+  "track_id": "align_uat_menu_definitions_20260108",
+  "type": "chore",
+  "status": "new",
+  "created_at": "2026-01-08T16:00:00Z",
+  "updated_at": "2026-01-08T16:00:00Z",
+  "description": "Align UAT Scenarios with confirmed menu definitions (Internal = Payment Advice, External = Invoice)."
+}

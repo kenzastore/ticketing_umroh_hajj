@@ -1,0 +1,14 @@
+# Plan: Align UAT Scenarios with Menu Definitions
+
+## Phase 1: Update UAT Scenarios
+- [ ] Task: Refactor `05_invoice_generation.md` to focus strictly on "External Invoice" (Invoice Menu).
+- [ ] Task: Refactor `06_payment_recording_and_reconciliation.md` to emphasize "Internal Invoice" (Payment Advice) details.
+- [ ] Task: Conductor - User Manual Verification 'Update UAT Scenarios' (Protocol in workflow.md)
+
+## Phase 2: Terminology Synchronization
+- [ ] Task: Update `uat_master_plan.md` index with "Internal (Payment Advice)" and "External (Invoice)" labels.
+- [ ] Task: Conductor - User Manual Verification 'Terminology Synchronization' (Protocol in workflow.md)
+
+## Phase 3: Final Validation
+- [ ] Task: Run automated UAT readiness tests to ensure documentation integrity.
+- [ ] Task: Conductor - User Manual Verification 'Final Validation' (Protocol in workflow.md)
