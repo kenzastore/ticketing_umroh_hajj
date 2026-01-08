@@ -67,13 +67,13 @@ function renderDeadlineList($deadlines, $dateField) {
 <!-- Urgent Deadlines Widget -->
 <div class="row mb-5" id="time-limit-section">
     <div class="col-12">
-        <div class="card border-danger shadow h-100 py-2 border-start border-5">
+        <div class="card border-danger shadow py-2 border-start border-5">
             <div class="card-body">
                 <div class="d-flex align-items-center mb-3">
                     <div class="text-xs fw-bold text-danger text-uppercase">Urgent Deadlines (H-3 & Past Due)</div>
                 </div>
                 
-                <ul class="nav nav-tabs nav-fill mb-3" id="deadlineTabs" role="tablist">
+                <ul class="nav nav-tabs nav-fill mb-3" id="deadlineTabs" role="tablist" style="position: relative; z-index: 5;">
                     <li class="nav-item" role="presentation">
                         <button class="nav-link active py-1" id="ticketing-tab" data-bs-toggle="tab" data-bs-target="#ticketing" type="button" role="tab">
                             Ticketing <span class="badge bg-danger rounded-pill ms-1"><?= count($ticketingDeadlines) ?></span>
