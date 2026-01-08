@@ -2,15 +2,15 @@
 
 ## Tasks
 
-### Phase 1: Backend Enhancements
-- [x] **Task 1: Write TDD Tests for Deadline Retrieval**
+### Phase 1: Backend Enhancements [checkpoint: 7bdff4c]
+- [x] **Task 1: Write TDD Tests for Deadline Retrieval** f6c3e86
     -   **File:** `tests/MovementDeadlineTest.php` (New)
     -   **Action:** Write tests for retrieving Ticketing, DP1, DP2, and FP deadlines.
     -   **Criteria:** Verify inclusion of past-due items and correct sorting.
-- [x] **Task 2: Update Movement Model**
+- [x] **Task 2: Update Movement Model** f6c3e86
     -   **File:** `app/models/Movement.php`
     -   **Action:** Refactor `getUpcomingDeadlines` (or add specific methods) to support the four categories and past-due logic.
-- [ ] **Task 3: Conductor - User Manual Verification 'Phase 1: Backend Enhancements' (Protocol in workflow.md)**
+- [x] **Task 3: Conductor - User Manual Verification 'Phase 1: Backend Enhancements' (Protocol in workflow.md)** 7bdff4c
 
 ### Phase 2: Dashboard UI Refactor
 - [ ] **Task 4: Implement Tabbed UI Structure**
