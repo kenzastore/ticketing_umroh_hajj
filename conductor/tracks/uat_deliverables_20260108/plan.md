@@ -8,7 +8,7 @@
 
 ## Phase 2: Operational Workflow Scenarios
 - [x] Task: Develop Test Scenarios for "New Booking Request" (Validation, Multi-segment, Submission). <!-- 59b5ae7 -->
-- [ ] Task: Develop Test Scenarios for "Request to Movement Conversion".
+- [x] Task: Develop Test Scenarios for "Request to Movement Conversion". <!-- 63f84aa -->
 - [ ] Task: Develop Test Scenarios for "Movement Dashboard & FullView" (Filtering, Data Accuracy, Status Updates).
 - [ ] Task: Develop Test Scenarios for "Time Limit Reminders" (H-3 Notification logic).
 - [ ] Task: Conductor - User Manual Verification 'Operational Workflow Scenarios' (Protocol in workflow.md)
