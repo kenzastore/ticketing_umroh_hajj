@@ -12,10 +12,12 @@ class UatScenarioPaymentTest extends TestCase
         
         $content = file_get_contents($scenarioPath);
         
-        $this->assertStringContainsString('# UAT Scenario: Payment Recording & Reconciliation', $content);
+        $this->assertStringContainsString('# UAT Scenario: Payment Recording & Internal Invoice (Payment Advice)', $content);
         $this->assertStringContainsString('**Module:** Payment Tracking', $content);
         $this->assertStringContainsString('Payment Report', $content);
-        $this->assertStringContainsString('Payment Advise', $content);
+        $this->assertStringContainsString('Internal Invoice (Payment Advice)', $content);
+        $this->assertStringContainsString('Top Up Amount', $content);
+        $this->assertStringContainsString('Bank Details (Remitter vs Recipient)', $content);
         $this->assertStringContainsString('Receipt', $content);
     }
 }

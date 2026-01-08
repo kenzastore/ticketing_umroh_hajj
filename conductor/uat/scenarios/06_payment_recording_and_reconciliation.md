@@ -1,4 +1,4 @@
-# UAT Scenario: Payment Recording & Reconciliation
+# UAT Scenario: Payment Recording & Internal Invoice (Payment Advice)
 
 ## Scenario ID: UAT-FIN-02
 **Module:** Payment Tracking
@@ -6,7 +6,7 @@
 **Priority:** High
 
 ## Description
-Validate the process of recording incoming payments (DP/FP) from agents, generating receipts, and reconciling with outgoing Payment Advises (to airlines).
+Validate the process of recording incoming payments (DP/FP) from agents, generating receipts, and generating the **Internal Invoice (Payment Advice)** for airline transfers and internal cost tracking.
 
 ## Prerequisites
 - User is logged in as Finance.
@@ -18,15 +18,18 @@ Validate the process of recording incoming payments (DP/FP) from agents, generat
 | 1    | Navigate to "Record Payment". | Payment entry form is displayed. |
 | 2    | Select an Invoice or Movement/Tour Code. | System identifies the pending amount and payment stage (DP1/DP2/FP). |
 | 3    | Enter payment details (Date, Amount, Bank) and upload proof of payment. | Entry is successful. |
-| 4    | Click "Save Payment". | Payment is recorded, and status is updated in Movement/Invoice. |
-| 5    | Click "Generate Receipt". | A digital receipt (PDF) is generated for the agent. |
-| 6    | Navigate to "Payment Report". | Verify the new payment appears in the rekap/report. |
-| 7    | Navigate to "Payment Advise" list. | Create or view a Payment Advise for an airline to confirm top-up/payment. |
-| 8    | Verify that Payment Report (incoming) and Payment Advise (outgoing) can be cross-referenced by Tour Code or PNR. | Reconciliation is possible. |
+| 4    | Click "Save Payment" and then "Generate Receipt". | Payment is recorded, and a digital receipt (PDF) is generated for the agent. |
+| 5    | Navigate to "Payment Advice" (Internal Invoice) menu. | List of payment advises is displayed. |
+| 6    | Click "Create New Advice" and select the Movement/PNR. | System pre-fills internal cost data (Approved Fare, Seats). |
+| 7    | Verify **Top Up Amount** and airline transfer details (20%/80% logic). | Calculations match internal cost requirements. |
+| 8    | Validate **Bank Details (Remitter vs Recipient)** for the airline transfer. | Remitter (EEMW) and Recipient (Airline) details are accurate. |
+| 9    | Verify that **Tour Code/PNR** matches the Movement for internal tracking. | Internal cost tracking is correctly linked. |
+| 10   | (If applicable) Review **Profit Margins** or internal markup notes. | Internal financial visibility is confirmed. |
+| 11   | Save and Verify that the new payment appears in the "Payment Report". | Reconciliation between incoming and outgoing flows is possible. |
 
 ## Expected Result
-Incoming payments are accurately recorded, receipts are generated, and the system provides clear reporting for financial reconciliation.
+Incoming payments are accurately recorded, receipts are generated, and the **Internal Invoice (Payment Advice)** is successfully created with correct airline transfer and cost details.
 
 ## Notes
-- "Payment Advise" is used for airline top-ups/confirmations.
+- "Payment Advice" is the definitive "Internal Invoice" for tracking company costs and airline obligations.
 - Ensure the "Ticketing Done" status in Movement is linked to these financial clearances.
