@@ -6,7 +6,7 @@
 - [x] Task: Conductor - User Manual Verification 'Update UAT Scenarios' (Protocol in workflow.md) <!-- e774950 -->
 
 ## Phase 2: Terminology Synchronization
-- [ ] Task: Update `uat_master_plan.md` index with "Internal (Payment Advice)" and "External (Invoice)" labels.
+- [x] Task: Update `uat_master_plan.md` index with "Internal (Payment Advice)" and "External (Invoice)" labels. <!-- 59cacc3 -->
 - [ ] Task: Conductor - User Manual Verification 'Terminology Synchronization' (Protocol in workflow.md)
 
 ## Phase 3: Final Validation
