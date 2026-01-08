@@ -13,5 +13,5 @@
 
 ## Phase 3: Final Verification
 - [x] Task: Execute the full `database/seed_uat_data.php` script and verify data presence in the database. <!-- 187a34b -->
-- [ ] Task: Manually verify the visibility and accuracy of dummy data in the Payment Advice List UI.
-- [ ] Task: Conductor - User Manual Verification 'Final Verification' (Protocol in workflow.md)
+- [x] Task: Manually verify the visibility and accuracy of dummy data in the Payment Advice List UI. <!-- 3c9712a -->
+- [~] Task: Conductor - User Manual Verification 'Final Verification' (Protocol in workflow.md)
