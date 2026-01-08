@@ -11,9 +11,9 @@
 - [x] Task: Conductor - User Manual Verification 'Operational Guidance' (Protocol in workflow.md) <!-- be89de9 -->
 
 ## Phase 3: Financial & Administrative Guidance (Stages 3 & 4)
-- [ ] Task: Document **Stage 3: Financial Settlement** (Invoice generation, Payments, and Payment Advice).
-- [ ] Task: Document **Stage 4: Management & Audit** (Master data, User roles, and Audit logs).
-- [ ] Task: Conductor - User Manual Verification 'Financial & Administrative Guidance' (Protocol in workflow.md)
+- [x] Task: Document **Stage 3: Financial Settlement** (Invoice generation, Payments, and Payment Advice). <!-- 1e456ed -->
+- [x] Task: Document **Stage 4: Management & Audit** (Master data, User roles, and Audit logs). <!-- fe5bbd8 -->
+- [~] Task: Conductor - User Manual Verification 'Financial & Administrative Guidance' (Protocol in workflow.md)
 
 ## Phase 4: Final Consolidation
 - [ ] Task: Perform a cross-link audit to ensure all workflow transitions (e.g., Request to Movement) are seamless in documentation.
