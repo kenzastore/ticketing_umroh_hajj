@@ -6,12 +6,12 @@
 - [x] Task: Design and implement the UAT Execution Log/Result Template (Markdown). <!-- 45ade90 -->
 - [x] Task: Conductor - User Manual Verification 'UAT Framework Setup' (Protocol in workflow.md) <!-- 4a3c978 -->
 
-## Phase 2: Operational Workflow Scenarios
+## Phase 2: Operational Workflow Scenarios [checkpoint: a6b8ff9]
 - [x] Task: Develop Test Scenarios for "New Booking Request" (Validation, Multi-segment, Submission). <!-- 59b5ae7 -->
 - [x] Task: Develop Test Scenarios for "Request to Movement Conversion". <!-- 63f84aa -->
 - [x] Task: Develop Test Scenarios for "Movement Dashboard & FullView" (Filtering, Data Accuracy, Status Updates). <!-- 32a7c59 -->
 - [x] Task: Develop Test Scenarios for "Time Limit Reminders" (H-3 Notification logic). <!-- e09b84e -->
-- [~] Task: Conductor - User Manual Verification 'Operational Workflow Scenarios' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Operational Workflow Scenarios' (Protocol in workflow.md) <!-- a6b8ff9 -->
 
 ## Phase 3: Financial Workflow & Security Scenarios
 - [ ] Task: Develop Test Scenarios for "Invoice Generation" (Internal vs. External, Data Integrity).
