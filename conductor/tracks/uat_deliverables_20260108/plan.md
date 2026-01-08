@@ -2,7 +2,7 @@
 
 ## Phase 1: UAT Framework Setup
 - [x] Task: Create `conductor/uat` directory structure for scenarios, templates, and results. <!-- 8cba4af -->
-- [ ] Task: Design and implement the UAT Test Scenario Template (Markdown).
+- [x] Task: Design and implement the UAT Test Scenario Template (Markdown). <!-- b82f21d -->
 - [ ] Task: Design and implement the UAT Execution Log/Result Template (Markdown).
 - [ ] Task: Conductor - User Manual Verification 'UAT Framework Setup' (Protocol in workflow.md)
 
