@@ -24,7 +24,7 @@
     -   **Action:** Add CSS classes for past-due items and wrap rows in anchor tags linking to `edit_movement.php`.
 - [x] **Task 7: Conductor - User Manual Verification 'Phase 2: Dashboard UI Refactor' (Protocol in workflow.md)** 2755d36
 
-### Phase 3: Final Integration & Cleanup
-- [ ] **Task 8: End-to-End Verification**
+### Phase 3: Final Integration & Cleanup [checkpoint: c28b7b4]
+- [x] **Task 8: End-to-End Verification** 9d5d6cf
     -   **Action:** Seed test data with various deadline dates and verify the dashboard behavior across all tabs.
-- [ ] **Task 9: Conductor - User Manual Verification 'Phase 3: Final Integration & Cleanup' (Protocol in workflow.md)**
+- [x] **Task 9: Conductor - User Manual Verification 'Phase 3: Final Integration & Cleanup' (Protocol in workflow.md)** c28b7b4
