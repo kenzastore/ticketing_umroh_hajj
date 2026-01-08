@@ -20,7 +20,7 @@ require_once __DIR__ . '/../shared/header.php';
  */
 function renderDeadlineList($deadlines, $dateField) {
     if (empty($deadlines)) {
-        return '<div class="p-3 text-center text-muted small">No urgent deadlines.</div>';
+        return '<div class="p-4 text-center text-muted small">No urgent deadlines.</div>';
     }
     
     $today = date('Y-m-d');
@@ -67,46 +67,46 @@ function renderDeadlineList($deadlines, $dateField) {
 <!-- Urgent Deadlines Widget -->
 <div class="row mb-5" id="time-limit-section">
     <div class="col-12">
-        <div class="card border-danger shadow py-2 border-start border-5">
-            <div class="card-body">
-                <div class="d-flex align-items-center mb-3">
-                    <div class="text-xs fw-bold text-danger text-uppercase">Urgent Deadlines (H-3 & Past Due)</div>
-                </div>
-                
-                <ul class="nav nav-tabs nav-fill mb-3" id="deadlineTabs" role="tablist" style="position: relative; z-index: 10;">
+        <div class="card shadow border-0">
+            <div class="card-header bg-danger text-white py-3">
+                <h6 class="m-0 fw-bold"><i class="fas fa-clock me-2"></i>Urgent Deadlines (H-3 & Past Due)</h6>
+            </div>
+            <div class="card-header bg-white p-0">
+                <ul class="nav nav-tabs card-header-tabs nav-fill m-0" id="deadlineTabs" role="tablist">
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link active py-1" id="ticketing-tab" data-bs-toggle="tab" data-bs-target="#ticketing" type="button" role="tab" style="cursor: pointer;">
+                        <button class="nav-link active py-2 border-top-0 w-100" id="ticketing-tab" data-bs-toggle="tab" data-bs-target="#ticketing" type="button" role="tab" aria-controls="ticketing" aria-selected="true">
                             Ticketing <span class="badge bg-danger rounded-pill ms-1"><?= count($ticketingDeadlines) ?></span>
                         </button>
                     </li>
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link py-1" id="dp1-tab" data-bs-toggle="tab" data-bs-target="#dp1" type="button" role="tab" style="cursor: pointer;">
+                        <button class="nav-link py-2 border-top-0 w-100" id="dp1-tab" data-bs-toggle="tab" data-bs-target="#dp1" type="button" role="tab" aria-controls="dp1" aria-selected="false">
                             DP1 <span class="badge bg-secondary rounded-pill ms-1"><?= count($dp1Deadlines) ?></span>
                         </button>
                     </li>
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link py-1" id="dp2-tab" data-bs-toggle="tab" data-bs-target="#dp2" type="button" role="tab" style="cursor: pointer;">
+                        <button class="nav-link py-2 border-top-0 w-100" id="dp2-tab" data-bs-toggle="tab" data-bs-target="#dp2" type="button" role="tab" aria-controls="dp2" aria-selected="false">
                             DP2 <span class="badge bg-secondary rounded-pill ms-1"><?= count($dp2Deadlines) ?></span>
                         </button>
                     </li>
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link py-1" id="fp-tab" data-bs-toggle="tab" data-bs-target="#fp" type="button" role="tab" style="cursor: pointer;">
+                        <button class="nav-link py-2 border-top-0 w-100" id="fp-tab" data-bs-toggle="tab" data-bs-target="#fp" type="button" role="tab" aria-controls="fp" aria-selected="false">
                             FP <span class="badge bg-secondary rounded-pill ms-1"><?= count($fpDeadlines) ?></span>
                         </button>
                     </li>
                 </ul>
-
-                <div class="tab-content" id="deadlineTabsContent" style="position: relative; z-index: 1;">
-                    <div class="tab-pane fade show active" id="ticketing" role="tabpanel">
+            </div>
+            <div class="card-body p-0">
+                <div class="tab-content" id="deadlineTabsContent">
+                    <div class="tab-pane fade show active" id="ticketing" role="tabpanel" aria-labelledby="ticketing-tab">
                         <?= renderDeadlineList($ticketingDeadlines, 'ticketing_deadline') ?>
                     </div>
-                    <div class="tab-pane fade" id="dp1" role="tabpanel">
+                    <div class="tab-pane fade" id="dp1" role="tabpanel" aria-labelledby="dp1-tab">
                         <?= renderDeadlineList($dp1Deadlines, 'deposit1_airlines_date') ?>
                     </div>
-                    <div class="tab-pane fade" id="dp2" role="tabpanel">
+                    <div class="tab-pane fade" id="dp2" role="tabpanel" aria-labelledby="dp2-tab">
                         <?= renderDeadlineList($dp2Deadlines, 'deposit2_airlines_date') ?>
                     </div>
-                    <div class="tab-pane fade" id="fp" role="tabpanel">
+                    <div class="tab-pane fade" id="fp" role="tabpanel" aria-labelledby="fp-tab">
                         <?= renderDeadlineList($fpDeadlines, 'fullpay_airlines_date') ?>
                     </div>
                 </div>
@@ -216,12 +216,18 @@ function renderDeadlineList($deadlines, $dateField) {
         transform: scale(1.05);
     }
     .nav-tabs .nav-link {
-        font-size: 0.8rem;
+        font-size: 0.85rem;
         color: #6c757d;
+        border-radius: 0;
+        border-bottom: 1px solid #dee2e6;
+        background: none;
+        border-left: none;
+        border-right: none;
     }
     .nav-tabs .nav-link.active {
         font-weight: bold;
         color: #dc3545;
+        border-bottom: 2px solid #dc3545 !important;
     }
     .bg-danger-subtle {
         background-color: #f8d7da;
@@ -232,4 +238,18 @@ function renderDeadlineList($deadlines, $dateField) {
     }
 </style>
 
-<?php require_once __DIR__ . '/../shared/header.php'; ?>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    // Manually initialize tabs if Bootstrap auto-init fails
+    var triggerTabList = [].slice.call(document.querySelectorAll('#deadlineTabs button'))
+    triggerTabList.forEach(function (triggerEl) {
+        var tabTrigger = new bootstrap.Tab(triggerEl)
+        triggerEl.addEventListener('click', function (event) {
+            event.preventDefault()
+            tabTrigger.show()
+        })
+    })
+});
+</script>
+
+<?php require_once __DIR__ . '/../shared/footer.php'; ?>
