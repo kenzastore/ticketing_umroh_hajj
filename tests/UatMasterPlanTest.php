@@ -18,5 +18,7 @@ class UatMasterPlanTest extends TestCase
         $this->assertStringContainsString('## Test Scenarios Index', $content);
         $this->assertStringContainsString('01_new_booking_request.md', $content);
         $this->assertStringContainsString('08_audit_logging.md', $content);
+        $this->assertStringContainsString('[External Invoice Generation]', $content);
+        $this->assertStringContainsString('[Payment Recording & Internal Invoice (Payment Advice)]', $content);
     }
 }

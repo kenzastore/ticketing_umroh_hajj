@@ -23,8 +23,8 @@ This document outlines the User Acceptance Testing (UAT) plan for the Digital Ti
 | UAT-MOV-01 | Movement Monitoring | [Request to Movement Conversion](./scenarios/02_request_to_movement_conversion.md) |
 | UAT-MOV-02 | Movement Monitoring | [Movement Dashboard & FullView](./scenarios/03_movement_dashboard_and_fullview.md) |
 | UAT-NOT-01 | Notification System | [Time Limit Reminders](./scenarios/04_time_limit_reminders.md) |
-| UAT-FIN-01 | Invoice Generator | [Invoice Generation](./scenarios/05_invoice_generation.md) |
-| UAT-FIN-02 | Payment Tracking | [Payment Recording & Reconciliation](./scenarios/06_payment_recording_and_reconciliation.md) |
+| UAT-FIN-01 | Invoice Generator | [External Invoice Generation](./scenarios/05_invoice_generation.md) |
+| UAT-FIN-02 | Payment Tracking | [Payment Recording & Internal Invoice (Payment Advice)](./scenarios/06_payment_recording_and_reconciliation.md) |
 | UAT-SEC-01 | Security & Access | [Role-Based Access Control](./scenarios/07_role_based_access_control.md) |
 | UAT-SEC-02 | Security & Audit | [Audit Logging](./scenarios/08_audit_logging.md) |
 
