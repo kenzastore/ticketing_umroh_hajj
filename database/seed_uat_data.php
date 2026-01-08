@@ -11,6 +11,7 @@ require_once __DIR__ . '/../app/models/BookingRequest.php';
 require_once __DIR__ . '/../app/models/Movement.php';
 require_once __DIR__ . '/../app/models/Invoice.php';
 require_once __DIR__ . '/../app/models/Payment.php';
+require_once __DIR__ . '/../app/models/PaymentAdvise.php';
 
 // Data Constants
 define('INDONESIAN_NAMES', [
@@ -48,13 +49,14 @@ if (isset($pdo)) {
     Movement::init($pdo);
     Invoice::init($pdo);
     Payment::init($pdo);
+    PaymentAdvise::init($pdo);
 }
 
 // Cleanup existing data if requested
 if (isset($argv) && in_array('--cleanup', $argv)) {
     echo "Cleaning up existing data...\n";
     $pdo->exec("SET FOREIGN_KEY_CHECKS = 0");
-    $tables = ['payments', 'invoice_fare_lines', 'invoice_flight_lines', 'invoices', 'flight_legs', 'movements', 'booking_request_legs', 'booking_requests', 'agents', 'corporates', 'audit_logs', 'notifications'];
+    $tables = ['payment_advises', 'payments', 'invoice_fare_lines', 'invoice_flight_lines', 'invoices', 'flight_legs', 'movements', 'booking_request_legs', 'booking_requests', 'agents', 'corporates', 'audit_logs', 'notifications'];
     foreach ($tables as $table) {
         $pdo->exec("TRUNCATE TABLE $table");
     }
@@ -239,6 +241,61 @@ try {
     echo "Invoices & Payments seeded successfully.\n";
 } catch (Exception $e) {
     echo "Error seeding Invoices: " . $e->getMessage() . "\n";
+}
+
+// Task 8: Payment Advice Seeding
+echo "Seeding Payment Advises (15 records)...\n";
+try {
+    $movements = Movement::readAll();
+    // Filter out movements that already have a payment advise to maintain idempotency if not using --cleanup
+    $existingAdvises = PaymentAdvise::readAll();
+    $existingMvIds = array_column($existingAdvises, 'movement_id');
+
+    $count = 0;
+    foreach ($movements as $mv) {
+        if ($count >= 15) break;
+        if (in_array($mv['id'], $existingMvIds)) continue;
+
+        $totalAmount = $mv['passenger_count'] * $mv['approved_fare'];
+        if ($totalAmount <= 0) $totalAmount = $mv['passenger_count'] * 14000000;
+
+        $data = [
+            'movement_id' => $mv['id'],
+            'agent_name' => $mv['agent_name'],
+            'tour_code' => $mv['tour_code'],
+            'pnr' => $mv['pnr'],
+            'date_created' => date('Y-m-d'),
+            'date_email_to_airline' => date('Y-m-d', strtotime('-2 days')),
+            'grp_depart_date' => $mv['dep_seg1_date'] ?? date('Y-m-d', strtotime('+30 days')),
+            'total_seats_confirmed' => $mv['passenger_count'],
+            'approved_fare' => $mv['approved_fare'] ?: 14000000,
+            'total_amount' => $totalAmount,
+            'deposit_amount' => $totalAmount * 0.2,
+            'balance_payment_amount' => $totalAmount * 0.8,
+            'top_up_amount' => $totalAmount * 0.8,
+            'transfer_amount' => $totalAmount * 0.8,
+            'company_name' => AIRLINE_CARRIERS[array_rand(AIRLINE_CARRIERS)],
+            'company_account_no' => rand(100000000, 999999999),
+            'company_bank_name' => 'DBS BANK / UOB',
+            'company_address' => 'Singapore Airline Terminal',
+            'remitter_name' => 'PT ELANG EMAS MANDIRI INDONESIA',
+            'remitter_account_no' => '141-00-0102110-4',
+            'remitter_bank_name' => 'MANDIRI CAPEM SIDOARJO'
+        ];
+
+        // Status Variation
+        if ($count % 3 == 0) {
+            $data['date_bank_transferred'] = date('Y-m-d', strtotime('-1 day'));
+            $data['remarks_bank_transfer'] = 'Seeded Transfer';
+        }
+
+        if (PaymentAdvise::create($data)) {
+            $count++;
+        }
+    }
+    echo "Payment Advises seeded successfully ($count records).\n";
+} catch (Exception $e) {
+    echo "Error seeding Payment Advises: " . $e->getMessage() . "\n";
 }
 
 echo "UAT Seeding Completed.\n";

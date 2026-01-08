@@ -6,10 +6,10 @@
 - [x] Task: Conductor - User Manual Verification 'Analysis and Test Preparation' (Protocol in workflow.md) <!-- 8b3d4ef -->
 
 ## Phase 2: Integrated Seeding Implementation
-- [ ] Task: Update `database/seed_uat_data.php` to include a Payment Advice seeding section.
-- [ ] Task: Implement logic to link new Payment Advises to existing UAT Movements.
-- [ ] Task: Ensure seeding is idempotent (e.g., check for existing records before insertion).
-- [ ] Task: Conductor - User Manual Verification 'Integrated Seeding Implementation' (Protocol in workflow.md)
+- [x] Task: Update `database/seed_uat_data.php` to include a Payment Advice seeding section. <!-- db88f57 -->
+- [x] Task: Implement logic to link new Payment Advises to existing UAT Movements. <!-- 78bc706 -->
+- [x] Task: Ensure seeding is idempotent (e.g., check for existing records before insertion). <!-- 06fa788 -->
+- [~] Task: Conductor - User Manual Verification 'Integrated Seeding Implementation' (Protocol in workflow.md)
 
 ## Phase 3: Final Verification
 - [ ] Task: Execute the full `database/seed_uat_data.php` script and verify data presence in the database.
