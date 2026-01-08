@@ -16,7 +16,7 @@
 ## Phase 3: Financial Workflow & Security Scenarios
 - [x] Task: Develop Test Scenarios for "Invoice Generation" (Internal vs. External, Data Integrity). <!-- 1f61686 -->
 - [x] Task: Develop Test Scenarios for "Payment Recording & Reconciliation" (Payment Report vs. Advise). <!-- 0360d94 -->
-- [ ] Task: Develop Test Scenarios for "Role-Based Access Control" (Admin/Finance/Ops/Monitor limits).
+- [x] Task: Develop Test Scenarios for "Role-Based Access Control" (Admin/Finance/Ops/Monitor limits). <!-- 55d9535 -->
 - [ ] Task: Develop Test Scenarios for "Audit Logging" (Verify actions are recorded).
 - [ ] Task: Conductor - User Manual Verification 'Financial Workflow & Security Scenarios' (Protocol in workflow.md)
 
