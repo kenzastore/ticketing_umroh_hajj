@@ -18,7 +18,7 @@
 - [x] Task: Develop Test Scenarios for "Payment Recording & Reconciliation" (Payment Report vs. Advise). <!-- 0360d94 -->
 - [x] Task: Develop Test Scenarios for "Role-Based Access Control" (Admin/Finance/Ops/Monitor limits). <!-- 55d9535 -->
 - [x] Task: Develop Test Scenarios for "Audit Logging" (Verify actions are recorded). <!-- 1d8f9a3 -->
-- [ ] Task: Conductor - User Manual Verification 'Financial Workflow & Security Scenarios' (Protocol in workflow.md)
+- [~] Task: Conductor - User Manual Verification 'Financial Workflow & Security Scenarios' (Protocol in workflow.md)
 
 ## Phase 4: Final Consolidation
 - [ ] Task: Compile a "UAT Master Plan" document linking all scenarios and providing execution instructions.
