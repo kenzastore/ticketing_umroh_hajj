@@ -10,10 +10,10 @@
 - [x] Task: Document **Stage 2: Operational Execution** (Conversion to Movement, Flight Monitoring, and FullView). <!-- 8a1df4c -->
 - [x] Task: Conductor - User Manual Verification 'Operational Guidance' (Protocol in workflow.md) <!-- be89de9 -->
 
-## Phase 3: Financial & Administrative Guidance (Stages 3 & 4)
+## Phase 3: Financial & Administrative Guidance (Stages 3 & 4) [checkpoint: ae7ff70]
 - [x] Task: Document **Stage 3: Financial Settlement** (Invoice generation, Payments, and Payment Advice). <!-- 1e456ed -->
 - [x] Task: Document **Stage 4: Management & Audit** (Master data, User roles, and Audit logs). <!-- fe5bbd8 -->
-- [~] Task: Conductor - User Manual Verification 'Financial & Administrative Guidance' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Financial & Administrative Guidance' (Protocol in workflow.md) <!-- ae7ff70 -->
 
 ## Phase 4: Final Consolidation
 - [ ] Task: Perform a cross-link audit to ensure all workflow transitions (e.g., Request to Movement) are seamless in documentation.
