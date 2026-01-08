@@ -6,9 +6,56 @@ require_once __DIR__ . '/../../app/models/Movement.php';
 check_auth('admin');
 
 $title = "Dashboard";
-$deadlines = Movement::getUpcomingDeadlines(3);
+
+// Fetch deadlines by category
+$ticketingDeadlines = Movement::getDeadlinesByCategory('ticketing', 3);
+$dp1Deadlines        = Movement::getDeadlinesByCategory('dp1', 3);
+$dp2Deadlines        = Movement::getDeadlinesByCategory('dp2', 3);
+$fpDeadlines         = Movement::getDeadlinesByCategory('fp', 3);
 
 require_once __DIR__ . '/../shared/header.php';
+
+/**
+ * Helper to render deadline list
+ */
+function renderDeadlineList($deadlines, $dateField) {
+    if (empty($deadlines)) {
+        return '<div class="p-3 text-center text-muted small">No urgent deadlines.</div>';
+    }
+    
+    $today = date('Y-m-d');
+    $html = '<div class="list-group list-group-flush small">';
+    foreach ($deadlines as $d) {
+        $deadlineDate = $d[$dateField] ?? $d['ticketing_deadline'] ?? null;
+        
+        // Handle categories that have multiple date fields (e.g. DP1/DP2/FP)
+        if (!$deadlineDate && isset($d['deposit1_airlines_date'])) {
+            $deadlineDate = min(array_filter([$d['deposit1_airlines_date'], $d['deposit1_eemw_date']], function($v) { return !is_null($v); }));
+        } elseif (!$deadlineDate && isset($d['deposit2_airlines_date'])) {
+            $deadlineDate = min(array_filter([$d['deposit2_airlines_date'], $d['deposit2_eemw_date']], function($v) { return !is_null($v); }));
+        } elseif (!$deadlineDate && isset($d['fullpay_airlines_date'])) {
+            $deadlineDate = min(array_filter([$d['fullpay_airlines_date'], $d['fullpay_eemw_date']], function($v) { return !is_null($v); }));
+        }
+
+        $isPastDue = $deadlineDate < $today;
+        $bgClass = $isPastDue ? 'bg-danger-subtle fw-bold' : '';
+        $badgeClass = $isPastDue ? 'bg-danger' : 'bg-warning text-dark';
+        
+        $html .= '<a href="edit_movement.php?id=' . $d['id'] . '" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center ' . $bgClass . '">';
+        $html .= '<span>';
+        if ($isPastDue) {
+            $html .= '<i class="fas fa-exclamation-triangle text-danger me-2"></i>';
+        }
+        $html .= '<strong>' . htmlspecialchars($d['pnr'] ?? 'No PNR') . '</strong> - ' . htmlspecialchars($d['agent_name'] ?? '-');
+        $html .= '</span>';
+        $html .= '<span class="badge ' . $badgeClass . ' rounded-pill">';
+        $html .= date('d M', strtotime($deadlineDate));
+        $html .= '</span>';
+        $html .= '</a>';
+    }
+    $html .= '</div>';
+    return $html;
+}
 ?>
 
 <div class="row mb-4">
@@ -17,33 +64,50 @@ require_once __DIR__ . '/../shared/header.php';
     </div>
 </div>
 
-<!-- Time Limit Widget -->
+<!-- Urgent Deadlines Widget -->
 <div class="row mb-5" id="time-limit-section">
     <div class="col-12">
         <div class="card border-danger shadow h-100 py-2 border-start border-5">
             <div class="card-body">
-                <div class="row no-gutters align-items-center">
-                    <div class="col mr-2">
-                        <div class="text-xs fw-bold text-danger text-uppercase mb-1">Time Limit (Ticketing Deadline - 3 Days)</div>
-                        <div class="h5 mb-0 fw-bold text-gray-800">
-                             <?php if(empty($deadlines)): ?>
-                                 <span class="text-muted small">No urgent deadlines.</span>
-                             <?php else: ?>
-                                <ul class="list-group list-group-flush small">
-                                    <?php foreach($deadlines as $d): ?>
-                                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                                            <span>
-                                                <strong><?= htmlspecialchars($d['pnr'] ?? 'No PNR') ?></strong> 
-                                                - <?= htmlspecialchars($d['agent_name'] ?? '-') ?>
-                                            </span>
-                                            <span class="badge bg-danger rounded-pill">
-                                                <?= date('d M', strtotime($d['ticketing_deadline'])) ?>
-                                            </span>
-                                        </li>
-                                    <?php endforeach; ?>
-                                </ul>
-                             <?php endif; ?>
-                        </div>
+                <div class="d-flex align-items-center mb-3">
+                    <div class="text-xs fw-bold text-danger text-uppercase">Urgent Deadlines (H-3 & Past Due)</div>
+                </div>
+                
+                <ul class="nav nav-tabs nav-fill mb-3" id="deadlineTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active py-1" id="ticketing-tab" data-bs-toggle="tab" data-bs-target="#ticketing" type="button" role="tab">
+                            Ticketing <span class="badge bg-danger rounded-pill ms-1"><?= count($ticketingDeadlines) ?></span>
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link py-1" id="dp1-tab" data-bs-toggle="tab" data-bs-target="#dp1" type="button" role="tab">
+                            DP1 <span class="badge bg-secondary rounded-pill ms-1"><?= count($dp1Deadlines) ?></span>
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link py-1" id="dp2-tab" data-bs-toggle="tab" data-bs-target="#dp2" type="button" role="tab">
+                            DP2 <span class="badge bg-secondary rounded-pill ms-1"><?= count($dp2Deadlines) ?></span>
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link py-1" id="fp-tab" data-bs-toggle="tab" data-bs-target="#fp" type="button" role="tab">
+                            FP <span class="badge bg-secondary rounded-pill ms-1"><?= count($fpDeadlines) ?></span>
+                        </button>
+                    </li>
+                </ul>
+
+                <div class="tab-content" id="deadlineTabsContent">
+                    <div class="tab-pane fade show active" id="ticketing" role="tabpanel">
+                        <?= renderDeadlineList($ticketingDeadlines, 'ticketing_deadline') ?>
+                    </div>
+                    <div class="tab-pane fade" id="dp1" role="tabpanel">
+                        <?= renderDeadlineList($dp1Deadlines, 'deposit1_airlines_date') ?>
+                    </div>
+                    <div class="tab-pane fade" id="dp2" role="tabpanel">
+                        <?= renderDeadlineList($dp2Deadlines, 'deposit2_airlines_date') ?>
+                    </div>
+                    <div class="tab-pane fade" id="fp" role="tabpanel">
+                        <?= renderDeadlineList($fpDeadlines, 'fullpay_airlines_date') ?>
                     </div>
                 </div>
             </div>
@@ -151,6 +215,21 @@ require_once __DIR__ . '/../shared/header.php';
     .hover-scale:hover {
         transform: scale(1.05);
     }
+    .nav-tabs .nav-link {
+        font-size: 0.8rem;
+        color: #6c757d;
+    }
+    .nav-tabs .nav-link.active {
+        font-weight: bold;
+        color: #dc3545;
+    }
+    .bg-danger-subtle {
+        background-color: #f8d7da;
+    }
+    .btn-xs {
+        padding: 0.1rem 0.3rem;
+        font-size: 0.7rem;
+    }
 </style>
 
-<?php require_once __DIR__ . '/../shared/footer.php'; ?>
+<?php require_once __DIR__ . '/../shared/header.php'; ?>

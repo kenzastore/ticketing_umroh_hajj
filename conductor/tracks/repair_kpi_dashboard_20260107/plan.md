@@ -13,13 +13,13 @@
 - [x] **Task 3: Conductor - User Manual Verification 'Phase 1: Backend Enhancements' (Protocol in workflow.md)** 7bdff4c
 
 ### Phase 2: Dashboard UI Refactor
-- [ ] **Task 4: Implement Tabbed UI Structure**
+- [x] **Task 4: Implement Tabbed UI Structure**
     -   **File:** `public/admin/dashboard.php`
     -   **Action:** Replace the current static list with Bootstrap 5 Navigation Tabs.
-- [ ] **Task 5: Implement Category Data Binding**
+- [x] **Task 5: Implement Category Data Binding**
     -   **File:** `public/admin/dashboard.php`
     -   **Action:** Populate each tab (Ticketing, DP1, DP2, FP) with its respective data from the model.
-- [ ] **Task 6: Visual Highlighting and Interactivity**
+- [x] **Task 6: Visual Highlighting and Interactivity**
     -   **File:** `public/admin/dashboard.php`
     -   **Action:** Add CSS classes for past-due items and wrap rows in anchor tags linking to `edit_movement.php`.
 - [ ] **Task 7: Conductor - User Manual Verification 'Phase 2: Dashboard UI Refactor' (Protocol in workflow.md)**
