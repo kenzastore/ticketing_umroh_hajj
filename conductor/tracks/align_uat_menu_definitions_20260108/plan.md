@@ -7,7 +7,7 @@
 
 ## Phase 2: Terminology Synchronization
 - [x] Task: Update `uat_master_plan.md` index with "Internal (Payment Advice)" and "External (Invoice)" labels. <!-- 59cacc3 -->
-- [ ] Task: Conductor - User Manual Verification 'Terminology Synchronization' (Protocol in workflow.md)
+- [~] Task: Conductor - User Manual Verification 'Terminology Synchronization' (Protocol in workflow.md)
 
 ## Phase 3: Final Validation
 - [ ] Task: Run automated UAT readiness tests to ensure documentation integrity.
