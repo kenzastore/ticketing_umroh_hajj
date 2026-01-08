@@ -12,17 +12,17 @@
     -   **Action:** Refactor `getUpcomingDeadlines` (or add specific methods) to support the four categories and past-due logic.
 - [x] **Task 3: Conductor - User Manual Verification 'Phase 1: Backend Enhancements' (Protocol in workflow.md)** 7bdff4c
 
-### Phase 2: Dashboard UI Refactor
-- [x] **Task 4: Implement Tabbed UI Structure**
+### Phase 2: Dashboard UI Refactor [checkpoint: 2755d36]
+- [x] **Task 4: Implement Tabbed UI Structure** b9ab052
     -   **File:** `public/admin/dashboard.php`
     -   **Action:** Replace the current static list with Bootstrap 5 Navigation Tabs.
-- [x] **Task 5: Implement Category Data Binding**
+- [x] **Task 5: Implement Category Data Binding** b9ab052
     -   **File:** `public/admin/dashboard.php`
     -   **Action:** Populate each tab (Ticketing, DP1, DP2, FP) with its respective data from the model.
-- [x] **Task 6: Visual Highlighting and Interactivity**
+- [x] **Task 6: Visual Highlighting and Interactivity** b9ab052
     -   **File:** `public/admin/dashboard.php`
     -   **Action:** Add CSS classes for past-due items and wrap rows in anchor tags linking to `edit_movement.php`.
-- [ ] **Task 7: Conductor - User Manual Verification 'Phase 2: Dashboard UI Refactor' (Protocol in workflow.md)**
+- [x] **Task 7: Conductor - User Manual Verification 'Phase 2: Dashboard UI Refactor' (Protocol in workflow.md)** 2755d36
 
 ### Phase 3: Final Integration & Cleanup
 - [ ] **Task 8: End-to-End Verification**
