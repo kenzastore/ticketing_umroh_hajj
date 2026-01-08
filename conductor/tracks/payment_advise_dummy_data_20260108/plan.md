@@ -11,7 +11,7 @@
 - [x] Task: Ensure seeding is idempotent (e.g., check for existing records before insertion). <!-- 06fa788 -->
 - [x] Task: Conductor - User Manual Verification 'Integrated Seeding Implementation' (Protocol in workflow.md) <!-- 79c641a -->
 
-## Phase 3: Final Verification
+## Phase 3: Final Verification [checkpoint: 4237000]
 - [x] Task: Execute the full `database/seed_uat_data.php` script and verify data presence in the database. <!-- 187a34b -->
 - [x] Task: Manually verify the visibility and accuracy of dummy data in the Payment Advice List UI. <!-- 3c9712a -->
-- [~] Task: Conductor - User Manual Verification 'Final Verification' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Final Verification' (Protocol in workflow.md) <!-- 4237000 -->
