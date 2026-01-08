@@ -12,12 +12,9 @@
 
 ### Phase 2: Implementation & Fix [checkpoint: fb7e817]
 - [x] **Task 3: Apply CSS/HTML Fix**
-    -   **File:** `public/admin/dashboard.php`
-    -   **Action:** Adjust layout spacing or z-indexing to resolve the overlap.
-    -   **Action:** Ensure the `active` and `show` classes are managed correctly by Bootstrap JS.
 - [x] **Task 4: Conductor - User Manual Verification 'Phase 2: Implementation & Fix' (Protocol in workflow.md)** fb7e817
+- [x] **Task 4.1: Second Fix Attempt - Robust Z-Indexing & Pointer Events**
 
 ### Phase 3: Final Verification
-- [ ] **Task 5: Cross-Browser Check**
-    -   **Action:** Manually verify tab switching across different tab counts (using seeded data).
+- [~] **Task 5: Cross-Browser Check**
 - [ ] **Task 6: Conductor - User Manual Verification 'Phase 3: Final Verification' (Protocol in workflow.md)**

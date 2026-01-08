@@ -73,30 +73,30 @@ function renderDeadlineList($deadlines, $dateField) {
                     <div class="text-xs fw-bold text-danger text-uppercase">Urgent Deadlines (H-3 & Past Due)</div>
                 </div>
                 
-                <ul class="nav nav-tabs nav-fill mb-3" id="deadlineTabs" role="tablist" style="position: relative; z-index: 5;">
+                <ul class="nav nav-tabs nav-fill mb-3" id="deadlineTabs" role="tablist" style="position: relative; z-index: 10;">
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link active py-1" id="ticketing-tab" data-bs-toggle="tab" data-bs-target="#ticketing" type="button" role="tab">
+                        <button class="nav-link active py-1" id="ticketing-tab" data-bs-toggle="tab" data-bs-target="#ticketing" type="button" role="tab" style="cursor: pointer;">
                             Ticketing <span class="badge bg-danger rounded-pill ms-1"><?= count($ticketingDeadlines) ?></span>
                         </button>
                     </li>
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link py-1" id="dp1-tab" data-bs-toggle="tab" data-bs-target="#dp1" type="button" role="tab">
+                        <button class="nav-link py-1" id="dp1-tab" data-bs-toggle="tab" data-bs-target="#dp1" type="button" role="tab" style="cursor: pointer;">
                             DP1 <span class="badge bg-secondary rounded-pill ms-1"><?= count($dp1Deadlines) ?></span>
                         </button>
                     </li>
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link py-1" id="dp2-tab" data-bs-toggle="tab" data-bs-target="#dp2" type="button" role="tab">
+                        <button class="nav-link py-1" id="dp2-tab" data-bs-toggle="tab" data-bs-target="#dp2" type="button" role="tab" style="cursor: pointer;">
                             DP2 <span class="badge bg-secondary rounded-pill ms-1"><?= count($dp2Deadlines) ?></span>
                         </button>
                     </li>
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link py-1" id="fp-tab" data-bs-toggle="tab" data-bs-target="#fp" type="button" role="tab">
+                        <button class="nav-link py-1" id="fp-tab" data-bs-toggle="tab" data-bs-target="#fp" type="button" role="tab" style="cursor: pointer;">
                             FP <span class="badge bg-secondary rounded-pill ms-1"><?= count($fpDeadlines) ?></span>
                         </button>
                     </li>
                 </ul>
 
-                <div class="tab-content" id="deadlineTabsContent">
+                <div class="tab-content" id="deadlineTabsContent" style="position: relative; z-index: 1;">
                     <div class="tab-pane fade show active" id="ticketing" role="tabpanel">
                         <?= renderDeadlineList($ticketingDeadlines, 'ticketing_deadline') ?>
                     </div>
