@@ -9,6 +9,6 @@
 - [x] Task: Update `uat_master_plan.md` index with "Internal (Payment Advice)" and "External (Invoice)" labels. <!-- 59cacc3 -->
 - [x] Task: Conductor - User Manual Verification 'Terminology Synchronization' (Protocol in workflow.md) <!-- 0f4d268 -->
 
-## Phase 3: Final Validation
+## Phase 3: Final Validation [checkpoint: 10c37b6]
 - [x] Task: Run automated UAT readiness tests to ensure documentation integrity. <!-- 164c51a -->
-- [~] Task: Conductor - User Manual Verification 'Final Validation' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Final Validation' (Protocol in workflow.md) <!-- 10c37b6 -->
