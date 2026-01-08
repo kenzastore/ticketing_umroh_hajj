@@ -14,7 +14,7 @@
 - [x] Task: Conductor - User Manual Verification 'Operational Workflow Scenarios' (Protocol in workflow.md) <!-- a6b8ff9 -->
 
 ## Phase 3: Financial Workflow & Security Scenarios
-- [ ] Task: Develop Test Scenarios for "Invoice Generation" (Internal vs. External, Data Integrity).
+- [x] Task: Develop Test Scenarios for "Invoice Generation" (Internal vs. External, Data Integrity). <!-- 1f61686 -->
 - [ ] Task: Develop Test Scenarios for "Payment Recording & Reconciliation" (Payment Report vs. Advise).
 - [ ] Task: Develop Test Scenarios for "Role-Based Access Control" (Admin/Finance/Ops/Monitor limits).
 - [ ] Task: Develop Test Scenarios for "Audit Logging" (Verify actions are recorded).
