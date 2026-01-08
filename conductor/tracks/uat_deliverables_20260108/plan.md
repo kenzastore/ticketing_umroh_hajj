@@ -21,6 +21,6 @@
 - [x] Task: Conductor - User Manual Verification 'Financial Workflow & Security Scenarios' (Protocol in workflow.md) <!-- 704f78e -->
 
 ## Phase 4: Final Consolidation
-- [ ] Task: Compile a "UAT Master Plan" document linking all scenarios and providing execution instructions.
+- [x] Task: Compile a "UAT Master Plan" document linking all scenarios and providing execution instructions. <!-- 3149caa -->
 - [ ] Task: Verify PDF export readiness of all Markdown documents.
 - [ ] Task: Conductor - User Manual Verification 'Final Consolidation' (Protocol in workflow.md)
