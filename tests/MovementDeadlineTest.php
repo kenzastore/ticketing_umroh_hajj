@@ -12,32 +12,78 @@ class MovementDeadlineTest extends TestCase
     {
         global $pdo;
         $this->pdo = $pdo;
-        
-        // Clean up movements table for isolation (assuming test DB)
-        // In a real env we might use transactions, but for now we'll delete what we create or truncate
         $this->pdo->exec("DELETE FROM movements");
     }
 
-    public function testGetUpcomingDeadlines()
+    public function testGetTicketingDeadlines()
     {
-        // 1. Create a movement due tomorrow
-        $dueTomorrow = date('Y-m-d', strtotime('+1 day'));
-        $this->pdo->exec("INSERT INTO movements (movement_no, agent_name, ticketing_deadline, ticketing_done) VALUES (101, 'Test Agent 1', '$dueTomorrow', 0)");
+        $today = date('Y-m-d');
+        $yesterday = date('Y-m-d', strtotime('-1 day'));
+        $tomorrow = date('Y-m-d', strtotime('+1 day'));
+        $in4Days = date('Y-m-d', strtotime('+4 days'));
 
-        // 2. Create a movement due in 5 days (should not be returned)
-        $dueIn5Days = date('Y-m-d', strtotime('+5 days'));
-        $this->pdo->exec("INSERT INTO movements (movement_no, agent_name, ticketing_deadline, ticketing_done) VALUES (102, 'Test Agent 2', '$dueIn5Days', 0)");
+        // Past due
+        $this->pdo->exec("INSERT INTO movements (pnr, agent_name, ticketing_deadline, ticketing_done) VALUES ('PNR-PAST', 'Agent A', '$yesterday', 0)");
+        // Due tomorrow
+        $this->pdo->exec("INSERT INTO movements (pnr, agent_name, ticketing_deadline, ticketing_done) VALUES ('PNR-TMRW', 'Agent B', '$tomorrow', 0)");
+        // Due today
+        $this->pdo->exec("INSERT INTO movements (pnr, agent_name, ticketing_deadline, ticketing_done) VALUES ('PNR-TODAY', 'Agent C', '$today', 0)");
+        // Due in 4 days (excluded)
+        $this->pdo->exec("INSERT INTO movements (pnr, agent_name, ticketing_deadline, ticketing_done) VALUES ('PNR-FAR', 'Agent D', '$in4Days', 0)");
+        // Done (excluded)
+        $this->pdo->exec("INSERT INTO movements (pnr, agent_name, ticketing_deadline, ticketing_done) VALUES ('PNR-DONE', 'Agent E', '$tomorrow', 1)");
 
-        // 3. Create a movement due tomorrow but already done (should not be returned)
-        $this->pdo->exec("INSERT INTO movements (movement_no, agent_name, ticketing_deadline, ticketing_done) VALUES (103, 'Test Agent 3', '$dueTomorrow', 1)");
+        $results = Movement::getDeadlinesByCategory('ticketing', 3);
 
-        // Call the method
-        $deadlines = Movement::getUpcomingDeadlines(3);
+        $this->assertCount(3, $results);
+        // Check sorting: yesterday, today, tomorrow
+        $this->assertEquals('PNR-PAST', $results[0]['pnr']);
+        $this->assertEquals('PNR-TODAY', $results[1]['pnr']);
+        $this->assertEquals('PNR-TMRW', $results[2]['pnr']);
+    }
 
-        // Assertions
-        $this->assertCount(1, $deadlines, "Should return exactly 1 upcoming deadline");
-        $this->assertEquals('Test Agent 1', $deadlines[0]['agent_name']);
-        $this->assertEquals($dueTomorrow, $deadlines[0]['ticketing_deadline']);
+    public function testGetDP1Deadlines()
+    {
+        $tomorrow = date('Y-m-d', strtotime('+1 day'));
+        
+        // DP1 Airlines due
+        $this->pdo->exec("INSERT INTO movements (pnr, deposit1_airlines_date, dp1_status) VALUES ('DP1-AIR', '$tomorrow', 'PENDING')");
+        // DP1 EEMW due
+        $this->pdo->exec("INSERT INTO movements (pnr, deposit1_eemw_date, dp1_status) VALUES ('DP1-EEMW', '$tomorrow', 'PENDING')");
+        // DP1 Paid (excluded)
+        $this->pdo->exec("INSERT INTO movements (pnr, deposit1_airlines_date, dp1_status) VALUES ('DP1-PAID', '$tomorrow', 'PAID')");
+
+        $results = Movement::getDeadlinesByCategory('dp1', 3);
+
+        $this->assertCount(2, $results);
+    }
+
+    public function testGetDP2Deadlines()
+    {
+        $tomorrow = date('Y-m-d', strtotime('+1 day'));
+        
+        // DP2 Airlines due
+        $this->pdo->exec("INSERT INTO movements (pnr, deposit2_airlines_date, dp2_status) VALUES ('DP2-AIR', '$tomorrow', 'PENDING')");
+        // DP2 Paid (excluded)
+        $this->pdo->exec("INSERT INTO movements (pnr, deposit2_airlines_date, dp2_status) VALUES ('DP2-PAID', '$tomorrow', 'PAID')");
+
+        $results = Movement::getDeadlinesByCategory('dp2', 3);
+
+        $this->assertCount(1, $results);
+    }
+
+    public function testGetFPDeadlines()
+    {
+        $tomorrow = date('Y-m-d', strtotime('+1 day'));
+        
+        // FP Airlines due
+        $this->pdo->exec("INSERT INTO movements (pnr, fullpay_airlines_date, fp_status) VALUES ('FP-AIR', '$tomorrow', 'PENDING')");
+        // FP Paid (excluded)
+        $this->pdo->exec("INSERT INTO movements (pnr, fullpay_airlines_date, fp_status) VALUES ('FP-PAID', '$tomorrow', 'PAID')");
+
+        $results = Movement::getDeadlinesByCategory('fp', 3);
+
+        $this->assertCount(1, $results);
     }
 
     protected function tearDown(): void

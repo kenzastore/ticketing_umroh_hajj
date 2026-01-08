@@ -213,17 +213,62 @@ class Movement {
      * @return array
      */
     public static function getUpcomingDeadlines($days = 3) {
-        $sql = "SELECT * FROM movements 
-                WHERE ticketing_deadline IS NOT NULL 
-                AND ticketing_deadline BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL ? DAY)
-                AND ticketing_done = 0
-                ORDER BY ticketing_deadline ASC";
+        return self::getDeadlinesByCategory('ticketing', $days);
+    }
+
+    /**
+     * Get urgent deadlines by category (ticketing, dp1, dp2, fp).
+     * Includes past due items.
+     * @param string $category
+     * @param int $days
+     * @return array
+     */
+    public static function getDeadlinesByCategory($category, $days = 3) {
+        $category = strtolower($category);
+        $where = "";
+        $orderBy = "";
+
+        switch ($category) {
+            case 'ticketing':
+                $where = "ticketing_deadline IS NOT NULL AND ticketing_done = 0 
+                          AND ticketing_deadline <= DATE_ADD(CURDATE(), INTERVAL ? DAY)";
+                $orderBy = "ticketing_deadline ASC";
+                break;
+            case 'dp1':
+                $where = "(deposit1_airlines_date IS NOT NULL OR deposit1_eemw_date IS NOT NULL) 
+                          AND dp1_status != 'PAID' 
+                          AND (deposit1_airlines_date <= DATE_ADD(CURDATE(), INTERVAL ? DAY) 
+                               OR deposit1_eemw_date <= DATE_ADD(CURDATE(), INTERVAL ? DAY))";
+                $orderBy = "LEAST(COALESCE(deposit1_airlines_date, '9999-12-31'), COALESCE(deposit1_eemw_date, '9999-12-31')) ASC";
+                break;
+            case 'dp2':
+                $where = "(deposit2_airlines_date IS NOT NULL OR deposit2_eemw_date IS NOT NULL) 
+                          AND dp2_status != 'PAID' 
+                          AND (deposit2_airlines_date <= DATE_ADD(CURDATE(), INTERVAL ? DAY) 
+                               OR deposit2_airlines_date <= DATE_ADD(CURDATE(), INTERVAL ? DAY))";
+                $orderBy = "LEAST(COALESCE(deposit2_airlines_date, '9999-12-31'), COALESCE(deposit2_eemw_date, '9999-12-31')) ASC";
+                break;
+            case 'fp':
+                $where = "(fullpay_airlines_date IS NOT NULL OR fullpay_eemw_date IS NOT NULL) 
+                          AND fp_status != 'PAID' 
+                          AND (fullpay_airlines_date <= DATE_ADD(CURDATE(), INTERVAL ? DAY) 
+                               OR fullpay_eemw_date <= DATE_ADD(CURDATE(), INTERVAL ? DAY))";
+                $orderBy = "LEAST(COALESCE(fullpay_airlines_date, '9999-12-31'), COALESCE(fullpay_eemw_date, '9999-12-31')) ASC";
+                break;
+            default:
+                return [];
+        }
+
+        $sql = "SELECT * FROM movements WHERE $where ORDER BY $orderBy";
+        
         try {
             $stmt = self::$pdo->prepare($sql);
-            $stmt->execute([$days]);
+            $count = substr_count($where, '?');
+            $params = array_fill(0, $count, $days);
+            $stmt->execute($params);
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
-            error_log("Error getting deadlines: " . $e->getMessage());
+            error_log("Error getting deadlines for $category: " . $e->getMessage());
             return [];
         }
     }
