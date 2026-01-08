@@ -13,12 +13,12 @@
 - [x] Task: Develop Test Scenarios for "Time Limit Reminders" (H-3 Notification logic). <!-- e09b84e -->
 - [x] Task: Conductor - User Manual Verification 'Operational Workflow Scenarios' (Protocol in workflow.md) <!-- a6b8ff9 -->
 
-## Phase 3: Financial Workflow & Security Scenarios
+## Phase 3: Financial Workflow & Security Scenarios [checkpoint: 704f78e]
 - [x] Task: Develop Test Scenarios for "Invoice Generation" (Internal vs. External, Data Integrity). <!-- 1f61686 -->
 - [x] Task: Develop Test Scenarios for "Payment Recording & Reconciliation" (Payment Report vs. Advise). <!-- 0360d94 -->
 - [x] Task: Develop Test Scenarios for "Role-Based Access Control" (Admin/Finance/Ops/Monitor limits). <!-- 55d9535 -->
 - [x] Task: Develop Test Scenarios for "Audit Logging" (Verify actions are recorded). <!-- 1d8f9a3 -->
-- [~] Task: Conductor - User Manual Verification 'Financial Workflow & Security Scenarios' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Financial Workflow & Security Scenarios' (Protocol in workflow.md) <!-- 704f78e -->
 
 ## Phase 4: Final Consolidation
 - [ ] Task: Compile a "UAT Master Plan" document linking all scenarios and providing execution instructions.
