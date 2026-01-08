@@ -16,6 +16,6 @@
 - [x] Task: Conductor - User Manual Verification 'Financial & Administrative Guidance' (Protocol in workflow.md) <!-- ae7ff70 -->
 
 ## Phase 4: Final Consolidation
-- [ ] Task: Perform a cross-link audit to ensure all workflow transitions (e.g., Request to Movement) are seamless in documentation.
+- [x] Task: Perform a cross-link audit to ensure all workflow transitions (e.g., Request to Movement) are seamless in documentation. <!-- f1979fd -->
 - [ ] Task: Final review of Indonesian/English terminology for consistency with the application UI.
 - [ ] Task: Conductor - User Manual Verification 'Final Consolidation' (Protocol in workflow.md)
