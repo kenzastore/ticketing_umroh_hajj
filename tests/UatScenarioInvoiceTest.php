@@ -12,9 +12,9 @@ class UatScenarioInvoiceTest extends TestCase
         
         $content = file_get_contents($scenarioPath);
         
-        $this->assertStringContainsString('# UAT Scenario: Invoice Generation', $content);
+        $this->assertStringContainsString('# UAT Scenario: External Invoice Generation', $content);
         $this->assertStringContainsString('**Module:** Invoice Generator', $content);
-        $this->assertStringContainsString('Internal', $content);
+        $this->assertStringNotContainsString('Internal', $content);
         $this->assertStringContainsString('External', $content);
         $this->assertStringContainsString('PDF', $content);
     }
