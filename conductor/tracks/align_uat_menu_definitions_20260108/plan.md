@@ -1,7 +1,7 @@
 # Plan: Align UAT Scenarios with Menu Definitions
 
 ## Phase 1: Update UAT Scenarios
-- [ ] Task: Refactor `05_invoice_generation.md` to focus strictly on "External Invoice" (Invoice Menu).
+- [x] Task: Refactor `05_invoice_generation.md` to focus strictly on "External Invoice" (Invoice Menu). <!-- db88f57 -->
 - [ ] Task: Refactor `06_payment_recording_and_reconciliation.md` to emphasize "Internal Invoice" (Payment Advice) details.
 - [ ] Task: Conductor - User Manual Verification 'Update UAT Scenarios' (Protocol in workflow.md)
 
