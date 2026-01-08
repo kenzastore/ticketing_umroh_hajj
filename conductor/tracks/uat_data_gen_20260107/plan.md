@@ -2,13 +2,13 @@
 
 ## Tasks
 
-### Phase 1: Preparation & Utilities
+### Phase 1: Preparation & Utilities [checkpoint: 32fd41e]
 - [x] **Task 1: Identify and Load Data Constants**
     -   **Action:** Define arrays for Indonesian names, agents, corporates, airports (SUB, CGK, JED, MED), and carriers (Garuda, Saudia, Lion).
 - [x] **Task 2: Create Seeding Script Skeleton**
     -   **File:** `database/seed_uat_data.php` (New)
     -   **Action:** Set up the basic PHP script with necessary includes (`db_connect.php` and models).
-- [ ] **Task 3: Conductor - User Manual Verification 'Phase 1: Preparation & Utilities' (Protocol in workflow.md)**
+- [x] **Task 3: Conductor - User Manual Verification 'Phase 1: Preparation & Utilities' (Protocol in workflow.md)** 32fd41e
 
 ### Phase 2: Data Generation Logic
 - [ ] **Task 4: Implement Master Data Seeding**
