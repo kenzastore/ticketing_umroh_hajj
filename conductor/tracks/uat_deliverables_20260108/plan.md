@@ -4,7 +4,7 @@
 - [x] Task: Create `conductor/uat` directory structure for scenarios, templates, and results. <!-- 8cba4af -->
 - [x] Task: Design and implement the UAT Test Scenario Template (Markdown). <!-- b82f21d -->
 - [x] Task: Design and implement the UAT Execution Log/Result Template (Markdown). <!-- 45ade90 -->
-- [ ] Task: Conductor - User Manual Verification 'UAT Framework Setup' (Protocol in workflow.md)
+- [~] Task: Conductor - User Manual Verification 'UAT Framework Setup' (Protocol in workflow.md)
 
 ## Phase 2: Operational Workflow Scenarios
 - [ ] Task: Develop Test Scenarios for "New Booking Request" (Validation, Multi-segment, Submission).
