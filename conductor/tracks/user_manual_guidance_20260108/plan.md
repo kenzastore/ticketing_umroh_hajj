@@ -5,10 +5,10 @@
 - [x] Task: Create a basic template for manual chapters to ensure consistency. <!-- cbf2281 -->
 - [x] Task: Conductor - User Manual Verification 'Manual Structure & Setup' (Protocol in workflow.md) <!-- 10d8dac -->
 
-## Phase 2: Operational Guidance (Stages 1 & 2)
-- [x] Task: Document **Stage 1: Demand Intake** (Booking Request entry and management). <!-- d5712b6 -->
-- [~] Task: Document **Stage 2: Operational Execution** (Conversion to Movement, Flight Monitoring, and FullView).
-- [~] Task: Conductor - User Manual Verification 'Operational Guidance' (Protocol in workflow.md)
+## Phase 2: Operational Guidance (Stages 1 & 2) [checkpoint: be89de9]
+- [x] Task: Document **Stage 1: Demand Intake** (Booking Request entry and management). <!-- 8a1df4c -->
+- [x] Task: Document **Stage 2: Operational Execution** (Conversion to Movement, Flight Monitoring, and FullView). <!-- 8a1df4c -->
+- [x] Task: Conductor - User Manual Verification 'Operational Guidance' (Protocol in workflow.md) <!-- be89de9 -->
 
 ## Phase 3: Financial & Administrative Guidance (Stages 3 & 4)
 - [ ] Task: Document **Stage 3: Financial Settlement** (Invoice generation, Payments, and Payment Advice).
