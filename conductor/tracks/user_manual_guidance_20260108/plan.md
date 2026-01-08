@@ -1,9 +1,9 @@
 # Plan: Comprehensive User Manual Implementation
 
 ## Phase 1: Manual Structure & Setup
-- [ ] Task: Create `docs/manual` directory and main `index.md` with the workflow outline.
-- [ ] Task: Create a basic template for manual chapters to ensure consistency.
-- [ ] Task: Conductor - User Manual Verification 'Manual Structure & Setup' (Protocol in workflow.md)
+- [x] Task: Create `docs/manual` directory and main `index.md` with the workflow outline. <!-- cbf2281 -->
+- [x] Task: Create a basic template for manual chapters to ensure consistency. <!-- cbf2281 -->
+- [~] Task: Conductor - User Manual Verification 'Manual Structure & Setup' (Protocol in workflow.md)
 
 ## Phase 2: Operational Guidance (Stages 1 & 2)
 - [ ] Task: Document **Stage 1: Demand Intake** (Booking Request entry and management).
