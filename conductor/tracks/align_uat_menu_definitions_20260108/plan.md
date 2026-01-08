@@ -3,7 +3,7 @@
 ## Phase 1: Update UAT Scenarios
 - [x] Task: Refactor `05_invoice_generation.md` to focus strictly on "External Invoice" (Invoice Menu). <!-- db88f57 -->
 - [x] Task: Refactor `06_payment_recording_and_reconciliation.md` to emphasize "Internal Invoice" (Payment Advice) details. <!-- 78bc706 -->
-- [ ] Task: Conductor - User Manual Verification 'Update UAT Scenarios' (Protocol in workflow.md)
+- [~] Task: Conductor - User Manual Verification 'Update UAT Scenarios' (Protocol in workflow.md)
 
 ## Phase 2: Terminology Synchronization
 - [ ] Task: Update `uat_master_plan.md` index with "Internal (Payment Advice)" and "External (Invoice)" labels.
