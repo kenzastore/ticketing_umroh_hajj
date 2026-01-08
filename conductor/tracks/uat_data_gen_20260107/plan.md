@@ -11,13 +11,13 @@
 - [x] **Task 3: Conductor - User Manual Verification 'Phase 1: Preparation & Utilities' (Protocol in workflow.md)** 32fd41e
 
 ### Phase 2: Data Generation Logic
-- [ ] **Task 4: Implement Master Data Seeding**
+- [x] **Task 4: Implement Master Data Seeding**
     -   **Action:** Generate 10 Agent/Corporate records using `Agent::create` and `Corporate::create`.
-- [ ] **Task 5: Implement Booking Request Seeding**
+- [x] **Task 5: Implement Booking Request Seeding**
     -   **Action:** Generate 30 records with varying pax and segments.
-- [ ] **Task 6: Implement Movement Seeding**
+- [x] **Task 6: Implement Movement Seeding**
     -   **Action:** Generate 40 records, including the specific H-3 and Past Due scenarios.
-- [ ] **Task 7: Implement Invoice & Payment Seeding**
+- [x] **Task 7: Implement Invoice & Payment Seeding**
     -   **Action:** Generate 20 records linked to movements with varying payment statuses.
 - [ ] **Task 8: Conductor - User Manual Verification 'Phase 2: Data Generation Logic' (Protocol in workflow.md)**
 
