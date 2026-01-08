@@ -8,7 +8,7 @@
 ## Phase 2: Operational Guidance (Stages 1 & 2)
 - [x] Task: Document **Stage 1: Demand Intake** (Booking Request entry and management). <!-- d5712b6 -->
 - [~] Task: Document **Stage 2: Operational Execution** (Conversion to Movement, Flight Monitoring, and FullView).
-- [ ] Task: Conductor - User Manual Verification 'Operational Guidance' (Protocol in workflow.md)
+- [~] Task: Conductor - User Manual Verification 'Operational Guidance' (Protocol in workflow.md)
 
 ## Phase 3: Financial & Administrative Guidance (Stages 3 & 4)
 - [ ] Task: Document **Stage 3: Financial Settlement** (Invoice generation, Payments, and Payment Advice).
