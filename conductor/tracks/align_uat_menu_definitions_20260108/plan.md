@@ -11,4 +11,4 @@
 
 ## Phase 3: Final Validation
 - [x] Task: Run automated UAT readiness tests to ensure documentation integrity. <!-- 164c51a -->
-- [ ] Task: Conductor - User Manual Verification 'Final Validation' (Protocol in workflow.md)
+- [~] Task: Conductor - User Manual Verification 'Final Validation' (Protocol in workflow.md)
