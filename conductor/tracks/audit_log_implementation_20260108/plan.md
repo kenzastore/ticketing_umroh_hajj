@@ -6,12 +6,12 @@
 - [x] Task: Write unit tests for `AuditLog::log()` to ensure correct data storage and diffing. [17194cf]
 - [ ] Task: Conductor - User Manual Verification 'Core Audit Log Mechanism' (Protocol in workflow.md)
 
-## Phase 2: Integrate Audit Logging into Modules
-- [ ] Task: Implement audit logging for **User Management** actions (create/update/delete User, change Role).
-- [ ] Task: Implement audit logging for **Booking Request** actions (create/update/delete Request, Convert to Movement).
-- [ ] Task: Implement audit logging for **Movement Monitoring** actions (update PNR/Tour Code, status updates, Time Limit changes).
-- [ ] Task: Implement audit logging for **Financial Operations** actions (Invoice create/void, Payment record, Payment Advice create/update).
-- [ ] Task: Write integration tests to verify logs are generated for each auditable action.
+## Phase 2: Integrate Audit Logging into Modules [checkpoint: 12e78e5]
+- [x] Task: Implement audit logging for **User Management** actions (create/update/delete User, change Role). [674fb12]
+- [x] Task: Implement audit logging for **Booking Request** actions (create/update/delete Request, Convert to Movement). [822238a]
+- [x] Task: Implement audit logging for **Movement Monitoring** actions (update PNR/Tour Code, status updates, Time Limit changes). [ab29404]
+- [x] Task: Implement audit logging for **Financial Operations** actions (Invoice create/void, Payment record, Payment Advice create/update). [b64c50c]
+- [x] Task: Write integration tests to verify logs are generated for each auditable action. [b64c50c]
 - [ ] Task: Conductor - User Manual Verification 'Integrate Audit Logging into Modules' (Protocol in workflow.md)
 
 ## Phase 3: Audit Log User Interface
