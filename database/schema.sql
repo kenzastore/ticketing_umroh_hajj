@@ -98,6 +98,7 @@ CREATE TABLE IF NOT EXISTS booking_requests (
   ttl_days INT NULL,                           -- TTL DAYS
 
   notes TEXT NULL,
+  is_converted TINYINT(1) DEFAULT 0,
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
 
