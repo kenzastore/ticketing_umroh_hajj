@@ -14,11 +14,11 @@
 - [x] Task: Write integration tests to verify logs are generated for each auditable action. [b64c50c]
 - [ ] Task: Conductor - User Manual Verification 'Integrate Audit Logging into Modules' (Protocol in workflow.md)
 
-## Phase 3: Audit Log User Interface
-- [ ] Task: Create `public/admin/audit_logs.php` to display audit logs with pagination and filtering.
-- [ ] Task: Implement filtering by user, entity type, action type, and date range on the Audit Log page.
-- [ ] Task: Implement Role-Based Access Control (RBAC) to ensure only Admin users can access `public/admin/audit_logs.php`.
-- [ ] Task: Write UI/integration tests for the Audit Log display and filtering functionality.
+## Phase 3: Audit Log User Interface [checkpoint: 9750a14]
+- [x] Task: Create `public/admin/audit_logs.php` to display audit logs with pagination and filtering. [d6ded44]
+- [x] Task: Implement filtering by user, entity type, action type, and date range on the Audit Log page. [d6ded44]
+- [x] Task: Implement Role-Based Access Control (RBAC) to ensure only Admin users can access `public/admin/audit_logs.php`. [d6ded44]
+- [x] Task: Write UI/integration tests for the Audit Log display and filtering functionality. [d6ded44]
 - [ ] Task: Conductor - User Manual Verification 'Audit Log User Interface' (Protocol in workflow.md)
 
 ## Phase 4: Final Validation
