@@ -6,10 +6,10 @@
 - [x] Task: Conductor - User Manual Verification 'Manual Structure & Storyline Definition' (Protocol in workflow.md) [d1094bc]
 
 ## Phase 2: Stage 1 & 2 - Demand Intake & Operational Execution
-- [~] Task: Author `docs/manual/stage1_demand_intake.md` with step-by-step instructions for Booking Requests.
-- [ ] Task: Author `docs/manual/stage2_operational_execution.md` covering Conversion, PNR management, and Movement tracking.
-- [ ] Task: Add "Data Integrity Verification" points to ensure smooth handover from Request to Movement.
-- [ ] Task: Conductor - User Manual Verification 'Stage 1 & 2 - Demand Intake & Operational Execution' (Protocol in workflow.md)
+- [x] Task: Author `docs/manual/stage1_demand_intake.md` with step-by-step instructions for Booking Requests.
+- [x] Task: Author `docs/manual/stage2_operational_execution.md` covering Conversion, PNR management, and Movement tracking.
+- [x] Task: Add "Data Integrity Verification" points to ensure smooth handover from Request to Movement.
+- [~] Task: Conductor - User Manual Verification 'Stage 1 & 2 - Demand Intake & Operational Execution' (Protocol in workflow.md)
 
 ## Phase 3: Stage 3 & 4 - Financial Settlement & Management Audit
 - [ ] Task: Author `docs/manual/stage3_financial_settlement.md` for Invoicing, Payments, and Payment Advise.

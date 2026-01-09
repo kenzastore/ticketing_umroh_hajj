@@ -1,35 +1,33 @@
-# Tahap 1: Penerimaan Permintaan (Booking Request)
+# Tahap 1: Penerimaan Permintaan (Demand Intake)
 
-## Pendahuluan
-Tahap ini adalah titik awal dari seluruh proses bisnis. Di sini, staf operasional memasukkan permintaan kuota kursi (demand) dari agen perjalanan atau korporat.
+Tahap ini mencakup proses awal pencatatan permintaan kuota kursi dari Agen atau Corporate ke dalam sistem. Kita akan menggunakan data dari **[Master Storyline](./storyline.md)**.
 
-## Peran yang Bertanggung Jawab
-- **Ticketing/Operational Staff**
-- **Administrator**
+## 1. Menyiapkan Data Master
+Sebelum membuat permintaan, pastikan data Agen dan Corporate sudah tersedia di sistem.
+1.  Buka menu **Masters** > **Travel Agents**. Pastikan "Mutiara Tour & Travel" terdaftar.
+2.  Buka menu **Masters** > **Corporates**. Pastikan "PT Maju Jaya Abadi" terdaftar.
 
-## Prasyarat
-- Data **Agen** dan **Corporate** sudah terdaftar di sistem (Menu: Master Data).
-
-## Langkah-langkah
-
-### 1. Membuat Permintaan Baru
-1.  Buka menu **1. Booking Request** dari Dashboard.
-2.  Klik tombol **Create New Request** di pojok kanan atas.
-3.  Isi formulir permintaan:
-    -   **Corporate Name**: Pilih dari daftar yang tersedia.
-    -   **Agent Name**: Pilih agen yang meminta.
-    -   **Group Size (Pax)**: Masukkan jumlah jamaah.
-    -   **Flight Segments**: Masukkan detail penerbangan (hingga 4 segmen/leg). Pastikan tanggal, nomor penerbangan, dan sektor (rute) diisi dengan benar.
+## 2. Membuat Booking Request Baru
+1.  Buka menu **1. Requests** dari navigasi utama.
+2.  Klik tombol **Create New Request**.
+3.  Isi formulir dengan data Storyline:
+    -   **Corporate Name:** PT Maju Jaya Abadi
+    -   **Agent Name:** Mutiara Tour & Travel
+    -   **Group Size:** 45
+    -   **Flight Details (4 Leg):**
+        -   Leg 1: 11-05-2026 | TR596 | SUB-SIN
+        -   Leg 2: 11-05-2026 | TR597 | SIN-JED
+        -   Leg 3: 20-05-2026 | TR598 | JED-SIN
+        -   Leg 4: 21-05-2026 | TR599 | SIN-SUB
+    -   **Fares (Nett):** 14.500.000
+    -   **Fares (Selling):** 16.000.000
 4.  Klik **Save Request**.
 
-### 2. Memantau Daftar Permintaan
-1.  Halaman utama **Booking Requests** menampilkan semua permintaan yang masuk.
-2.  Permintaan yang baru dibuat akan memiliki status default (belum dikonversi).
-3.  Gunakan fitur **Filter** (berdasarkan rentang tanggal) atau **Export to Excel** untuk pelaporan harian.
-
-## Tips & Catatan
--   **Multi-segment**: Sistem mendukung hingga 4 leg penerbangan (misal: SUB-SIN, SIN-JED, JED-SIN, SIN-SUB).
--   **TTL (Time To Live)**: Perhatikan kolom TTL untuk mengetahui batas waktu berlakunya penawaran harga/permintaan ini.
+## 3. Titik Verifikasi (Data Integrity)
+Setelah menyimpan, lakukan pengecekan berikut pada tabel daftar permintaan:
+- [ ] **Verifikasi 1.1:** Apakah jumlah Pax muncul sebagai "45"?
+- [ ] **Verifikasi 1.2:** Apakah rute Leg 1 s/d Leg 4 muncul dengan benar di kolom masing-masing?
+- [ ] **Verifikasi 1.3:** Apakah nilai TCP otomatis terhitung (45 x 16.000.000)?
 
 ---
-[Kembali ke Beranda](./index.md)
+**[Lanjut ke Tahap 2: Eksekusi Operasional](./stage2_operational_execution.md)**

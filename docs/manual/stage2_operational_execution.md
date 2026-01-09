@@ -1,43 +1,27 @@
-# Tahap 2: Eksekusi Operasional (Movement & Monitoring)
+# Tahap 2: Eksekusi Operasional (Operational Execution)
 
-## Pendahuluan
-Setelah permintaan disetujui, langkah selanjutnya adalah mengeksekusi rencana perjalanan tersebut menjadi pergerakan nyata yang dipantau melalui PNR (Passenger Name Record).
+Tahap ini mengubah niat (Request) menjadi pergerakan nyata (Movement) dengan identitas penerbangan yang unik (PNR/Tour Code).
 
-## Peran yang Bertanggung Jawab
-- **Ticketing/Operational Staff**
-- **Administrator**
-- **Monitor/Viewer** (Hanya memantau)
+## 1. Konversi Request ke Movement
+1.  Cari data "PT Maju Jaya Abadi" di menu **1. Requests**.
+2.  Klik tombol **Eye (Detail)** atau langsung tombol **Convert** jika tersedia.
+3.  Isi data identitas penerbangan sesuai Storyline:
+    -   **PNR:** GA123456
+    -   **Tour Code:** UMRAH-MAY-26-001
+    -   **Carrier:** Scoot
+4.  Klik **Confirm Conversion**.
 
-## Prasyarat
-- Terdapat data **Booking Request** dengan status Pending (Belum Dikonversi).
+## 2. Manajemen Movement (Dashboard)
+1.  Buka menu **2. Movements**.
+2.  Data yang baru dikonversi akan muncul di daftar teratas.
+3.  Perhatikan indikator warna untuk status pembayaran (DP1, DP2, FP). Saat ini seharusnya masih berwarna **Merah/Pending**.
 
-## Langkah-langkah
-
-### 1. Konversi ke Movement (PNR Assignment)
-1.  Buka menu **Booking Request**.
-2.  Pilih salah satu permintaan, lalu klik tombol **View** (ikon mata).
-3.  Di halaman detail, klik tombol **Convert to Movement**.
-4.  Masukkan data operasional inti:
-    -   **PNR**: Kode booking dari maskapai.
-    -   **Tour Code**: Kode grup tur.
-    -   **Carrier**: Nama maskapai.
-5.  Klik **Finalize Conversion**. Data akan dipindahkan ke modul Movement dan dikunci (tidak dapat diedit sebagai Request lagi).
-
-### 2. Monitoring via FullView Dashboard
-1.  Buka menu **2. Movement**.
-2.  Halaman ini menampilkan dashboard pergerakan grup secara real-time.
-3.  **Filter & Pencarian**: Gunakan kotak pencarian untuk mencari berdasarkan PNR, Agen, atau Tour Code. Gunakan filter tanggal keberangkatan untuk menyaring tampilan.
-4.  **Monitor Mode**: Klik tombol **Monitor Mode** untuk mengubah tampilan menjadi lebih besar (FullView), sangat cocok untuk ditampilkan pada TV di ruang operasional. Halaman ini akan melakukan refresh otomatis setiap 30 detik.
-
-### 3. Pembaruan Status Operasional
-1.  Pada daftar Movement, klik tombol **Edit** pada salah satu baris.
-2.  Perbarui status penting seperti:
-    -   **Ticketing Done**: Centang jika tiket sudah diterbitkan semua.
-    -   **Time Limit**: Pantau batas waktu manifest dan ticketing.
-
-## Tips & Catatan
--   **Indikator Warna**: Perhatikan warna pada status pembayaran (DP1, DP2, FP). Warna hijau menandakan sudah lunas, kuning untuk parsial, dan merah/tanpa warna untuk yang belum dibayar.
--   **Urgent Deadlines**: Pantau bagian "Urgent Deadlines" pada Dashboard utama untuk pengingat H-3 sebelum batas waktu berakhir.
+## 3. Titik Verifikasi (Handover Integrity)
+Pastikan data dari Tahap 1 terbawa dengan sempurna:
+- [ ] **Verifikasi 2.1:** Apakah nama Agen "Mutiara Tour & Travel" tetap sama di detail Movement?
+- [ ] **Verifikasi 2.2:** Apakah jumlah Pax "45" terbawa ke Movement?
+- [ ] **Verifikasi 2.3:** Apakah jadwal Leg 1 s/d Leg 4 tetap sinkron dengan data awal?
+- [ ] **Verifikasi 2.4:** Cari di menu **1. Requests**, apakah status baris data tadi sudah ditandai sebagai "CONVERTED" (biasanya berwarna hijau/abu-abu redup)?
 
 ---
-[Kembali ke Beranda](./index.md)
+**[Lanjut ke Tahap 3: Penyelesaian Keuangan](./stage3_financial_settlement.md)**
