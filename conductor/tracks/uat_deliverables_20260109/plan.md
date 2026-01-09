@@ -9,10 +9,10 @@
 - [x] Task: Author `docs/manual/stage1_demand_intake.md` with step-by-step instructions for Booking Requests. [87bfba2]
 - [x] Task: Author `docs/manual/stage2_operational_execution.md` covering Conversion, PNR management, and Movement tracking. [87bfba2]
 - [x] Task: Add "Data Integrity Verification" points to ensure smooth handover from Request to Movement. [87bfba2]
-- [~] Task: Conductor - User Manual Verification 'Stage 1 & 2 - Demand Intake & Operational Execution' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Stage 1 & 2 - Demand Intake & Operational Execution' (Protocol in workflow.md) [checkpoint: e2c9bd2]
 
 ## Phase 3: Stage 3 & 4 - Financial Settlement & Management Audit
-- [ ] Task: Author `docs/manual/stage3_financial_settlement.md` for Invoicing, Payments, and Payment Advise.
+- [~] Task: Author `docs/manual/stage3_financial_settlement.md` for Invoicing, Payments, and Payment Advise.
 - [ ] Task: Author `docs/manual/stage4_management_audit.md` covering Deadline monitoring and Audit Log verification.
 - [ ] Task: Add "Data Integrity Verification" points for the financial flow (Movement -> Invoice -> Payment).
 - [ ] Task: Conductor - User Manual Verification 'Stage 3 & 4 - Financial Settlement & Management Audit' (Protocol in workflow.md)
