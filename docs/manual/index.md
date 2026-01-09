@@ -3,6 +3,9 @@ Digitalisasi Proses Ticketing Umroh & Haji
 
 Selamat datang di panduan resmi penggunaan sistem Ticketing Umroh & Haji. Panduan ini disusun berdasarkan alur kerja bisnis dari awal hingga akhir.
 
+Untuk mempermudah pengujian, kita akan menggunakan skenario tunggal yang dapat diikuti dari awal hingga akhir:
+**[Master Storyline: Group Umrah Mei 2026](./storyline.md)**
+
 ## Peran Pengguna (User Roles)
 Setiap peran memiliki akses dan tugas yang berbeda:
 - **Administrator:** Manajemen pengguna, data master (Agen/Corporate), dan pengawasan sistem.

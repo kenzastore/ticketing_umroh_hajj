@@ -1,0 +1,8 @@
+{
+  "track_id": "uat_deliverables_20260109",
+  "type": "feature",
+  "status": "new",
+  "created_at": "2026-01-09T14:00:00Z",
+  "updated_at": "2026-01-09T14:00:00Z",
+  "description": "propose manual verification steps with the dummy data to propose, step-by-step from start-to-end to fixation that the business process is suitable for User Acceptance Testing (UAT)"
+}
