@@ -18,6 +18,6 @@
 - [x] Task: Conductor - User Manual Verification 'Stage 3 & 4 - Financial Settlement & Management Audit' (Protocol in workflow.md) [checkpoint: e1016cf]
 
 ## Phase 4: Finalization & Readiness Checklist
-- [~] Task: Create a "UAT Readiness Checklist" at the end of the manual to summarize the end-to-end validation.
-- [ ] Task: Perform a final read-through of all manual files to ensure narrative consistency and clarity.
-- [ ] Task: Conductor - User Manual Verification 'Finalization & Readiness Checklist' (Protocol in workflow.md)
+- [x] Task: Create a "UAT Readiness Checklist" at the end of the manual to summarize the end-to-end validation.
+- [x] Task: Perform a final read-through of all manual files to ensure narrative consistency and clarity.
+- [~] Task: Conductor - User Manual Verification 'Finalization & Readiness Checklist' (Protocol in workflow.md)

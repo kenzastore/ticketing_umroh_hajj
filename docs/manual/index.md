@@ -25,7 +25,22 @@ Konversi permintaan menjadi pergerakan (PNR), pemantauan jadwal penerbangan, dan
 Penagihan (Invoice), konfirmasi pembayaran (Receipt), dan instruksi pembayaran ke maskapai (Payment Advice).
 
 ### [Tahap 4: Manajemen & Audit](./stage4_management_audit.md)
-Pemeliharaan data master, manajemen peran, dan peninjauan log audit.
+Proses monitoring deadline dan peninjauan riwayat perubahan (Audit Log).
+
+---
+
+## UAT Readiness Checklist
+Gunakan daftar ini untuk memastikan sistem siap untuk User Acceptance Testing (UAT). Checklist ini merangkum verifikasi dari Tahap 1 s/d 4.
+
+| No | Item Pemeriksaan | Target Hasil | Status |
+|:---|:---|:---|:---:|
+| 1 | **Demand Intake** | Booking Request tersimpan dengan multi-leg flight yang benar. | [ ] |
+| 2 | **Conversion** | Request berhasil diubah menjadi Movement dengan PNR/Tour Code. | [ ] |
+| 3 | **Data Handover** | Pax, Agen, dan Corporate terbawa dengan benar ke Movement. | [ ] |
+| 4 | **Invoicing** | Proforma Invoice terbuat otomatis dengan kalkulasi (Pax x Fare). | [ ] |
+| 5 | **Payment** | Pencatatan pembayaran mengubah status Invoice dan indikator DP di Movement. | [ ] |
+| 6 | **Audit Trail** | Setiap aksi perubahan (Create/Update) tercatat di menu Audit Logs. | [ ] |
+| 7 | **Monitoring** | Dashboard menampilkan peringatan visual untuk deadline mendekati (H-3). | [ ] |
 
 ---
 © 2026 PT Elang Emas Mandiri Indonesia
