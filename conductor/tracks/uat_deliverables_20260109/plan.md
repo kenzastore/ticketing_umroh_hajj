@@ -12,9 +12,9 @@
 - [x] Task: Conductor - User Manual Verification 'Stage 1 & 2 - Demand Intake & Operational Execution' (Protocol in workflow.md) [checkpoint: e2c9bd2]
 
 ## Phase 3: Stage 3 & 4 - Financial Settlement & Management Audit
-- [x] Task: Author `docs/manual/stage3_financial_settlement.md` for Invoicing, Payments, and Payment Advise.
-- [x] Task: Author `docs/manual/stage4_management_audit.md` covering Deadline monitoring and Audit Log verification.
-- [x] Task: Add "Data Integrity Verification" points for the financial flow (Movement -> Invoice -> Payment).
+- [x] Task: Author `docs/manual/stage3_financial_settlement.md` for Invoicing, Payments, and Payment Advise. [2df2187]
+- [x] Task: Author `docs/manual/stage4_management_audit.md` covering Deadline monitoring and Audit Log verification. [2df2187]
+- [x] Task: Add "Data Integrity Verification" points for the financial flow (Movement -> Invoice -> Payment). [2df2187]
 - [~] Task: Conductor - User Manual Verification 'Stage 3 & 4 - Financial Settlement & Management Audit' (Protocol in workflow.md)
 
 ## Phase 4: Finalization & Readiness Checklist
