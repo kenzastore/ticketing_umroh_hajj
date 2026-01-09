@@ -2,104 +2,143 @@
 $title = "Login"; // Set title for the header
 require_once __DIR__ . '/shared/header.php';
 ?>
-<div class="container mt-5">
-    <div class="row align-items-center">
-        <!-- Left Column: Business Process Flow -->
-        <div class="col-md-7 mb-5 mb-md-0">
-            <h1 class="display-4 mb-3 text-primary">Ticketing Umroh & Haji</h1>
-            <p class="lead mb-4">A centralized platform for managing the complete lifecycle of pilgrimage ticketing.</p>
+<!-- Custom Login Styling -->
+<link rel="stylesheet" href="/assets/css/login.css">
+
+<div class="login-wrapper">
+    <!-- Left Side: Information Panel -->
+    <div class="info-panel">
+        <h1>Ticketing Umroh & Haji</h1>
+        <p class="lead">Platform digital terintegrasi untuk pengelolaan siklus lengkap penagihan dan keberangkatan jamaah.</p>
+
+        <div class="workflow-stepper">
+            <div class="workflow-item">
+                <div class="workflow-icon"><i class="fas fa-file-signature"></i></div>
+                <div class="workflow-content">
+                    <h6>1. Demand Intake</h6>
+                    <p>Input permintaan kuota kursi dari Agen/Corporate.</p>
+                    <span class="badge bg-light text-dark" style="font-size: 0.7rem;">Staff Operasional</span>
+                </div>
+            </div>
             
-            <div class="card bg-light border-0 shadow-sm">
-                <div class="card-body p-4">
-                    <h5 class="card-title border-bottom pb-2 mb-3">Workflow Overview</h5>
-                    <div class="d-flex mb-3">
-                        <div class="me-3">
-                            <span class="badge bg-primary rounded-pill p-2 fs-6">1</span>
-                        </div>
-                        <div>
-                            <h6 class="fw-bold mb-1">Request Entry</h6>
-                            <p class="small text-muted mb-0">Agents submit Group or FID requests detailing pax count and travel dates.</p>
-                        </div>
-                    </div>
-                    <div class="d-flex mb-3">
-                        <div class="me-3">
-                            <span class="badge bg-info rounded-pill p-2 fs-6">2</span>
-                        </div>
-                        <div>
-                            <h6 class="fw-bold mb-1">Booking & PNR</h6>
-                            <p class="small text-muted mb-0">Admins secure seats and enter PNR codes. Status moves to <span class="badge bg-success" style="font-size: 0.7em;">PNR_ISSUED</span>.</p>
-                        </div>
-                    </div>
-                    <div class="d-flex mb-3">
-                        <div class="me-3">
-                            <span class="badge bg-warning text-dark rounded-pill p-2 fs-6">3</span>
-                        </div>
-                        <div>
-                            <h6 class="fw-bold mb-1">Invoicing</h6>
-                            <p class="small text-muted mb-0">Finance generates invoices for confirmed bookings. PDF invoices are sent to agents.</p>
-                        </div>
-                    </div>
-                    <div class="d-flex mb-3">
-                        <div class="me-3">
-                            <span class="badge bg-success rounded-pill p-2 fs-6">4</span>
-                        </div>
-                        <div>
-                            <h6 class="fw-bold mb-1">Payment & Verification</h6>
-                            <p class="small text-muted mb-0">Payments are recorded and hashed for security. Booking becomes <span class="badge bg-success" style="font-size: 0.7em;">PAID_FULL</span>.</p>
-                        </div>
-                    </div>
-                    <div class="d-flex">
-                        <div class="me-3">
-                            <span class="badge bg-secondary rounded-pill p-2 fs-6">5</span>
-                        </div>
-                        <div>
-                            <h6 class="fw-bold mb-1">Flight Monitoring</h6>
-                            <p class="small text-muted mb-0">Real-time tracking of departure, arrival, and delays for all active movements.</p>
-                        </div>
-                    </div>
+            <div class="workflow-item">
+                <div class="workflow-icon"><i class="fas fa-plane-departure"></i></div>
+                <div class="workflow-content">
+                    <h6>2. Operational Execution</h6>
+                    <p>Konversi menjadi Movement (PNR & Tour Code).</p>
+                    <span class="badge bg-light text-dark" style="font-size: 0.7rem;">Staff Operasional / Admin</span>
+                </div>
+            </div>
+
+            <div class="workflow-item">
+                <div class="workflow-icon"><i class="fas fa-file-invoice-dollar"></i></div>
+                <div class="workflow-content">
+                    <h6>3. Financial Settlement</h6>
+                    <p>Pembuatan Invoice & Pencatatan Pembayaran.</p>
+                    <span class="badge bg-light text-dark" style="font-size: 0.7rem;">Finance Officer</span>
+                </div>
+            </div>
+
+            <div class="workflow-item">
+                <div class="workflow-icon"><i class="fas fa-history"></i></div>
+                <div class="workflow-content">
+                    <h6>4. Management & Audit</h6>
+                    <p>Monitoring deadline dan peninjauan log audit.</p>
+                    <span class="badge bg-light text-dark" style="font-size: 0.7rem;">Administrator</span>
                 </div>
             </div>
         </div>
 
-        <!-- Right Column: Login Form -->
-        <div class="col-md-5">
-            <div class="card shadow">
-                <div class="card-body p-5">
-                    <h3 class="card-title text-center mb-4">System Login</h3>
+        <div class="demo-creds shadow-sm">
+            <h6 class="mb-3"><i class="fas fa-key me-2"></i>Demo Credentials</h6>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Role</th>
+                        <th>Username</th>
+                        <th>Password</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Administrator</td>
+                        <td><code>admin_demo</code></td>
+                        <td rowspan="4" class="align-middle"><code>password123</code></td>
+                    </tr>
+                    <tr>
+                        <td>Operational</td>
+                        <td><code>op_demo</code></td>
+                    </tr>
+                    <tr>
+                        <td>Finance</td>
+                        <td><code>finance_demo</code></td>
+                    </tr>
+                    <tr>
+                        <td>Monitor</td>
+                        <td><code>monitor_demo</code></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Right Side: Access Panel -->
+    <div class="access-panel">
+        <div class="login-card">
+            <div class="card shadow-lg p-4">
+                <div class="card-body">
+                    <div class="text-center mb-4">
+                        <i class="fas fa-user-circle fa-4x text-primary mb-3"></i>
+                        <h3 class="fw-bold">System Login</h3>
+                        <p class="text-muted small">Silakan masuk ke akun Anda</p>
+                    </div>
+
                     <?php if (isset($_GET['error'])): ?>
-                        <div class="alert alert-danger" role="alert">
+                        <div class="alert alert-danger py-2 small" role="alert">
                             <?php
                                 if ($_GET['error'] === 'empty_fields') {
-                                    echo 'Please fill in all fields.';
+                                    echo '<i class="fas fa-exclamation-circle me-2"></i>Harap isi semua kolom.';
                                 } elseif ($_GET['error'] === 'invalid_credentials') {
-                                    echo 'Invalid username or password.';
+                                    echo '<i class="fas fa-times-circle me-2"></i>Username atau password salah.';
                                 }
                             ?>
                         </div>
                     <?php endif; ?>
+
                     <form action="login_process.php" method="POST">
                         <div class="mb-3">
-                            <label for="username" class="form-label">Username</label>
-                            <input type="text" class="form-control form-control-lg" id="username" name="username" required placeholder="e.g. admin">
+                            <label for="username" class="form-label small fw-bold">Username</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light"><i class="fas fa-user text-muted"></i></span>
+                                <input type="text" class="form-control" id="username" name="username" required placeholder="admin_demo">
+                            </div>
                         </div>
                         <div class="mb-4">
-                            <label for="password" class="form-label">Password</label>
-                            <input type="password" class="form-control form-control-lg" id="password" name="password" required placeholder="••••••••">
+                            <label for="password" class="form-label small fw-bold">Password</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light"><i class="fas fa-lock text-muted"></i></span>
+                                <input type="password" class="form-control" id="password" name="password" required placeholder="••••••••">
+                            </div>
                         </div>
-                        <button type="submit" class="btn btn-primary btn-lg w-100">Login</button>
+                        <button type="submit" class="btn btn-primary w-100 py-2 fw-bold">Masuk ke Dashboard</button>
                     </form>
-                    
-                    <div class="mt-4 pt-3 border-top text-center">
-                        <small class="text-muted d-block mb-2">Demo Credentials:</small>
-                        <span class="badge bg-light text-dark border me-1">admin / admin</span>
-                        <span class="badge bg-light text-dark border me-1">finance / password123</span>
-                        <span class="badge bg-light text-dark border">monitor / password123</span>
-                    </div>
                 </div>
+            </div>
+            
+            <div class="text-center mt-4">
+                <p class="text-muted extra-small">&copy; 2026 PT Elang Emas Mandiri Indonesia</p>
             </div>
         </div>
     </div>
 </div>
+
+<style>
+    /* Hide default header for clean login experience */
+    nav.navbar { display: none !important; }
+    main.container { max-width: 100% !important; padding: 0 !important; margin: 0 !important; }
+    .extra-small { font-size: 0.7rem; }
+</style>
+
 <?php
 require_once __DIR__ . '/shared/footer.php';
 ?>
