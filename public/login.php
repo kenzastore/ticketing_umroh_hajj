@@ -2,138 +2,153 @@
 $title = "Login"; // Set title for the header
 require_once __DIR__ . '/shared/header.php';
 ?>
-<!-- Custom Login Styling -->
-<link rel="stylesheet" href="/assets/css/login.css">
+<!-- Custom Minimal Login Styling -->
+<link rel="stylesheet" href="/assets/css/minimal-login.css">
 
-<div class="login-wrapper">
-    <!-- Left Side: Information Panel -->
-    <div class="info-panel">
-        <h1>Ticketing Umroh & Haji</h1>
-        <p class="lead">Platform digital terintegrasi untuk pengelolaan siklus lengkap penagihan dan keberangkatan jamaah.</p>
-
-        <div class="workflow-stepper">
-            <div class="workflow-item">
-                <div class="workflow-icon"><i class="fas fa-file-signature"></i></div>
-                <div class="workflow-content">
-                    <h6>1. Demand Intake</h6>
-                    <p>Input permintaan kuota kursi dari Agen/Corporate.</p>
-                    <span class="badge bg-light text-dark" style="font-size: 0.7rem;">Staff Operasional</span>
+<div class="login-container">
+    <div class="minimal-card card shadow-lg">
+        <div class="card-body">
+            <div class="text-center mb-5">
+                <div class="app-logo">
+                    <i class="fas fa-plane-departure"></i>
                 </div>
-            </div>
-            
-            <div class="workflow-item">
-                <div class="workflow-icon"><i class="fas fa-plane-departure"></i></div>
-                <div class="workflow-content">
-                    <h6>2. Operational Execution</h6>
-                    <p>Konversi menjadi Movement (PNR & Tour Code).</p>
-                    <span class="badge bg-light text-dark" style="font-size: 0.7rem;">Staff Operasional / Admin</span>
-                </div>
+                <h3 class="fw-bold">Ticketing Umroh</h3>
+                <p class="text-muted small">Silakan masuk untuk mengelola ticketing</p>
             </div>
 
-            <div class="workflow-item">
-                <div class="workflow-icon"><i class="fas fa-file-invoice-dollar"></i></div>
-                <div class="workflow-content">
-                    <h6>3. Financial Settlement</h6>
-                    <p>Pembuatan Invoice & Pencatatan Pembayaran.</p>
-                    <span class="badge bg-light text-dark" style="font-size: 0.7rem;">Finance Officer</span>
+            <?php if (isset($_GET['error'])): ?>
+                <div class="alert alert-danger py-3 small border-0 shadow-sm mb-4" role="alert">
+                    <?php
+                        if ($_GET['error'] === 'empty_fields') {
+                            echo '<i class="fas fa-exclamation-circle me-2"></i>Harap isi semua kolom.';
+                        } elseif ($_GET['error'] === 'invalid_credentials') {
+                            echo '<i class="fas fa-times-circle me-2"></i>Username atau password salah.';
+                        }
+                    ?>
                 </div>
-            </div>
+            <?php endif; ?>
 
-            <div class="workflow-item">
-                <div class="workflow-icon"><i class="fas fa-history"></i></div>
-                <div class="workflow-content">
-                    <h6>4. Management & Audit</h6>
-                    <p>Monitoring deadline dan peninjauan log audit.</p>
-                    <span class="badge bg-light text-dark" style="font-size: 0.7rem;">Administrator</span>
-                </div>
-            </div>
-        </div>
-
-        <div class="demo-creds shadow-sm">
-            <h6 class="mb-3"><i class="fas fa-key me-2"></i>Demo Credentials</h6>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Role</th>
-                        <th>Username</th>
-                        <th>Password</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Administrator</td>
-                        <td><code>admin_demo</code></td>
-                        <td rowspan="4" class="align-middle"><code>password123</code></td>
-                    </tr>
-                    <tr>
-                        <td>Operational</td>
-                        <td><code>op_demo</code></td>
-                    </tr>
-                    <tr>
-                        <td>Finance</td>
-                        <td><code>finance_demo</code></td>
-                    </tr>
-                    <tr>
-                        <td>Monitor</td>
-                        <td><code>monitor_demo</code></td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-
-    <!-- Right Side: Access Panel -->
-    <div class="access-panel">
-        <div class="login-card">
-            <div class="card shadow-lg p-4">
-                <div class="card-body">
-                    <div class="text-center mb-4">
-                        <i class="fas fa-user-circle fa-4x text-primary mb-3"></i>
-                        <h3 class="fw-bold">System Login</h3>
-                        <p class="text-muted small">Silakan masuk ke akun Anda</p>
+            <form action="login_process.php" method="POST">
+                <!-- Username -->
+                <div class="mb-4">
+                    <label for="username" class="form-label">Username</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-user"></i></span>
+                        <input type="text" class="form-control" id="username" name="username" required placeholder="admin_demo">
                     </div>
-
-                    <?php if (isset($_GET['error'])): ?>
-                        <div class="alert alert-danger py-2 small" role="alert">
-                            <?php
-                                if ($_GET['error'] === 'empty_fields') {
-                                    echo '<i class="fas fa-exclamation-circle me-2"></i>Harap isi semua kolom.';
-                                } elseif ($_GET['error'] === 'invalid_credentials') {
-                                    echo '<i class="fas fa-times-circle me-2"></i>Username atau password salah.';
-                                }
-                            ?>
-                        </div>
-                    <?php endif; ?>
-
-                    <form action="login_process.php" method="POST">
-                        <div class="mb-3">
-                            <label for="username" class="form-label small fw-bold">Username</label>
-                            <div class="input-group">
-                                <span class="input-group-text bg-light"><i class="fas fa-user text-muted"></i></span>
-                                <input type="text" class="form-control" id="username" name="username" required placeholder="admin_demo">
-                            </div>
-                        </div>
-                        <div class="mb-4">
-                            <label for="password" class="form-label small fw-bold">Password</label>
-                            <div class="input-group">
-                                <span class="input-group-text bg-light"><i class="fas fa-lock text-muted"></i></span>
-                                <input type="password" class="form-control" id="password" name="password" required placeholder="••••••••">
-                            </div>
-                        </div>
-                        <button type="submit" class="btn btn-primary w-100 py-2 fw-bold">Masuk ke Dashboard</button>
-                    </form>
                 </div>
-            </div>
-            
-            <div class="text-center mt-4">
-                <p class="text-muted extra-small">&copy; 2026 PT Elang Emas Mandiri Indonesia</p>
+
+                <!-- Password -->
+                <div class="mb-5">
+                    <label for="password" class="form-label">Password</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                        <input type="password" class="form-control" id="password" name="password" required placeholder="••••••••">
+                        <span class="input-group-text password-toggle" onclick="togglePassword()">
+                            <i class="fas fa-eye" id="toggleIcon"></i>
+                        </span>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100 py-3 fw-bold shadow-sm">Masuk ke Dashboard</button>
+            </form>
+
+            <!-- Workflow Accordion -->
+            <div class="accordion workflow-accordion mt-5" id="workflowAccordion">
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingOne">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                            <i class="fas fa-info-circle me-2"></i> How the system works
+                        </button>
+                    </h2>
+                    <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#workflowAccordion">
+                        <div class="accordion-body">
+                            <div class="small">
+                                <div class="d-flex mb-3">
+                                    <div class="text-primary me-3"><i class="fas fa-file-signature fa-fw"></i></div>
+                                    <div>
+                                        <strong>1. Demand Intake</strong><br>
+                                        <span class="text-muted">Input requests from Agents (Role: Operational).</span>
+                                    </div>
+                                </div>
+                                <div class="d-flex mb-3">
+                                    <div class="text-primary me-3"><i class="fas fa-tasks fa-fw"></i></div>
+                                    <div>
+                                        <strong>2. Operational Execution</strong><br>
+                                        <span class="text-muted">Manage PNR & Movements (Role: Operational/Admin).</span>
+                                    </div>
+                                </div>
+                                <div class="d-flex mb-3">
+                                    <div class="text-primary me-3"><i class="fas fa-file-invoice-dollar fa-fw"></i></div>
+                                    <div>
+                                        <strong>3. Financial Settlement</strong><br>
+                                        <span class="text-muted">Invoices & Payments (Role: Finance).</span>
+                                    </div>
+                                </div>
+                                <div class="d-flex">
+                                    <div class="text-primary me-3"><i class="fas fa-check-double fa-fw"></i></div>
+                                    <div>
+                                        <strong>4. Management & Audit</strong><br>
+                                        <span class="text-muted">Deadlines & Audit Logs (Role: Admin).</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
+<!-- Demo Credentials Footer -->
+<footer class="demo-footer">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <span class="demo-title text-center">Demo Accounts (Password: <code>password123</code>)</span>
+                <div class="demo-grid text-center">
+                    <div class="demo-item">
+                        <code class="d-block">admin_demo</code>
+                        <span class="demo-role">Administrator</span>
+                    </div>
+                    <div class="demo-item">
+                        <code class="d-block">op_demo</code>
+                        <span class="demo-role">Operational</span>
+                    </div>
+                    <div class="demo-item">
+                        <code class="d-block">finance_demo</code>
+                        <span class="demo-role">Finance</span>
+                    </div>
+                    <div class="demo-item">
+                        <code class="d-block">monitor_demo</code>
+                        <span class="demo-role">Monitor</span>
+                    </div>
+                </div>
+                <p class="text-muted extra-small text-center mt-4 mb-0">&copy; 2026 PT Elang Emas Mandiri Indonesia</p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<script>
+function togglePassword() {
+    const passwordInput = document.getElementById('password');
+    const toggleIcon = document.getElementById('toggleIcon');
+    if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        toggleIcon.classList.remove('fa-eye');
+        toggleIcon.classList.add('fa-eye-slash');
+    } else {
+        passwordInput.type = 'password';
+        toggleIcon.classList.remove('fa-eye-slash');
+        toggleIcon.classList.add('fa-eye');
+    }
+}
+</script>
+
 <style>
-    /* Hide default header for clean login experience */
+    /* Clean overrides for the login experience */
     nav.navbar { display: none !important; }
     main.container { max-width: 100% !important; padding: 0 !important; margin: 0 !important; }
     .extra-small { font-size: 0.7rem; }

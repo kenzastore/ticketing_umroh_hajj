@@ -6,43 +6,39 @@ namespace Tests;
  */
 class LoginPageLayoutTest extends TestCase
 {
-    public function testLoginUsesSplitScreenWrapper()
+    public function testLoginUsesCenteredCardLayout()
     {
         $content = file_get_contents(__DIR__ . '/../public/login.php');
-        $this->assertStringContainsString('class="login-wrapper"', $content);
-        $this->assertStringContainsString('class="info-panel"', $content);
-        $this->assertStringContainsString('class="access-panel"', $content);
+        $this->assertStringContainsString('class="login-container"', $content);
+        $this->assertStringContainsString('class="minimal-card card shadow-lg"', $content);
     }
 
-    public function testLoginIncludesCustomCss()
+    public function testLoginIncludesMinimalCss()
     {
         $content = file_get_contents(__DIR__ . '/../public/login.php');
-        $this->assertStringContainsString('href="/assets/css/login.css"', $content);
+        $this->assertStringContainsString('href="/assets/css/minimal-login.css"', $content);
     }
 
-    public function testLoginContainsWorkflowSection()
+    public function testLoginContainsWorkflowAccordion()
     {
         $content = file_get_contents(__DIR__ . '/../public/login.php');
-        $this->assertStringContainsString('class="workflow-stepper"', $content);
+        $this->assertStringContainsString('id="workflowAccordion"', $content);
+        $this->assertStringContainsString('How the system works', $content);
         $this->assertStringContainsString('Demand Intake', $content);
-        $this->assertStringContainsString('Financial Settlement', $content);
     }
 
-    public function testLoginContainsDemoCredentials()
+    public function testLoginContainsDemoCredentialsFooter()
     {
         $content = file_get_contents(__DIR__ . '/../public/login.php');
+        $this->assertStringContainsString('class="demo-footer"', $content);
         $this->assertStringContainsString('admin_demo', $content);
-        $this->assertStringContainsString('op_demo', $content);
-        $this->assertStringContainsString('finance_demo', $content);
-        $this->assertStringContainsString('monitor_demo', $content);
         $this->assertStringContainsString('password123', $content);
     }
 
-    public function testLoginContainsRoleBadges()
+    public function testLoginContainsPasswordToggle()
     {
         $content = file_get_contents(__DIR__ . '/../public/login.php');
-        $this->assertStringContainsString('Staff Operasional', $content);
-        $this->assertStringContainsString('Finance Officer', $content);
-        $this->assertStringContainsString('Administrator', $content);
+        $this->assertStringContainsString('togglePassword()', $content);
+        $this->assertStringContainsString('id="toggleIcon"', $content);
     }
 }

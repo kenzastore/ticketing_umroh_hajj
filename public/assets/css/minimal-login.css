@@ -1,0 +1,137 @@
+body, html {
+    height: 100%;
+    margin: 0;
+}
+
+body {
+    background-color: #f0f2f5;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.login-container {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+}
+
+.minimal-card {
+    width: 100%;
+    max-width: 450px;
+    border: none;
+    border-radius: 1.25rem;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+    background: white;
+}
+
+.minimal-card .card-body {
+    padding: 3rem;
+}
+
+.app-logo {
+    font-size: 2.5rem;
+    color: #0d6efd;
+    margin-bottom: 1.5rem;
+}
+
+.form-label {
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: #4a5568;
+}
+
+.input-group-text {
+    background-color: #f8f9fa;
+    border-right: none;
+    color: #adb5bd;
+}
+
+.form-control {
+    border-left: none;
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
+    font-size: 1rem;
+}
+
+.form-control:focus {
+    box-shadow: none;
+    border-color: #dee2e6;
+}
+
+.input-group:focus-within .input-group-text,
+.input-group:focus-within .form-control {
+    border-color: #0d6efd;
+}
+
+/* Password Toggle */
+.password-toggle {
+    cursor: pointer;
+    background-color: white;
+    border-left: none;
+}
+
+/* Accordion Styling */
+.workflow-accordion .accordion-button {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #6c757d;
+    background-color: transparent;
+    padding: 1rem 0;
+    box-shadow: none !important;
+}
+
+.workflow-accordion .accordion-button:not(.collapsed) {
+    color: #0d6efd;
+}
+
+.workflow-accordion .accordion-item {
+    border: none;
+    border-top: 1px solid #f1f3f5;
+}
+
+.workflow-accordion .accordion-body {
+    padding: 1rem 0;
+}
+
+/* Footer Credentials */
+.demo-footer {
+    background: white;
+    border-top: 1px solid #e9ecef;
+    padding: 2rem 0;
+    margin-top: auto;
+}
+
+.demo-title {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #adb5bd;
+    margin-bottom: 1rem;
+    display: block;
+}
+
+.demo-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1.5rem;
+}
+
+.demo-item code {
+    font-size: 0.9rem;
+    color: #0d6efd;
+}
+
+.demo-role {
+    font-size: 0.8rem;
+    color: #6c757d;
+}
+
+@media (max-width: 576px) {
+    .minimal-card .card-body {
+        padding: 2rem;
+    }
+}
