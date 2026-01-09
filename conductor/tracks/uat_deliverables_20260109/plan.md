@@ -1,8 +1,8 @@
 # Plan: UAT Deliverables & Process Verification
 
 ## Phase 1: Manual Structure & Storyline Definition
-- [x] Task: Define the "Master Storyline" dummy data (Agent, Corporate, PNR, Pax, Flight Details) to be used throughout the manual.
-- [x] Task: Create the base directory structure for the manual in `docs/manual/` and an `index.md` entry point.
+- [x] Task: Define the "Master Storyline" dummy data (Agent, Corporate, PNR, Pax, Flight Details) to be used throughout the manual. [f2d5411]
+- [x] Task: Create the base directory structure for the manual in `docs/manual/` and an `index.md` entry point. [f2d5411]
 - [~] Task: Conductor - User Manual Verification 'Manual Structure & Storyline Definition' (Protocol in workflow.md)
 
 ## Phase 2: Stage 1 & 2 - Demand Intake & Operational Execution
