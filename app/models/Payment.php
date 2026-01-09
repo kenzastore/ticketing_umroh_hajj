@@ -17,7 +17,8 @@ class Payment {
     public static function create(array $data) {
         $sql = "INSERT INTO payments (invoice_id, amount_paid, payment_date, payment_method, reference_number, notes, receipt_hash) VALUES (?, ?, ?, ?, ?, ?, ?)";
         try {
-            self::$pdo->beginTransaction();
+            $inTransaction = self::$pdo->inTransaction();
+            if (!$inTransaction) self::$pdo->beginTransaction();
 
             // Generate Receipt Hash
             $receiptHash = hash('sha256', $data['invoice_id'] . $data['amount_paid'] . $data['payment_date'] . uniqid(mt_rand(), true));
@@ -42,7 +43,7 @@ class Payment {
                 self::updateMovementStatus(self::$pdo, $data['invoice_id'], $data['payment_stage']);
             }
 
-            self::$pdo->commit();
+            if (!$inTransaction) self::$pdo->commit();
 
             // Audit Log
             $userId = $_SESSION['user_id'] ?? null;
@@ -50,7 +51,7 @@ class Payment {
 
             return $paymentId;
         } catch (PDOException $e) {
-            self::$pdo->rollBack();
+            if (self::$pdo->inTransaction()) self::$pdo->rollBack();
             error_log("Error recording payment: " . $e->getMessage());
             return false;
         }
