@@ -1,6 +1,7 @@
 <?php
 session_start();
 require_once __DIR__ . '/../includes/db_connect.php';
+require_once __DIR__ . '/../app/models/AuditLog.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $username = trim($_POST['username'] ?? '');
@@ -20,6 +21,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $_SESSION['username'] = $user['username'];
         $_SESSION['role_name'] = $user['role_name'];
         $_SESSION['full_name'] = $user['full_name'];
+
+        // Log the login event
+        AuditLog::log($user['id'], 'LOGIN', 'user', $user['id'], null, ['ip' => $_SERVER['REMOTE_ADDR'] ?? 'unknown']);
 
         // Redirect based on role
         switch ($user['role_name']) {
