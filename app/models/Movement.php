@@ -138,6 +138,73 @@ class Movement {
     }
 
     /**
+     * Calculates the sum of passenger counts for a group identified by Tour Code and Request ID.
+     * @param string $tourCode
+     * @param int|string $movementNo (Request ID)
+     * @return int
+     */
+    public static function getGroupPassengerSum($tourCode, $movementNo) {
+        $sql = "SELECT SUM(passenger_count) FROM movements WHERE tour_code = ? AND movement_no = ?";
+        try {
+            $stmt = self::$pdo->prepare($sql);
+            $stmt->execute([$tourCode, $movementNo]);
+            return (int)$stmt->fetchColumn();
+        } catch (PDOException $e) {
+            error_log("Error getting group passenger sum: " . $e->getMessage());
+            return 0;
+        }
+    }
+
+    /**
+     * Retrieves the Target TCP for a group.
+     * @param string $tourCode
+     * @param int|string $movementNo
+     * @return int|null
+     */
+    public static function getGroupTcp($tourCode, $movementNo) {
+        // First try to get it from movements table (manually entered for the split)
+        $sql = "SELECT tcp FROM movements WHERE tour_code = ? AND movement_no = ? AND tcp IS NOT NULL LIMIT 1";
+        try {
+            $stmt = self::$pdo->prepare($sql);
+            $stmt->execute([$tourCode, $movementNo]);
+            $tcp = $stmt->fetchColumn();
+            
+            if ($tcp !== false && $tcp !== null) {
+                return (int)$tcp;
+            }
+
+            // Fallback: check if there's a linked booking_request
+            $sqlFallback = "SELECT br.tcp 
+                            FROM movements m
+                            JOIN booking_requests br ON m.booking_request_id = br.id
+                            WHERE m.tour_code = ? AND m.movement_no = ? 
+                            LIMIT 1";
+            $stmtFallback = self::$pdo->prepare($sqlFallback);
+            $stmtFallback->execute([$tourCode, $movementNo]);
+            $tcpFallback = $stmtFallback->fetchColumn();
+
+            return ($tcpFallback !== false && $tcpFallback !== null) ? (int)$tcpFallback : null;
+        } catch (PDOException $e) {
+            error_log("Error getting group TCP: " . $e->getMessage());
+            return null;
+        }
+    }
+
+    /**
+     * Validates if the sum of passengers matches the Target TCP.
+     * @param string $tourCode
+     * @param int|string $movementNo
+     * @return bool
+     */
+    public static function validateTcp($tourCode, $movementNo) {
+        $tcp = self::getGroupTcp($tourCode, $movementNo);
+        if ($tcp === null) return true; // If no TCP is defined, we can't validate (or assume valid)
+
+        $sum = self::getGroupPassengerSum($tourCode, $movementNo);
+        return $sum === $tcp;
+    }
+
+    /**
      * Reads a single movement with its flight legs.
      * @param int|string $id
      * @return array|false
