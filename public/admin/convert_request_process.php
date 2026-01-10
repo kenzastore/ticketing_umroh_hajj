@@ -27,6 +27,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Prepare Movement Data
     $movementData = [
         'category' => $category,
+        'booking_request_id' => $r['id'],
+        'movement_no' => $r['request_no'],
         'agent_id' => $r['agent_id'],
         'agent_name' => $r['agent_name'],
         'created_date' => date('Y-m-d'),
@@ -34,9 +36,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'tour_code' => $tour_code,
         'carrier' => $carrier,
         'passenger_count' => $r['group_size'],
+        'tcp' => $r['tcp'] ?? $r['group_size'], // Default TCP to group_size if null
         'approved_fare' => $r['gp_approved_fare'],
         'selling_fare' => $r['selling_fare'],
-        'nett_selling' => $r['nett_fare'],
+        'nett_fare' => $r['nett_fare'],
         'total_selling' => $r['group_size'] * $r['selling_fare'],
         'duration_days' => $r['duration_days'],
         'add1_days' => $r['add1_days'],
@@ -75,6 +78,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $movementId = Movement::create($movementData, $r['legs'] ?? [], $_SESSION['user_id']);
 
     if ($movementId) {
+        // Audit Log for Conversion
+        AuditLog::log($_SESSION['user_id'], 'CONVERTED_TO_MOVEMENT', 'booking_request', $requestId, null, ['movement_id' => $movementId, 'pnr' => $pnr]);
+
         // Mark the booking request as converted to avoid redundancy in the main list
         $stmtUpdate = $pdo->prepare("UPDATE booking_requests SET is_converted = 1 WHERE id = ?");
         $stmtUpdate->execute([$requestId]);

@@ -42,8 +42,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         error_log("Update successful for ID $id");
         header('Location: movement_fullview.php?msg=updated&pnr=' . urlencode($data['pnr'] ?? ''));
     } else {
-        error_log("Update failed for ID $id");
-        header('Location: edit_movement.php?id=' . $id . '&error=update_failed');
+        $error = Movement::getLastError() ?: 'update_failed';
+        error_log("Update failed for ID $id: $error");
+        header('Location: edit_movement.php?id=' . $id . '&error=' . urlencode($error));
     }
 } else {
     header('Location: movement_fullview.php');

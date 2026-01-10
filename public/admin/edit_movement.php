@@ -26,6 +26,14 @@ require_once __DIR__ . '/../shared/header.php';
     <a href="movement_fullview.php" class="btn btn-secondary">&larr; Back to Dashboard</a>
 </div>
 
+<?php if (isset($_GET['error'])): ?>
+    <div class="alert alert-danger alert-dismissible fade show shadow-sm" role="alert">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+        <strong>Error:</strong> <?php echo htmlspecialchars($_GET['error']); ?>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+<?php endif; ?>
+
 <form action="edit_movement_process.php" method="POST">
     <input type="hidden" name="id" value="<?php echo $m['id']; ?>">
 

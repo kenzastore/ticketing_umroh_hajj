@@ -4,9 +4,14 @@ require_once __DIR__ . '/AuditLog.php';
 
 class Movement {
     private static $pdo;
+    private static $lastError = null;
 
     public static function init(PDO $pdo_instance) {
         self::$pdo = $pdo_instance;
+    }
+
+    public static function getLastError() {
+        return self::$lastError;
     }
 
     /**
@@ -40,8 +45,25 @@ class Movement {
      * @return int|false
      */
     public static function create(array $data, array $legs = [], $userId = null) {
+        self::$lastError = null;
         $fields = array_keys($data);
         if (empty($fields)) return false;
+
+        // TCP Validation
+        $tourCode = $data['tour_code'] ?? null;
+        $movementNo = $data['movement_no'] ?? null;
+        $paxCount = $data['passenger_count'] ?? 0;
+        
+        if ($tourCode && $movementNo) {
+            $tcp = $data['tcp'] ?? self::getGroupTcp($tourCode, $movementNo);
+            if ($tcp !== null) {
+                $currentSum = self::getGroupPassengerSum($tourCode, $movementNo);
+                if (($currentSum + $paxCount) > $tcp) {
+                    self::$lastError = "TCP validation failed: Total passengers (" . ($currentSum + $paxCount) . ") would exceed TCP ($tcp) for group $tourCode / $movementNo.";
+                    return false;
+                }
+            }
+        }
 
         $cols = implode(', ', $fields);
         $placeholders = implode(', ', array_fill(0, count($fields), '?'));
@@ -101,8 +123,29 @@ class Movement {
      * @return bool
      */
     public static function update($id, array $data, $userId = null) {
+        self::$lastError = null;
         $oldMovement = self::readById($id);
         if (!$oldMovement) return false;
+
+        // TCP Validation
+        $tourCode = $data['tour_code'] ?? $oldMovement['tour_code'];
+        $movementNo = $data['movement_no'] ?? $oldMovement['movement_no'];
+        $newPaxCount = isset($data['passenger_count']) ? (int)$data['passenger_count'] : (int)$oldMovement['passenger_count'];
+        $newTcp = isset($data['tcp']) ? (int)$data['tcp'] : null;
+
+        if ($tourCode && $movementNo) {
+            $tcp = $newTcp ?? self::getGroupTcp($tourCode, $movementNo);
+            if ($tcp !== null) {
+                $currentSum = self::getGroupPassengerSum($tourCode, $movementNo);
+                // Adjust sum: remove old count for THIS record, add new count
+                $adjustedSum = $currentSum - (int)$oldMovement['passenger_count'] + $newPaxCount;
+                
+                if ($adjustedSum > $tcp) {
+                    self::$lastError = "TCP validation failed: Total passengers ($adjustedSum) would exceed TCP ($tcp) for group $tourCode / $movementNo.";
+                    return false;
+                }
+            }
+        }
 
         $fields = [];
         $params = [];
