@@ -17,6 +17,11 @@ if (!$m) {
     exit;
 }
 
+// Fetch TCP Data
+$tcp = Movement::getGroupTcp($m['tour_code'], $m['movement_no']);
+$currentSum = Movement::getGroupPassengerSum($m['tour_code'], $m['movement_no']);
+$otherPaxSum = $currentSum - $m['passenger_count'];
+
 $title = "Edit Movement PNR: " . $m['pnr'];
 require_once __DIR__ . '/../shared/header.php';
 ?>
@@ -65,13 +70,20 @@ require_once __DIR__ . '/../shared/header.php';
                         <input type="text" name="agent_name" class="form-control" value="<?php echo htmlspecialchars($m['agent_name']); ?>">
                     </div>
                     <div class="row">
-                        <div class="col-md-6 mb-3">
+                        <div class="col-md-4 mb-3">
                             <label class="form-label">Carrier</label>
                             <input type="text" name="carrier" class="form-control" value="<?php echo htmlspecialchars($m['carrier']); ?>">
                         </div>
-                        <div class="col-md-6 mb-3">
+                        <div class="col-md-4 mb-3">
                             <label class="form-label">Passenger Count</label>
-                            <input type="number" name="passenger_count" class="form-control" value="<?php echo $m['passenger_count']; ?>">
+                            <input type="number" name="passenger_count" class="form-control fw-bold" value="<?php echo $m['passenger_count']; ?>">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Target TCP</label>
+                            <input type="number" name="tcp" class="form-control" value="<?php echo $tcp; ?>">
+                            <small class="d-block mt-1 <?php echo ($currentSum > $tcp && $tcp > 0) ? 'text-danger fw-bold' : 'text-muted'; ?>">
+                                Current Group Sum: <?php echo $currentSum; ?>
+                            </small>
                         </div>
                     </div>
                     <div class="mb-3">
@@ -201,5 +213,43 @@ require_once __DIR__ . '/../shared/header.php';
         <button type="submit" class="btn btn-primary btn-lg px-5">Update Movement</button>
     </div>
 </form>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const otherPaxSum = <?php echo (int)$otherPaxSum; ?>;
+        const paxInput = document.querySelector('input[name="passenger_count"]');
+        const tcpInput = document.querySelector('input[name="tcp"]');
+        const submitBtn = document.querySelector('button[type="submit"]');
+        const warningSmall = tcpInput.nextElementSibling;
+
+        function validateTcp() {
+            const currentPax = parseInt(paxInput.value) || 0;
+            const tcp = parseInt(tcpInput.value) || 0;
+            const total = otherPaxSum + currentPax;
+
+            if (tcp > 0) {
+                warningSmall.innerHTML = `Current Group Sum: <strong>${total}</strong> (Target: ${tcp})`;
+                if (total > tcp) {
+                    warningSmall.className = 'd-block mt-1 text-danger fw-bold';
+                    submitBtn.disabled = true;
+                    submitBtn.innerText = "TCP Exceeded (" + (total - tcp) + " pax)";
+                    submitBtn.classList.add('btn-danger');
+                    submitBtn.classList.remove('btn-primary');
+                } else {
+                    warningSmall.className = 'd-block mt-1 text-muted';
+                    submitBtn.disabled = false;
+                    submitBtn.innerText = "Update Movement";
+                    submitBtn.classList.add('btn-primary');
+                    submitBtn.classList.remove('btn-danger');
+                }
+            }
+        }
+
+        if (paxInput && tcpInput) {
+            paxInput.addEventListener('input', validateTcp);
+            tcpInput.addEventListener('input', validateTcp);
+        }
+    });
+</script>
 
 <?php require_once __DIR__ . '/../shared/footer.php'; ?>
