@@ -6,8 +6,8 @@ This plan outlines the implementation of a multi-layer validation system to ensu
 Establish the data grouping logic and enforce strict rules at the database/API level.
 
 - [x] Task: Database Schema Update - Ensure `Request ID` and `TCP` fields are correctly indexed and available in the `movements` table. b0d84fa
-- [ ] Task: Movement Model Enhancement - Add logic to `app/models/Movement.php` to calculate the current sum of passengers for a (Tour Code + Request ID) group.
-- [ ] Task: API Validation - Implement server-side validation in the Movement controller to block saves if `SUM(Passenger) != TCP`.
+- [x] Task: Movement Model Enhancement - Add logic to `app/models/Movement.php` to calculate the current sum of passengers for a (Tour Code + Request ID) group. df69388
+- [~] Task: API Validation - Implement server-side validation in the Movement controller to block saves if `SUM(Passenger) != TCP`.
 - [ ] Task: Conductor - User Manual Verification 'Phase 1: Foundation & Backend Validation' (Protocol in workflow.md)
 
 ## Phase 2: Frontend Implementation
