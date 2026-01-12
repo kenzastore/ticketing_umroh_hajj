@@ -23,5 +23,16 @@ Pastikan data dari Tahap 1 terbawa dengan sempurna:
 - [ ] **Verifikasi 2.3:** Apakah jadwal Leg 1 s/d Leg 4 tetap sinkron dengan data awal?
 - [ ] **Verifikasi 2.4:** Cari di menu **1. Requests**, apakah status baris data tadi sudah ditandai sebagai "CONVERTED" (biasanya berwarna hijau/abu-abu redup)?
 
+## 4. Penanganan Split PNR (TCP Group Split)
+Jika satu grup (misal 45 pax) dibagi menjadi beberapa kode PNR (misal PNR-A 25 pax dan PNR-B 20 pax):
+
+1.  **Tentukan Target TCP:** Pada halaman **Edit Movement**, pastikan kolom **Target TCP** terisi dengan total jamaah keseluruhan grup (misal: 45).
+2.  **Identitas Grup:** Semua baris pergerakan (split) yang tergabung dalam satu grup **WAJIB** memiliki **Tour Code** dan **Movement No (Request ID)** yang identik.
+3.  **Monitor Group Sum:** Sistem akan menjumlahkan secara otomatis seluruh jamaah dari PNR yang memiliki identitas grup yang sama.
+4.  **Validasi Ketat:** 
+    -   Jika total jamaah split melebihi Target TCP, teks "Current Group Sum" akan berubah menjadi **MERAH**.
+    -   Tombol **Update Movement** akan berubah menjadi **"TCP Exceeded"** dan tidak bisa diklik (Disabled).
+    -   Anda harus menyesuaikan jumlah pax atau menaikkan Target TCP agar data bisa disimpan.
+
 ---
 **[Lanjut ke Tahap 3: Penyelesaian Keuangan](./stage3_financial_settlement.md)**

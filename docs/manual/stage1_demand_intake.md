@@ -13,7 +13,7 @@ Sebelum membuat permintaan, pastikan data Agen dan Corporate sudah tersedia di s
 3.  Isi formulir dengan data Storyline:
     -   **Corporate Name:** PT Maju Jaya Abadi
     -   **Agent Name:** Mutiara Tour & Travel
-    -   **Group Size:** 45
+    -   **Group Size (TCP):** 45 (Total jamaah satu grup)
     -   **Flight Details (4 Leg):**
         -   Leg 1: 11-05-2026 | TR596 | SUB-SIN
         -   Leg 2: 11-05-2026 | TR597 | SIN-JED
@@ -27,7 +27,7 @@ Sebelum membuat permintaan, pastikan data Agen dan Corporate sudah tersedia di s
 Setelah menyimpan, lakukan pengecekan berikut pada tabel daftar permintaan:
 - [ ] **Verifikasi 1.1:** Apakah jumlah Pax muncul sebagai "45"?
 - [ ] **Verifikasi 1.2:** Apakah rute Leg 1 s/d Leg 4 muncul dengan benar di kolom masing-masing?
-- [ ] **Verifikasi 1.3:** Apakah nilai TCP otomatis terhitung (45 x 16.000.000)?
+- [ ] **Verifikasi 1.3:** Apakah nilai Total Price otomatis terhitung (45 x 16.000.000)? (Catatan: Hindari kerancuan istilah TCP di sini dengan Total Complete Party)
 
 ---
 **[Lanjut ke Tahap 2: Eksekusi Operasional](./stage2_operational_execution.md)**

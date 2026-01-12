@@ -43,4 +43,11 @@ Gunakan daftar ini untuk memastikan sistem siap untuk User Acceptance Testing (U
 | 7 | **Monitoring** | Dashboard menampilkan peringatan visual untuk deadline mendekati (H-3). | [ ] |
 
 ---
+
+## Terminologi Penting
+Untuk menghindari kesalahan input, pahami istilah berikut:
+-   **TCP (Total Complete Party):** Total jumlah jamaah dalam **satu grup utuh**, tanpa memperhitungkan pembagian PNR. Ini adalah angka target yang harus dipenuhi oleh gabungan split PNR.
+-   **Passenger Count:** Jumlah jamaah yang dialokasikan ke **satu kode PNR spesifik**. Jika grup tidak di-split, maka Passenger Count akan sama dengan TCP.
+
+---
 © 2026 PT Elang Emas Mandiri Indonesia
