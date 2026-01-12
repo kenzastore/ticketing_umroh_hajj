@@ -13,5 +13,5 @@ Update existing manual stages and the main index with Split PNR and TCP validati
 ## Phase 2: Verification and Cleanup
 Ensure documentation links and cross-references are valid.
 
-- [ ] Task: Verify Links and Rendering - Check that all internal links between manual stages are still functioning and the Markdown renders correctly.
-- [ ] Task: Conductor - User Manual Verification 'Phase 2: Verification and Cleanup' (Protocol in workflow.md)
+- [x] Task: Verify Links and Rendering - Check that all internal links between manual stages are still functioning and the Markdown renders correctly. 1e5eb7a
+- [x] Task: Conductor - User Manual Verification 'Phase 2: Verification and Cleanup' (Protocol in workflow.md) [checkpoint: 1e5eb7a]
