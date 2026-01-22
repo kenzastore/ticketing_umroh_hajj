@@ -1,8 +1,0 @@
-{
-  "track_id": "payment_report_alignment_20260122",
-  "type": "feature",
-  "status": "new",
-  "created_at": "2026-01-22T10:00:00Z",
-  "updated_at": "2026-01-22T10:00:00Z",
-  "description": "Fix and adjust the fields, labels, and columns in the payment report menu to match the references from TRID-HAJJ_1447H-2026M.pdf"
-}

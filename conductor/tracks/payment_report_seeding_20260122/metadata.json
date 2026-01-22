@@ -1,0 +1,8 @@
+{
+  "track_id": "payment_report_seeding_20260122",
+  "type": "chore",
+  "status": "new",
+  "created_at": "2026-01-22T11:00:00Z",
+  "updated_at": "2026-01-22T11:00:00Z",
+  "description": "add a dummy data to test the Track 'Payment Report Alignment (TRID-HAJJ)'"
+}
