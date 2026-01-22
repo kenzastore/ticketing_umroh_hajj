@@ -30,9 +30,9 @@ try {
         'discount_amount' => 0,
         'deposit1_eemw_date' => '2026-01-03',
         'deposit2_eemw_date' => '2026-01-23',
-        'fullpay_eemw_date' => '2025-04-06', // As per PDF Sunday, 06 April 2025
-        'created_at' => '2025-12-01 00:00:00', // Date of Request
-        'created_date' => '2026-12-31' // Date of Confirmed (weird year in PDF but ok)
+        'fullpay_eemw_date' => '2025-04-06',
+        'created_at' => date('Y-m-d H:i:s'), 
+        'created_date' => date('Y-m-d')
     ];
 
     if ($movementId) {

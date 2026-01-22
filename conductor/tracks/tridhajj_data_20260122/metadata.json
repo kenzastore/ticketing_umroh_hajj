@@ -1,0 +1,8 @@
+{
+  "track_id": "tridhajj_data_20260122",
+  "type": "chore",
+  "status": "new",
+  "created_at": "2026-01-22T12:00:00Z",
+  "updated_at": "2026-01-22T12:00:00Z",
+  "description": "Create dummy data according to the reference data on TRID-HAJJ_1447H-2026M.pdf with synchronized data from request to ticketing."
+}
