@@ -15,7 +15,7 @@ Populate the database with the synchronized lifecycle data.
 - [x] Task: Seed Audit Logs - Add chronological log entries to simulate the history of the group from request to ticketing done. [pass]
 - [x] Task: Conductor - User Manual Verification 'Storyline Implementation' (Protocol in workflow.md) [pass]
 
-## Phase 3: Final Validation
+## Phase 3: Final Validation [checkpoint: 51fbb0c]
 Perform end-to-end checks to ensure the data is visible and accurate.
 
 - [x] Task: Integrated Verification - Execute the seeder and run the verification test suite. [pass]
