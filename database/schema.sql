@@ -187,6 +187,8 @@ CREATE TABLE IF NOT EXISTS movements (
   ticketing_deadline DATE NULL,                 -- time limit manifest & ticketing
   nett_balance_amount DECIMAL(18,2) NULL,
   sell_balance_amount DECIMAL(18,2) NULL,
+  incentive_amount DECIMAL(18,2) DEFAULT 0,
+  discount_amount DECIMAL(18,2) DEFAULT 0,
 
   ticketing_done TINYINT(1) NOT NULL DEFAULT 0,
   belonging_to VARCHAR(120) NULL,
@@ -290,11 +292,15 @@ CREATE TABLE IF NOT EXISTS payment_report_lines (
   remarks VARCHAR(255) NULL,                    -- REMARKS
   fare_per_pax DECIMAL(18,2) NULL,              -- FARE PER-PAX
   debit_amount DECIMAL(18,2) NULL,              -- DEBET
+  table_type ENUM('SALES', 'COST') DEFAULT 'SALES',
+  time_limit_date DATE NULL,
 
   bank_from VARCHAR(80) NULL,                   -- FROM
   bank_from_name VARCHAR(120) NULL,             -- BANK ACCOUNT NAME (from)
+  bank_from_number VARCHAR(100) NULL,
   bank_to VARCHAR(80) NULL,                     -- TO
   bank_to_name VARCHAR(120) NULL,               -- BANK ACCOUNT NAME (to)
+  bank_to_number VARCHAR(100) NULL,
 
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (id),

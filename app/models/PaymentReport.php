@@ -37,28 +37,96 @@ class PaymentReport {
             $movement['legs'] = $stmtLegs->fetchAll(PDO::FETCH_ASSOC);
 
             // 3. Get Payment/Accounting Lines
-            // This is complex. We need both "Selling" and "Nett" lines.
-            // For now, let's fetch from payment_report_lines if they exist, 
-            // or aggregate from invoices/payments.
-            // Based on PDF, it looks like custom entries.
-            $stmtLines = self::$pdo->prepare("
-                SELECT * FROM payment_report_lines 
-                WHERE reference_id = ? OR flight_no IN (SELECT flight_no FROM flight_legs WHERE movement_id = ?)
-                ORDER BY payment_date ASC
-            ");
-            // This query is a placeholder. Real implementation depends on how lines are linked.
-            // Using PNR or Tour Code as reference might be better.
+            // Fetch all lines for this PNR and separate them by type
             $stmtLines = self::$pdo->prepare("
                 SELECT * FROM payment_report_lines 
                 WHERE reference_id = ? 
-                ORDER BY id ASC
+                ORDER BY payment_date ASC, id ASC
             ");
             $stmtLines->execute([$movement['pnr']]);
-            $movement['report_lines'] = $stmtLines->fetchAll(PDO::FETCH_ASSOC);
+            $allLines = $stmtLines->fetchAll(PDO::FETCH_ASSOC);
+
+            $movement['sales_lines'] = [];
+            $movement['cost_lines'] = [];
+
+            foreach ($allLines as $line) {
+                if ($line['table_type'] === 'COST') {
+                    $movement['cost_lines'][] = $line;
+                } else {
+                    $movement['sales_lines'][] = $line;
+                }
+            }
 
             return $movement;
         } catch (PDOException $e) {
             error_log("Error fetching payment report: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Create a new payment report line.
+     */
+    public static function createLine(array $data, $userId = null) {
+        $fields = array_keys($data);
+        $cols = implode(', ', $fields);
+        $placeholders = implode(', ', array_fill(0, count($fields), '?'));
+        $sql = "INSERT INTO payment_report_lines ($cols) VALUES ($placeholders)";
+
+        try {
+            $db = self::$pdo;
+            $stmt = $db->prepare($sql);
+            $stmt->execute(array_values($data));
+            $id = $db->lastInsertId();
+
+            AuditLog::log($userId, 'CREATE', 'payment_report_line', $id, null, json_encode($data));
+            return $id;
+        } catch (PDOException $e) {
+            error_log("Error creating payment report line: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Update an existing payment report line.
+     */
+    public static function updateLine($id, array $data, $userId = null) {
+        $fields = [];
+        $params = [];
+        foreach ($data as $key => $value) {
+            $fields[] = "$key = ?";
+            $params[] = $value;
+        }
+        $params[] = $id;
+        $sql = "UPDATE payment_report_lines SET " . implode(', ', $fields) . " WHERE id = ?";
+
+        try {
+            $db = self::$pdo;
+            $stmt = $db->prepare($sql);
+            $stmt->execute($params);
+
+            AuditLog::log($userId, 'UPDATE', 'payment_report_line', $id, null, json_encode($data));
+            return true;
+        } catch (PDOException $e) {
+            error_log("Error updating payment report line: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Delete a payment report line.
+     */
+    public static function deleteLine($id, $userId = null) {
+        $sql = "DELETE FROM payment_report_lines WHERE id = ?";
+        try {
+            $db = self::$pdo;
+            $stmt = $db->prepare($sql);
+            $stmt->execute([$id]);
+
+            AuditLog::log($userId, 'DELETE', 'payment_report_line', $id, null, null);
+            return true;
+        } catch (PDOException $e) {
+            error_log("Error deleting payment report line: " . $e->getMessage());
             return false;
         }
     }
