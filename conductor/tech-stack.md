@@ -31,6 +31,7 @@
 - **QR Code:** (Optional library like `phpqrcode` for receipts)
 - **Exports:** Native CSV/Excel headers or `PhpSpreadsheet`
 - **Markdown Parser:** erusev/parsedown (for integrated web manual)
+- **UAT Seeder:** Custom high-integrity data generation engine (`database/seed_uat_system.php`)
 
 ## 7. Testing
 - **Framework:** PHPUnit (9.x)
