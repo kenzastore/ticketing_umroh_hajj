@@ -17,7 +17,7 @@ Reconstruct the Payment Report interface to match the reference PDF's stacked la
 - [x] Task: Write Integration Tests - Verify the visual structure and data mapping in `tests/PaymentReportUiTest.php`. [pass]
 - [x] Task: Conductor - User Manual Verification 'Phase 2: UI Redesign (Dual Tables)' (Protocol in workflow.md) [pass]
 
-## Phase 3: Data Persistence & Synchronization
+## Phase 3: Data Persistence & Synchronization [checkpoint: b5c0bf8]
 Implement the editing capabilities and ensure deadlines stay in sync with the Movement module.
 
 - [x] Task: Edit Functionality - Create/Update logic to allow Finance users to modify payment lines, bank details, and summary values. [pass]
