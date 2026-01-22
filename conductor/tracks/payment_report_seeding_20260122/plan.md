@@ -1,6 +1,6 @@
 # Plan: Dummy Data for Payment Report Alignment (TRID-HAJJ)
 
-## Phase 1: Seeding Implementation
+## Phase 1: Seeding Implementation [checkpoint: a49cc3b]
 Establish the specialized seeding script and verify its data output.
 
 - [x] Task: Write Seeder Verification Test - Create `tests/PaymentReportSeederTest.php` to verify that the seeder creates the expected movement and accounting records. [pass]
