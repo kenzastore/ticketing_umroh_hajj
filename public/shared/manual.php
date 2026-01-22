@@ -49,6 +49,11 @@ usort($toc_items, function($a, $b) {
 $title = "User Manual - " . ucfirst(str_replace('_', ' ', $page));
 
 require_once __DIR__ . '/../shared/header.php';
+
+// Flash Messages
+$successMsg = $_SESSION['success_msg'] ?? null;
+$errorMsg = $_SESSION['error_msg'] ?? null;
+unset($_SESSION['success_msg'], $_SESSION['error_msg']);
 ?>
 
 <style>
@@ -69,6 +74,23 @@ require_once __DIR__ . '/../shared/header.php';
 </style>
 
 <div class="row">
+    <?php if ($successMsg): ?>
+        <div class="col-12">
+            <div class="alert alert-success alert-dismissible fade show shadow-sm" role="alert">
+                <i class="fas fa-check-circle me-2"></i> <?= htmlspecialchars($successMsg) ?>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        </div>
+    <?php endif; ?>
+
+    <?php if ($errorMsg): ?>
+        <div class="col-12">
+            <div class="alert alert-danger shadow-sm" role="alert">
+                <i class="fas fa-exclamation-triangle me-2"></i> <?= nl2br(htmlspecialchars($errorMsg)) ?>
+            </div>
+        </div>
+    <?php endif; ?>
+
     <div class="col-md-3">
         <div class="card shadow-sm mb-4">
             <div class="card-header bg-dark text-white">
@@ -84,6 +106,22 @@ require_once __DIR__ . '/../shared/header.php';
                 </div>
             </div>
         </div>
+
+        <?php if ($_SESSION['role_name'] == 'admin'): ?>
+            <div class="card shadow-sm border-danger">
+                <div class="card-header bg-danger text-white">
+                    <h6 class="m-0 fw-bold"><i class="fas fa-tools me-2"></i>UAT Management</h6>
+                </div>
+                <div class="card-body text-center py-3">
+                    <p class="small text-muted mb-3">Wipe all data and regenerate 100 synchronized test records.</p>
+                    <form action="/admin/generate_uat_data.php" method="POST" onsubmit="return confirm('WARNING: This will delete ALL existing operational data. Are you sure?');">
+                        <button type="submit" class="btn btn-outline-danger btn-sm w-100">
+                            <i class="fas fa-sync-alt me-1"></i> Reset UAT Data
+                        </button>
+                    </form>
+                </div>
+            </div>
+        <?php endif; ?>
     </div>
     <div class="col-md-9">
         <div class="card shadow-sm">

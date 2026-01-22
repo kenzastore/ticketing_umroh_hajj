@@ -141,6 +141,7 @@ DROP TABLE IF EXISTS bookings;
 
 CREATE TABLE IF NOT EXISTS movements (
   id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  booking_request_id BIGINT UNSIGNED NULL,
   category VARCHAR(50) DEFAULT 'UMRAH',
   movement_no INT NULL,                         -- Worksheet: NO
   agent_id BIGINT UNSIGNED NULL,
@@ -167,6 +168,7 @@ CREATE TABLE IF NOT EXISTS movements (
 
   pattern_code VARCHAR(50) NULL,                -- PATTERN
   passenger_count INT NULL,                     -- Passenger
+  tcp DECIMAL(18,2) NULL,                       -- TCP
 
   approved_fare DECIMAL(18,2) NULL,             -- Approved Fare
   selling_fare  DECIMAL(18,2) NULL,             -- Selling
@@ -206,6 +208,8 @@ CREATE TABLE IF NOT EXISTS movements (
   KEY idx_mv_agent_name (agent_name),
   KEY idx_mv_created_date (created_date),
   CONSTRAINT fk_mv_agent_id FOREIGN KEY (agent_id) REFERENCES agents(id)
+    ON UPDATE CASCADE ON DELETE SET NULL,
+  CONSTRAINT fk_mv_br_id FOREIGN KEY (booking_request_id) REFERENCES booking_requests(id)
     ON UPDATE CASCADE ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -441,6 +445,7 @@ CREATE TABLE IF NOT EXISTS notifications (
     top_up_amount DECIMAL(18,2) NULL,
     transfer_amount DECIMAL(18,2) NULL,
     reference_number VARCHAR(100) NULL,
+    status VARCHAR(50) DEFAULT 'PENDING',
     
     -- Recipient Bank Info
     company_name VARCHAR(255) NULL,

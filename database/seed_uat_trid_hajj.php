@@ -44,6 +44,8 @@ try {
     
     $pnr = 'VFUQ8X';
     $tourCode = '11MAY-45S-26D-TRID';
+    $now = date('Y-m-d H:i:s');
+    $today = date('Y-m-d');
 
     // Cleanup old test data
     $pdo->prepare("DELETE FROM movements WHERE pnr = ?")->execute([$pnr]);
@@ -56,13 +58,13 @@ try {
         request_no, corporate_id, corporate_name, agent_id, agent_name, 
         group_size, duration_days, is_converted, created_at
     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)")->execute([
-        101, $corporateId, 'EBAD WISATA', $agentId, 'EBAD WISATA', 45, 26, 1, '2025-12-01 10:00:00'
+        101, $corporateId, 'EBAD WISATA', $agentId, 'EBAD WISATA', 45, 26, 1, $now
     ]);
     $requestId = $pdo->lastInsertId();
 
     // Audit Log: Request Created
     $pdo->prepare("INSERT INTO audit_logs (user_id, action, entity_type, entity_id, created_at) VALUES (?, ?, ?, ?, ?)")
-        ->execute([$userId, 'CREATE', 'booking_request', $requestId, '2025-12-01 10:00:05']);
+        ->execute([$userId, 'CREATE', 'booking_request', $requestId, $now]);
 
     // --- Phase 3: Stage 2 - Operational Execution (Movement) ---
 
@@ -83,8 +85,8 @@ try {
         'deposit1_eemw_date' => '2026-01-03',
         'deposit2_eemw_date' => '2026-01-23',
         'fullpay_eemw_date' => '2025-04-06',
-        'created_at' => '2025-12-31 14:00:00',
-        'created_date' => '2025-12-31'
+        'created_at' => $now,
+        'created_date' => $today
     ];
 
     $cols = implode(', ', array_keys($movementData));
@@ -106,7 +108,7 @@ try {
 
     // Audit Log: Converted to Movement
     $pdo->prepare("INSERT INTO audit_logs (user_id, action, entity_type, entity_id, created_at) VALUES (?, ?, ?, ?, ?)")
-        ->execute([$userId, 'CONVERT_TO_MOVEMENT', 'booking_request', $requestId, '2025-12-31 14:05:00']);
+        ->execute([$userId, 'CONVERT_TO_MOVEMENT', 'booking_request', $requestId, $now]);
 
     // --- Phase 4: Stage 3 - Financial Settlement ---
 
@@ -142,7 +144,7 @@ try {
 
     // Audit Log: Financials Done
     $pdo->prepare("INSERT INTO audit_logs (user_id, action, entity_type, entity_id, created_at) VALUES (?, ?, ?, ?, ?)")
-        ->execute([$userId, 'RECORD_PAYMENT', 'movement', $movementId, '2026-01-12 10:00:00']);
+        ->execute([$userId, 'RECORD_PAYMENT', 'movement', $movementId, $now]);
 
     $pdo->commit();
     echo "Seed successful! End-to-end TRID-HAJJ story is live.\n";
