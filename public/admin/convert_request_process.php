@@ -39,7 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'tcp' => $r['tcp'] ?? $r['group_size'], // Default TCP to group_size if null
         'approved_fare' => $r['gp_approved_fare'],
         'selling_fare' => $r['selling_fare'],
-        'nett_fare' => $r['nett_fare'],
+        'nett_selling' => $r['nett_fare'],
         'total_selling' => $r['group_size'] * $r['selling_fare'],
         'duration_days' => $r['duration_days'],
         'add1_days' => $r['add1_days'],

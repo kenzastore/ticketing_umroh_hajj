@@ -2,6 +2,9 @@
 
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @coversNothing
+ */
 class ManualStructureTest extends TestCase
 {
     public function testManualDirectoryExists()

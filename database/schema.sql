@@ -39,6 +39,7 @@ CREATE TABLE IF NOT EXISTS audit_logs (
 -- Seed roles (if not exists)
 INSERT IGNORE INTO roles (name, description) VALUES 
 ('admin', 'Full access to all modules'),
+('operational', 'Ticketing and Movement management'),
 ('finance', 'Access to invoicing and payment modules'),
 ('monitor', 'View-only access to dashboards');
 
@@ -140,7 +141,7 @@ DROP TABLE IF EXISTS bookings;
 
 CREATE TABLE IF NOT EXISTS movements (
   id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-
+  category VARCHAR(50) DEFAULT 'UMRAH',
   movement_no INT NULL,                         -- Worksheet: NO
   agent_id BIGINT UNSIGNED NULL,
   agent_name VARCHAR(150) NULL,                 -- Travel Agent

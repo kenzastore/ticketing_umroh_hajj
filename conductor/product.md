@@ -77,6 +77,7 @@ Membangun sistem berbasis web yang **mengadopsi struktur worksheet** menjadi mod
     Form input request + multi-segmen flight + pax + durasi + agent/requester. Output: Request ID / Tour Code draft.
 2. **Movement Monitoring** (mengganti MOVEMENT)
     Dashboard Daily/Group Movement: PNR, DP1/DP2, FP, time limit, ticketing done, serta log perubahan. FullView Display: filter per tanggal/agent/carrier/status.
+    **Fitur TCP Validation:** Validasi otomatis jumlah penumpang split PNR agar sesuai dengan target group size (TCP).
 3. **Invoice Generator** (mengganti INVOICE)
     Generate **2 versi**: Internal & untuk Kyai/Requester. Export PDF + template standar. **NOTE:** Invoice template is strictly aligned with `invoice_template_contract.md` for layout, fields, and styling.
 4. **Payment Tracking** (mengganti PAYMENT REPORT + Payment advise)

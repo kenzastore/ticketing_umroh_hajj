@@ -112,4 +112,5 @@ class Payment {
     }
 }
 
+global $pdo;
 Payment::init($pdo);

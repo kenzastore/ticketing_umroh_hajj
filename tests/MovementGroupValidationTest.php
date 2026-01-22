@@ -66,4 +66,60 @@ class MovementGroupValidationTest extends TestCase
         $tcp = \Movement::getGroupTcp($tourCode, $movementNo);
         $this->assertEquals($expectedTcp, $tcp);
     }
+
+    /** 
+     * @test 
+     * @coversNothing
+     */
+    public function testCreateFailsIfExceedsTcp()
+    {
+        $tourCode = 'FAIL_CREATE_TEST';
+        $movementNo = 111;
+        $tcp = 10;
+
+        // 1. Create first split
+        \Movement::create([
+            'tour_code' => $tourCode,
+            'movement_no' => $movementNo,
+            'passenger_count' => 6,
+            'tcp' => $tcp,
+            'pnr' => 'PNR-1'
+        ]);
+
+        // 2. Try to create second split that exceeds TCP
+        $result = \Movement::create([
+            'tour_code' => $tourCode,
+            'movement_no' => $movementNo,
+            'passenger_count' => 5, // 6 + 5 = 11 > 10
+            'pnr' => 'PNR-2'
+        ]);
+
+        $this->assertFalse($result);
+        $this->assertStringContainsString('TCP validation failed', \Movement::getLastError());
+    }
+
+    /** 
+     * @test 
+     * @coversNothing
+     */
+    public function testUpdateFailsIfExceedsTcp()
+    {
+        $tourCode = 'FAIL_UPDATE_TEST';
+        $movementNo = 222;
+        $tcp = 20;
+
+        $id = \Movement::create([
+            'tour_code' => $tourCode,
+            'movement_no' => $movementNo,
+            'passenger_count' => 15,
+            'tcp' => $tcp,
+            'pnr' => 'PNR-A'
+        ]);
+
+        // Try to update passenger count to something that exceeds TCP
+        $result = \Movement::update($id, ['passenger_count' => 21]);
+
+        $this->assertFalse($result);
+        $this->assertStringContainsString('TCP validation failed', \Movement::getLastError());
+    }
 }

@@ -69,6 +69,74 @@ class PaymentAdvise {
             return false;
         }
     }
+
+    /**
+     * Updates an existing payment advise.
+     */
+    public static function update($id, array $data, $userId = null) {
+        $oldAdvise = self::readById($id);
+        if (!$oldAdvise) return false;
+
+        $fields = [];
+        $params = [];
+        foreach ($data as $key => $value) {
+            $fields[] = "$key = ?";
+            $params[] = $value;
+        }
+
+        if (empty($fields)) return false;
+
+        $params[] = $id;
+        $sql = "UPDATE payment_advises SET " . implode(', ', $fields) . " WHERE id = ?";
+
+        try {
+            $db = self::$pdo;
+            $inTransaction = $db->inTransaction();
+            if (!$inTransaction) $db->beginTransaction();
+
+            $stmt = $db->prepare($sql);
+            $result = $stmt->execute($params);
+
+            // Audit Log
+            $newAdvise = self::readById($id);
+            AuditLog::log($userId, 'UPDATE', 'payment_advise', $id, json_encode($oldAdvise), json_encode($newAdvise));
+
+            if (!$inTransaction) $db->commit();
+            return $result;
+        } catch (PDOException $e) {
+            if (self::$pdo->inTransaction()) self::$pdo->rollBack();
+            error_log("Error updating payment advise: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Deletes a payment advise.
+     */
+    public static function delete($id, $userId = null) {
+        $oldAdvise = self::readById($id);
+        if (!$oldAdvise) return false;
+
+        $sql = "DELETE FROM payment_advises WHERE id = ?";
+        try {
+            $db = self::$pdo;
+            $inTransaction = $db->inTransaction();
+            if (!$inTransaction) $db->beginTransaction();
+
+            $stmt = $db->prepare($sql);
+            $result = $stmt->execute([$id]);
+
+            // Audit Log
+            AuditLog::log($userId, 'DELETE', 'payment_advise', $id, json_encode($oldAdvise), null);
+
+            if (!$inTransaction) $db->commit();
+            return $result;
+        } catch (PDOException $e) {
+            if (self::$pdo->inTransaction()) self::$pdo->rollBack();
+            error_log("Error deleting payment advise: " . $e->getMessage());
+            return false;
+        }
+    }
 }
 
 // Initialize

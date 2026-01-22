@@ -1,0 +1,8 @@
+{
+  "track_id": "update_manual_tcp_20260110",
+  "type": "feature",
+  "status": "new",
+  "created_at": "2026-01-10T00:00:00Z",
+  "updated_at": "2026-01-10T00:00:00Z",
+  "description": "adjust the user manual guidance with the latest changes regarding Split PNR to be entry total TCP Group Split"
+}

@@ -183,14 +183,23 @@ class Movement {
     /**
      * Calculates the sum of passenger counts for a group identified by Tour Code and Request ID.
      * @param string $tourCode
-     * @param int|string $movementNo (Request ID)
+     * @param int|string|null $movementNo (Request ID)
      * @return int
      */
     public static function getGroupPassengerSum($tourCode, $movementNo) {
-        $sql = "SELECT SUM(passenger_count) FROM movements WHERE tour_code = ? AND movement_no = ?";
+        $sql = "SELECT SUM(passenger_count) FROM movements WHERE tour_code = ?";
+        $params = [$tourCode];
+
+        if ($movementNo === null) {
+            $sql .= " AND movement_no IS NULL";
+        } else {
+            $sql .= " AND movement_no = ?";
+            $params[] = $movementNo;
+        }
+
         try {
             $stmt = self::$pdo->prepare($sql);
-            $stmt->execute([$tourCode, $movementNo]);
+            $stmt->execute($params);
             return (int)$stmt->fetchColumn();
         } catch (PDOException $e) {
             error_log("Error getting group passenger sum: " . $e->getMessage());
@@ -201,15 +210,26 @@ class Movement {
     /**
      * Retrieves the Target TCP for a group.
      * @param string $tourCode
-     * @param int|string $movementNo
+     * @param int|string|null $movementNo
      * @return int|null
      */
     public static function getGroupTcp($tourCode, $movementNo) {
         // First try to get it from movements table (manually entered for the split)
-        $sql = "SELECT tcp FROM movements WHERE tour_code = ? AND movement_no = ? AND tcp IS NOT NULL LIMIT 1";
+        $sql = "SELECT tcp FROM movements WHERE tour_code = ?";
+        $params = [$tourCode];
+
+        if ($movementNo === null) {
+            $sql .= " AND movement_no IS NULL";
+        } else {
+            $sql .= " AND movement_no = ?";
+            $params[] = $movementNo;
+        }
+        
+        $sql .= " AND tcp IS NOT NULL LIMIT 1";
+
         try {
             $stmt = self::$pdo->prepare($sql);
-            $stmt->execute([$tourCode, $movementNo]);
+            $stmt->execute($params);
             $tcp = $stmt->fetchColumn();
             
             if ($tcp !== false && $tcp !== null) {
@@ -220,10 +240,20 @@ class Movement {
             $sqlFallback = "SELECT br.tcp 
                             FROM movements m
                             JOIN booking_requests br ON m.booking_request_id = br.id
-                            WHERE m.tour_code = ? AND m.movement_no = ? 
-                            LIMIT 1";
+                            WHERE m.tour_code = ?";
+            $paramsFallback = [$tourCode];
+
+            if ($movementNo === null) {
+                $sqlFallback .= " AND m.movement_no IS NULL";
+            } else {
+                $sqlFallback .= " AND m.movement_no = ?";
+                $paramsFallback[] = $movementNo;
+            }
+            
+            $sqlFallback .= " LIMIT 1";
+
             $stmtFallback = self::$pdo->prepare($sqlFallback);
-            $stmtFallback->execute([$tourCode, $movementNo]);
+            $stmtFallback->execute($paramsFallback);
             $tcpFallback = $stmtFallback->fetchColumn();
 
             return ($tcpFallback !== false && $tcpFallback !== null) ? (int)$tcpFallback : null;

@@ -13,7 +13,7 @@
 - **Framework:** Bootstrap 5 (for responsive layouts and admin components)
 - **Icons:** FontAwesome 6 (via CDN)
 - **Interactivity:** Vanilla JavaScript (or minimal jQuery if required for legacy compatibility)
-- **Design:** Mobile-first responsive grid system.
+- **Design:** Mobile-first responsive grid system with custom layouts for entry pages (e.g., `login.css`, `minimal-login.css`).
 
 ## 4. Document Generation
 - **PDF Library:** dompdf (for generating Invoices, Reports, and Receipts from HTML templates)
@@ -30,6 +30,7 @@
 ## 6. Utilities
 - **QR Code:** (Optional library like `phpqrcode` for receipts)
 - **Exports:** Native CSV/Excel headers or `PhpSpreadsheet`
+- **Markdown Parser:** erusev/parsedown (for integrated web manual)
 
 ## 7. Testing
 - **Framework:** PHPUnit (9.x)

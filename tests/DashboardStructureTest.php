@@ -13,6 +13,6 @@ class DashboardStructureTest extends TestCase
         $this->assertStringContainsString('Invoice', $dashboardContent, 'Dashboard must contain Invoice menu item');
         $this->assertStringContainsString('Rangkuman', $dashboardContent, 'Dashboard must contain Rangkuman menu item');
         $this->assertStringContainsString('Payment Advise', $dashboardContent, 'Dashboard must contain Payment Advise menu item');
-        $this->assertStringContainsString('Time Limit', $dashboardContent, 'Dashboard must contain Time Limit section');
+        $this->assertStringContainsString('Urgent Deadlines', $dashboardContent, 'Dashboard must contain Time Limit section');
     }
 }

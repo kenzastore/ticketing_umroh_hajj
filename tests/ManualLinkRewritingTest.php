@@ -2,7 +2,7 @@
 namespace Tests;
 
 /**
- * @covers \ManualLinkRewriter (not yet existing as a class, but we will test the logic)
+ * @coversNothing
  */
 class ManualLinkRewritingTest extends TestCase
 {

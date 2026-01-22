@@ -2,6 +2,9 @@
 
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @coversNothing
+ */
 class ManualStage2Test extends TestCase
 {
     public function testStage2FileExists()

@@ -2,6 +2,9 @@
 
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @coversNothing
+ */
 class ManualCrossLinkTest extends TestCase
 {
     private $manualDir;

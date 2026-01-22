@@ -2,7 +2,7 @@
 namespace Tests;
 
 /**
- * @covers \ManualToC (not yet existing as a class)
+ * @coversNothing
  */
 class ManualToCTest extends TestCase
 {

@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/../../includes/db_connect.php';
+require_once __DIR__ . '/AuditLog.php';
 
 class User {
     private static $pdo;
@@ -24,7 +25,13 @@ class User {
                 $data['role_id'],
                 $data['full_name']
             ]);
-            return self::$pdo->lastInsertId();
+            $newId = self::$pdo->lastInsertId();
+            if ($newId) {
+                $logData = $data;
+                unset($logData['password']);
+                AuditLog::log(null, 'USER_CREATED', 'user', $newId, null, $logData);
+            }
+            return $newId;
         } catch (PDOException $e) {
             error_log("Error creating user: " . $e->getMessage());
             return false;
@@ -88,6 +95,10 @@ class User {
      * @return bool True on success, false on failure.
      */
     public static function update(int $id, array $data) {
+        $oldUser = self::readById($id);
+        if (!$oldUser) return false;
+        unset($oldUser['password']);
+
         $fields = [];
         $params = [];
 
@@ -117,7 +128,13 @@ class User {
 
         try {
             $stmt = self::$pdo->prepare($sql);
-            return $stmt->execute($params);
+            $success = $stmt->execute($params);
+            if ($success) {
+                $newUser = self::readById($id);
+                unset($newUser['password']);
+                AuditLog::log(null, 'USER_UPDATED', 'user', $id, $oldUser, $newUser);
+            }
+            return $success;
         } catch (PDOException $e) {
             error_log("Error updating user: " . $e->getMessage());
             return false;
@@ -130,11 +147,19 @@ class User {
      * @return bool True on success, false on failure.
      */
     public static function delete(int $id) {
+        $oldUser = self::readById($id);
+        if ($oldUser) {
+            unset($oldUser['password']);
+        }
         $sql = "DELETE FROM users WHERE id = ?";
         try {
             $stmt = self::$pdo->prepare($sql);
             $stmt->execute([$id]);
-            return $stmt->rowCount() > 0;
+            $success = $stmt->rowCount() > 0;
+            if ($success && $oldUser) {
+                AuditLog::log(null, 'USER_DELETED', 'user', $id, $oldUser, null);
+            }
+            return $success;
         } catch (PDOException $e) {
             error_log("Error deleting user: " . $e->getMessage());
             return false;
@@ -143,4 +168,5 @@ class User {
 }
 
 // Initialize the PDO instance for the User class
+global $pdo;
 User::init($pdo);

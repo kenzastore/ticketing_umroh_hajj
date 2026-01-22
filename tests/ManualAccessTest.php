@@ -2,7 +2,7 @@
 namespace Tests;
 
 /**
- * @covers \ManualAccess
+ * @coversNothing
  */
 class ManualAccessTest extends TestCase
 {

@@ -14,7 +14,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // List of allowed fields to update from the form
     $fields = [
-        'pnr', 'category', 'tour_code', 'agent_name', 'carrier', 'passenger_count',
+        'pnr', 'category', 'tour_code', 'agent_name', 'carrier', 'passenger_count', 'tcp',
         'dp1_status', 'dp2_status', 'fp_status', 'ticketing_done',
         'flight_no_out', 'sector_out', 'dep_seg1_date', 'ticketing_deadline',
         'belonging_to', 'duration_days', 'add1_days', 'ttl_days',

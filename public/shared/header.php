@@ -81,6 +81,9 @@ if (isset($title)) {
                                         <li><a class="dropdown-item" href="/admin/masters/corporates/index.php">Corporates</a></li>
                                         <li><a class="dropdown-item" href="/admin/masters/users/index.php">System Users</a></li>
                                         <li><hr class="dropdown-divider"></li>
+                                        <li><a class="dropdown-item text-danger" href="/admin/audit_logs.php"><i class="fas fa-history me-1"></i>Audit Logs</a></li>
+                                        <li><a class="dropdown-item text-primary" href="/shared/manual.php"><i class="fas fa-book me-1"></i>User Manual</a></li>
+                                        <li><hr class="dropdown-divider"></li>
                                         <li><a class="dropdown-item" href="/admin/new_request.php">Quick New Request</a></li>
                                     </ul>
                                 </li>
