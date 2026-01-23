@@ -13,6 +13,14 @@ This track implements a robust, synchronized dummy data generation system produc
     - ~25% Active Movements (varying DP1/DP2 statuses).
     - ~25% Ticketing Done / Financial Finalization (Invoices paid, Payment Advice generated).
     - ~25% Overdue/Urgent Scenarios (Specifically designed to trigger H-3 reminders and dashboard alerts).
+- **Indonesian Localization:**
+    - **Names:** Use realistic Indonesian person names (e.g., "Budi Santoso", "Siti Aminah").
+    - **Companies:** Use Indonesian company names (e.g., "PT Sukses Makmur", "CV Jaya Abadi").
+    - **Addresses:** Use Indonesian formatting including Kota and Provinsi (e.g., "Jl. Merdeka No. 10, Gambir, Jakarta Pusat, DKI Jakarta").
+    - **Phone Numbers:** Use +62 or 08 prefix formats.
+    - **Emails:** Use realistic domains (e.g., @gmail.com, @mail.id, @co.id).
+    - **IDs:** Generate valid-looking NIK (16 digits) and NPWP where applicable.
+    - **Terminology:** Use Indonesian business terms (e.g., "Manajer Operasional", "Staf Keuangan").
 - **Master Data:** Randomly distribute records across 10+ Agents and 5+ Corporates to enable filtering tests.
 
 ### 2.2 Relational Synchronization

@@ -24,3 +24,19 @@ Ensure the generated data correctly simulates real-world UAT scenarios and audit
 - [x] Task: Verify Audit Log Integrity - Confirm that each of the 100 records has a consistent chronological trail in `audit_logs`. [pass]
 - [x] Task: Role Visibility Check - Perform a final walkthrough as different roles (Finance vs. Operational) to ensure data filtering works. [pass]
 - [x] Task: Conductor - User Manual Verification 'Phase 3: Workflow & Traceability Validation' (Protocol in workflow.md) [pass]
+
+## Phase 4: Indonesian Localization Refinement
+
+Update the seeder to use authentic Indonesian content and verify end-to-end consistency.
+
+
+
+- [x] Task: Update Seeder with Indonesian Content - Refactor `database/seed_uat_system.php` to use Indonesian names, addresses, phones, and company names. [pass]
+
+- [x] Task: Refine Financials & IDs - Ensure NIK, NPWP, and currency labels align with Indonesian practices. [pass]
+
+- [x] Task: Final Localization Verification - Run the seeder and perform a UI walkthrough to confirm all dummy data feels authentic and consistent. [pass]
+
+- [x] Task: Conductor - User Manual Verification 'Indonesian Localization Refinement' (Protocol in workflow.md) [pass]
+
+
