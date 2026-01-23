@@ -10,7 +10,7 @@
 - [x] **Task 3: Create Menu Cards** [pass]
 - [x] **Task 4: Implement Time Limit Widget** [pass]
 
-### Phase 3: Modern UI Refinement
+### Phase 3: Modern UI Refinement [checkpoint: fcff08e]
 
 Refine the dashboard to meet the modern, compact, and accessible design specifications.
 
@@ -28,7 +28,9 @@ Refine the dashboard to meet the modern, compact, and accessible design specific
 
 
 
-### Phase 4: Review & Polish
+### Phase 4: Review & Polish [checkpoint: fcff08e]
+
+
 
 
 
