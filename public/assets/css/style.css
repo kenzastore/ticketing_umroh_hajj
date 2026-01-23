@@ -26,4 +26,27 @@ main {
     border-top: 1px solid #e7e7e7;
 }
 
+#shortcut-cue {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 9999;
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: help;
+    opacity: 0.7;
+    transition: opacity 0.3s, background 0.3s;
+}
+
+#shortcut-cue:hover {
+    opacity: 1;
+    background: rgba(0, 0, 0, 0.8);
+}
+
 /* Add more custom styles here as needed */
