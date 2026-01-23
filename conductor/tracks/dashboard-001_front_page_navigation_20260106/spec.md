@@ -6,16 +6,21 @@ This track implements the main dashboard interface for the Ticketing Umroh & Haj
 ## Functional Requirements
 
 ### 1. Dashboard Layout
-- **Visual Structure:** A clean, card-based or list-based layout (depending on screen size) representing the main modules.
+- **Visual Structure:** A modern grid-based layout using Bootstrap 5 cards.
+- **Card Design:** 
+    - **Compact Layout:** Use small-sized buttons for primary actions instead of large clickable areas.
+    - **Visual Hierarchy:** Distinct icons for each card, positioned prominently.
+    - **Descriptions:** Concise 1-2 sentence descriptions for each functionality.
+    - **Interactivity:** Consistent styling with subtle hover effects and uniform dimensions.
 - **Reference:** `conductor/reference/FRONT_PAGE_DASHBOARD.pdf`.
-- **Menu Items:**
-    1.  **Booking Request** (Links to Request Management)
-    2.  **Movement** (Links to Movement Monitoring)
-    3.  **Payment Report** (Links to Payment Reporting)
-    4.  **Invoice** (Links to Invoice Generation)
-    5.  **Rangkuman** (Links to Summary/Admin Dashboard)
-    6.  **Payment Advise** (Links to Payment Advise module)
-    7.  **Time Limit** (Dashboard widget/section)
+- **Menu Items (6 Cards):**
+    1.  **Booking Request:** Manage incoming demands and passenger details.
+    2.  **Movement:** Track active group movements and flight segments.
+    3.  **Payment Report:** View and manage Sales vs. Cost financial reports.
+    4.  **Invoice:** Generate and track proforma invoices for agents.
+    5.  **Rangkuman:** High-level summary and management dashboard.
+    6.  **Payment Advise:** Process and track internal airline payments.
+- **Accessibility:** Ensure ARIA labels, semantic HTML, keyboard navigability, and high contrast ratios.
 
 ### 2. Time Limit Widget
 - **Function:** Display upcoming deadlines.

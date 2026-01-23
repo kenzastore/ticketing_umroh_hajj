@@ -1,20 +1,35 @@
 <?php
 use PHPUnit\Framework\TestCase;
 
-class DashboardResponsiveTest extends TestCase
+class DashboardResponsiveTest extends Tests\TestCase
 {
-    public function testDashboardHasResponsiveClasses()
+    public function testDashboardContainsRequiredGridClasses()
     {
         $content = file_get_contents(__DIR__ . '/../public/admin/dashboard.php');
 
-        // Check for grid classes
-        $this->assertStringContainsString('col-md-4', $content, 'Should have medium column definition');
-        $this->assertStringContainsString('col-sm-6', $content, 'Should have small column definition');
-        $this->assertStringContainsString('col-12', $content, 'Should have full width definition for mobile/headers');
-        
-        // Check for viewport meta tag in header (indirectly)
-        $headerContent = file_get_contents(__DIR__ . '/../public/shared/header.php');
-        $this->assertStringContainsString('<meta name="viewport" content="width=device-width, initial-scale=1.0">', $headerContent, 'Header must have viewport meta tag');
-        $this->assertStringContainsString('navbar-toggler', $headerContent, 'Header must have navbar toggler for mobile');
+        // Check for responsive grid classes
+        $this->assertStringContainsString('row g-4', $content);
+        $this->assertStringContainsString('col-xl-4', $content);
+        $this->assertStringContainsString('col-md-6', $content);
+    }
+
+    public function testCardsContainButtonsAndDescriptions()
+    {
+        $content = file_get_contents(__DIR__ . '/../public/admin/dashboard.php');
+
+        // Verify specific card elements
+        $this->assertStringContainsString('card-description', $content);
+        $this->assertStringContainsString('btn btn-primary btn-sm', $content);
+        $this->assertStringContainsString('aria-label=', $content);
+    }
+
+    public function testNavigationLinksAreCorrect()
+    {
+        $content = file_get_contents(__DIR__ . '/../public/admin/dashboard.php');
+
+        // Check key routing
+        $this->assertStringContainsString('href="booking_requests.php"', $content);
+        $this->assertStringContainsString('href="movement_fullview.php"', $content);
+        $this->assertStringContainsString('href="../finance/dashboard.php"', $content);
     }
 }

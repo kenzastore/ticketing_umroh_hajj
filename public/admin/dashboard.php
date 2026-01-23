@@ -28,7 +28,6 @@ function renderDeadlineList($deadlines, $dateField) {
     foreach ($deadlines as $d) {
         $deadlineDate = $d[$dateField] ?? $d['ticketing_deadline'] ?? null;
         
-        // Handle categories that have multiple date fields (e.g. DP1/DP2/FP)
         if (!$deadlineDate && isset($d['deposit1_airlines_date'])) {
             $deadlineDate = min(array_filter([$d['deposit1_airlines_date'], $d['deposit1_eemw_date']], function($v) { return !is_null($v); }));
         } elseif (!$deadlineDate && isset($d['deposit2_airlines_date'])) {
@@ -58,16 +57,64 @@ function renderDeadlineList($deadlines, $dateField) {
 }
 ?>
 
+<style>
+    .dashboard-card {
+        transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+        border: none;
+        border-radius: 12px;
+        overflow: hidden;
+    }
+    .dashboard-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+    }
+    .card-icon-container {
+        width: 60px;
+        height: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 12px;
+        margin-bottom: 1.5rem;
+    }
+    .card-description {
+        font-size: 0.85rem;
+        line-height: 1.4;
+        color: #6c757d;
+        height: 3rem;
+        overflow: hidden;
+        margin-bottom: 1.5rem;
+    }
+    .nav-tabs .nav-link {
+        font-size: 0.85rem;
+        color: #6c757d;
+        border-radius: 0;
+        border-bottom: 1px solid #dee2e6;
+        background: none;
+        border-left: none;
+        border-right: none;
+    }
+    .nav-tabs .nav-link.active {
+        font-weight: bold;
+        color: #dc3545;
+        border-bottom: 2px solid #dc3545 !important;
+    }
+    .bg-danger-subtle {
+        background-color: #f8d7da;
+    }
+</style>
+
 <div class="row mb-4">
     <div class="col-12">
-        <h1 class="h3 mb-4 text-gray-800">Dashboard</h1>
+        <h1 class="h3 mb-2 text-gray-800 fw-bold">Dashboard Hub</h1>
+        <p class="text-muted">Selamat datang di pusat kendali operasional EEMW Ticketing.</p>
     </div>
 </div>
 
 <!-- Urgent Deadlines Widget -->
 <div class="row mb-5" id="time-limit-section">
     <div class="col-12">
-        <div class="card shadow border-0">
+        <div class="card shadow-sm border-0" style="border-radius: 12px; overflow: hidden;">
             <div class="card-header bg-danger text-white py-3">
                 <h6 class="m-0 fw-bold"><i class="fas fa-clock me-2"></i>Urgent Deadlines (H-3 & Past Due)</h6>
             </div>
@@ -116,127 +163,115 @@ function renderDeadlineList($deadlines, $dateField) {
 </div>
 
 <!-- Menu Grid -->
-<div class="row g-4">
+<div class="row g-4 mb-5">
     <!-- 1. Booking Request -->
-    <div class="col-md-4 col-sm-6">
-        <a href="booking_requests.php" class="text-decoration-none">
-            <div class="card shadow-sm h-100 text-center p-4 hover-scale border-primary border-top border-4">
-                <div class="card-body">
-                    <div class="mb-3">
-                        <i class="fas fa-file-contract fa-3x text-primary"></i>
-                    </div>
-                    <h3 class="card-title text-primary">1. Booking Request</h3>
-                    <p class="card-text text-muted">Manage new and existing requests</p>
+    <div class="col-xl-4 col-md-6">
+        <div class="card h-100 shadow-sm dashboard-card border-start border-primary border-4">
+            <div class="card-body p-4">
+                <div class="card-icon-container bg-primary bg-opacity-10 text-primary">
+                    <i class="fas fa-file-contract fa-2x"></i>
+                </div>
+                <h5 class="fw-bold mb-2">Booking Request</h5>
+                <p class="card-description">Kelola permintaan pemesanan baru dan jamaah masuk. Input data awal secara cepat dan akurat.</p>
+                <div class="text-end">
+                    <a href="booking_requests.php" class="btn btn-primary btn-sm px-3 shadow-sm" aria-label="Buka Manajemen Booking Request">
+                        Buka Request <i class="fas fa-arrow-right ms-1"></i>
+                    </a>
                 </div>
             </div>
-        </a>
+        </div>
     </div>
 
     <!-- 2. Movement -->
-    <div class="col-md-4 col-sm-6">
-        <a href="movement_fullview.php" class="text-decoration-none">
-            <div class="card shadow-sm h-100 text-center p-4 hover-scale border-success border-top border-4">
-                <div class="card-body">
-                    <div class="mb-3">
-                        <i class="fas fa-plane fa-3x text-success"></i>
-                    </div>
-                    <h3 class="card-title text-success">2. Movement</h3>
-                    <p class="card-text text-muted">Monitor flight movements</p>
+    <div class="col-xl-4 col-md-6">
+        <div class="card h-100 shadow-sm dashboard-card border-start border-success border-4">
+            <div class="card-body p-4">
+                <div class="card-icon-container bg-success bg-opacity-10 text-success">
+                    <i class="fas fa-plane-departure fa-2x"></i>
+                </div>
+                <h5 class="fw-bold mb-2">Movement Monitoring</h5>
+                <p class="card-description">Pantau status pergerakan grup, jadwal penerbangan, dan deadline ticketing secara real-time.</p>
+                <div class="text-end">
+                    <a href="movement_fullview.php" class="btn btn-success btn-sm px-3 shadow-sm" aria-label="Buka Monitoring Movement">
+                        Buka Movement <i class="fas fa-arrow-right ms-1"></i>
+                    </a>
                 </div>
             </div>
-        </a>
+        </div>
     </div>
 
     <!-- 3. Invoice -->
-    <div class="col-md-4 col-sm-6">
-        <a href="../finance/create_invoice.php" class="text-decoration-none">
-            <div class="card shadow-sm h-100 text-center p-4 hover-scale border-warning border-top border-4">
-                <div class="card-body">
-                    <div class="mb-3">
-                        <i class="fas fa-file-invoice fa-3x text-warning"></i>
-                    </div>
-                    <h3 class="card-title text-warning">3. Invoice</h3>
-                    <p class="card-text text-muted">Generate and manage invoices</p>
+    <div class="col-xl-4 col-md-6">
+        <div class="card h-100 shadow-sm dashboard-card border-start border-warning border-4">
+            <div class="card-body p-4">
+                <div class="card-icon-container bg-warning bg-opacity-10 text-warning">
+                    <i class="fas fa-file-invoice-dollar fa-2x"></i>
+                </div>
+                <h5 class="fw-bold mb-2">Invoice Generator</h5>
+                <p class="card-description">Terbitkan invoice proforma untuk agen. Pantau status penagihan dan histori pembayaran.</p>
+                <div class="text-end">
+                    <a href="../finance/dashboard.php" class="btn btn-warning btn-sm px-3 shadow-sm text-dark fw-bold" aria-label="Buka Manajemen Invoice">
+                        Buka Invoice <i class="fas fa-arrow-right ms-1"></i>
+                    </a>
                 </div>
             </div>
-        </a>
+        </div>
     </div>
 
     <!-- 4. Payment Report -->
-    <div class="col-md-4 col-sm-6">
-        <a href="../finance/dashboard.php" class="text-decoration-none">
-            <div class="card shadow-sm h-100 text-center p-4 hover-scale border-info border-top border-4">
-                <div class="card-body">
-                    <div class="mb-3">
-                        <i class="fas fa-chart-line fa-3x text-info"></i>
-                    </div>
-                    <h3 class="card-title text-info">4. Payment Report</h3>
-                    <p class="card-text text-muted">View financial reports</p>
+    <div class="col-xl-4 col-md-6">
+        <div class="card h-100 shadow-sm dashboard-card border-start border-info border-4">
+            <div class="card-body p-4">
+                <div class="card-icon-container bg-info bg-opacity-10 text-info">
+                    <i class="fas fa-chart-pie fa-2x"></i>
+                </div>
+                <h5 class="fw-bold mb-2">Payment Report</h5>
+                <p class="card-description">Laporan keuangan komprehensif yang membandingkan Sales (Internal) dan Cost (Airline).</p>
+                <div class="text-end">
+                    <a href="../finance/dashboard.php" class="btn btn-info btn-sm px-3 shadow-sm text-white" aria-label="Buka Laporan Pembayaran">
+                        Buka Laporan <i class="fas fa-arrow-right ms-1"></i>
+                    </a>
                 </div>
             </div>
-        </a>
+        </div>
     </div>
 
     <!-- 5. Payment Advise -->
-    <div class="col-md-4 col-sm-6">
-        <a href="../finance/payment_advise_list.php" class="text-decoration-none">
-            <div class="card shadow-sm h-100 text-center p-4 hover-scale border-dark border-top border-4">
-                <div class="card-body">
-                    <div class="mb-3">
-                        <i class="fas fa-money-check-alt fa-3x text-dark"></i>
-                    </div>
-                    <h3 class="card-title text-dark">5. Payment Advise</h3>
-                    <p class="card-text text-muted">Manage payment advises</p>
+    <div class="col-xl-4 col-md-6">
+        <div class="card h-100 shadow-sm dashboard-card border-start border-dark border-4">
+            <div class="card-body p-4">
+                <div class="card-icon-container bg-dark bg-opacity-10 text-dark">
+                    <i class="fas fa-money-check-alt fa-2x"></i>
+                </div>
+                <h5 class="fw-bold mb-2">Payment Advise</h5>
+                <p class="card-description">Proses konfirmasi pembayaran ke maskapai. Kelola top-up deposit dan saldo airline.</p>
+                <div class="text-end">
+                    <a href="../finance/payment_advise_list.php" class="btn btn-dark btn-sm px-3 shadow-sm" aria-label="Buka Payment Advise">
+                        Buka Advise <i class="fas fa-arrow-right ms-1"></i>
+                    </a>
                 </div>
             </div>
-        </a>
+        </div>
     </div>
 
     <!-- 6. Rangkuman -->
-    <div class="col-md-4 col-sm-6">
-        <a href="agent_summary.php" class="text-decoration-none">
-            <div class="card shadow-sm h-100 text-center p-4 hover-scale border-secondary border-top border-4">
-                <div class="card-body">
-                    <div class="mb-3">
-                        <i class="fas fa-clipboard-list fa-3x text-secondary"></i>
-                    </div>
-                    <h3 class="card-title text-secondary">6. Summary</h3>
-                    <p class="card-text text-muted">Summary & Statistics</p>
+    <div class="col-xl-4 col-md-6">
+        <div class="card h-100 shadow-sm dashboard-card border-start border-secondary border-4">
+            <div class="card-body p-4">
+                <div class="card-icon-container bg-secondary bg-opacity-10 text-secondary">
+                    <i class="fas fa-layer-group fa-2x"></i>
+                </div>
+                <h5 class="fw-bold mb-2">Rangkuman / Summary</h5>
+                <p class="card-description">Ringkasan performa agen dan statistik grup. Data konsolidasi untuk pengambilan keputusan.</p>
+                <div class="text-end">
+                    <a href="agent_summary.php" class="btn btn-secondary btn-sm px-3 shadow-sm" aria-label="Buka Rangkuman Data">
+                        Buka Summary <i class="fas fa-arrow-right ms-1"></i>
+                    </a>
                 </div>
             </div>
-        </a>
+        </div>
     </div>
 </div>
-
-<style>
-    .hover-scale {
-        transition: transform 0.2s;
-    }
-    .hover-scale:hover {
-        transform: scale(1.05);
-    }
-    .nav-tabs .nav-link {
-        font-size: 0.85rem;
-        color: #6c757d;
-        border-radius: 0;
-        border-bottom: 1px solid #dee2e6;
-        background: none;
-        border-left: none;
-        border-right: none;
-    }
-    .nav-tabs .nav-link.active {
-        font-weight: bold;
-        color: #dc3545;
-        border-bottom: 2px solid #dc3545 !important;
-    }
-    .bg-danger-subtle {
-        background-color: #f8d7da;
-    }
-    .btn-xs {
-        padding: 0.1rem 0.3rem;
-        font-size: 0.7rem;
-    }
-</style>
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
