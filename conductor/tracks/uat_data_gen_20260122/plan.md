@@ -25,9 +25,11 @@ Ensure the generated data correctly simulates real-world UAT scenarios and audit
 - [x] Task: Role Visibility Check - Perform a final walkthrough as different roles (Finance vs. Operational) to ensure data filtering works. [pass]
 - [x] Task: Conductor - User Manual Verification 'Phase 3: Workflow & Traceability Validation' (Protocol in workflow.md) [pass]
 
-## Phase 4: Indonesian Localization Refinement
+## Phase 4: Indonesian Localization Refinement [checkpoint: b1e076d]
 
 Update the seeder to use authentic Indonesian content and verify end-to-end consistency.
+
+
 
 
 
