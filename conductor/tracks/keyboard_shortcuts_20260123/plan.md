@@ -3,7 +3,7 @@
 ## Phase 1: Foundation & Global Infrastructure
 - [x] Task: Create `public/assets/js/shortcut-system.js` with basic initialization logic. 47f8630
 - [x] Task: Implement the Centralized Shortcut Registry (JS configuration object). 1320799
-- [ ] Task: Create a basic global listener for keydown events to detect registered shortcuts.
+- [x] Task: Create a basic global listener for keydown events to detect registered shortcuts. 56aa117
 - [ ] Task: Implement the persistent visual cue (floating icon) in a shared layout file (e.g., `public/shared/header.php` or a dedicated footer component).
 - [ ] Task: Conductor - User Manual Verification 'Phase 1: Foundation & Global Infrastructure' (Protocol in workflow.md)
 
