@@ -95,7 +95,7 @@ Membangun sistem berbasis web yang **mengadopsi struktur worksheet** menjadi mod
 • Modul: Request, Movement (FullView), Invoice (2 versi), Payment (Report + Advise), Reminder.
 • Template dokumen: invoice PDF (compliant with `invoice_template_contract.md`), payment report, payment advise, (opsional) resi digital.
 • Audit log perubahan + export laporan (Excel/PDF).
-• UAT Management: Terintegrasi dengan User Manual untuk pembersihan dan regenerasi data uji (100 records) secara on-demand.
+• UAT Management: Terintegrasi dengan User Manual untuk pembersihan dan regenerasi data uji (100 records) secara on-demand, lengkap dengan lokalisasi konten Indonesia (Nama, Alamat, NIK/NPWP).
 • Panduan Pengguna (User Manual) terintegrasi dengan web viewer di menu Admin.
 
 ---
