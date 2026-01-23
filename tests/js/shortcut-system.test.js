@@ -23,9 +23,39 @@ try {
     const globalShortcuts = ShortcutSystem.registry.global;
     assert.ok(Array.isArray(globalShortcuts), 'Global shortcuts should be an array');
     
-    // Check for at least one navigation shortcut as per spec
-    const hasDashboard = globalShortcuts.some(s => s.action === 'navigation' && s.description.toLowerCase().includes('dashboard'));
-    assert.ok(hasDashboard, 'Should have a dashboard navigation shortcut');
+    // Task 3: Listener tests
+    let eventListenerAdded = false;
+    let registeredCallback = null;
+    
+    global.document.addEventListener = (type, callback) => {
+        if (type === 'keydown') {
+            eventListenerAdded = true;
+            registeredCallback = callback;
+        }
+    };
+    
+    ShortcutSystem.init();
+    assert.ok(eventListenerAdded, 'Should add a keydown event listener on init');
+    
+    // Simulate Alt+D (Dashboard)
+    let navigationTriggered = false;
+    global.window.location.assign = (url) => {
+        if (url === '/admin/dashboard.php') {
+            navigationTriggered = true;
+        }
+    };
+    
+    if (registeredCallback) {
+        registeredCallback({
+            code: 'KeyD',
+            altKey: true,
+            ctrlKey: false,
+            shiftKey: false,
+            target: { tagName: 'BODY' },
+            preventDefault: () => {}
+        });
+        assert.ok(navigationTriggered, 'Alt+D should trigger navigation to dashboard');
+    }
     
     console.log('Test Passed');
 } catch (e) {
